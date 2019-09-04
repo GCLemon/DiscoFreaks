@@ -1,0 +1,34 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoFreaks.View", "DiscoFreaks.View\DiscoFreaks.View.csproj", "{F6F76D37-1194-47FA-AF05-215655BF35AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoFreaks.Core", "DiscoFreaks.Core\DiscoFreaks.Core.csproj", "{F8F3601E-BCF6-4DE7-9198-D5B89CBDCD1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F6F76D37-1194-47FA-AF05-215655BF35AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F76D37-1194-47FA-AF05-215655BF35AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F76D37-1194-47FA-AF05-215655BF35AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F76D37-1194-47FA-AF05-215655BF35AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8F3601E-BCF6-4DE7-9198-D5B89CBDCD1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8F3601E-BCF6-4DE7-9198-D5B89CBDCD1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8F3601E-BCF6-4DE7-9198-D5B89CBDCD1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8F3601E-BCF6-4DE7-9198-D5B89CBDCD1A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$0.TextStylePolicy = $2
+		$2.FileWidth = 80
+		$2.TabsToSpaces = True
+		$2.scope = text/plain
+		$0.StandardHeader = $3
+	EndGlobalSection
+EndGlobal
