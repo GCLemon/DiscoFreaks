@@ -1,18 +1,35 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using asd;
-using DiscoFreaks.Core;
 
-namespace DiscoFreaks.View
+namespace DiscoFreaks
 {
     /// <summary>
     /// 曲選択シーン
     /// </summary>
     public class SelectScene : Scene
     {
-        // モデル
-        protected readonly GameModel GameModel;
-        protected readonly SelectSceneModel SceneModel;
+        // 曲選択シーンのモード
+        public enum Mode
+        {
+            Music,
+            Difficulty
+        }
+
+        // 現在のモード
+        private Mode CurrentMode;
+
+        // 読み込んだ譜面
+        private List<Score> Scores = Score.CreateList();
+
+        // 現在選択している譜面のID
+        private int ScoreID;
+
+        // 現在選択している難易度
+        private Difficulty Difficulty;
+
+        // Option シーンで設定する項目
+        public Configuration Configuration;
 
         // レイヤー
         private readonly Layer2D BackLayer = new Layer2D();
@@ -128,82 +145,85 @@ namespace DiscoFreaks.View
 
         #endregion
 
-        #region その他設定
-
-        private readonly Makinas SetConfigAnnounce =
-            new Makinas(48, 4, new Vector2DF(0.5f, 0.5f))
-            {
-                Text = "最後の設定を完了してください。",
-                Position = new Vector2DF(2400, 200)
-            };
-
-        private readonly HeadUpDaisy HighSpeed =
-            new HeadUpDaisy(36, 4, new Vector2DF(0.5f, 0.5f))
-            { Position = new Vector2DF(2400, 280) };
-
-        private readonly HeadUpDaisy Ofset =
-            new HeadUpDaisy(36, 4, new Vector2DF(0.5f, 0.5f))
-            { Position = new Vector2DF(2400, 350) };
-
-        #endregion
-
+        private bool IsUsed;
         private int SoundID;
         private int Phase;
         private int Phase_tune;
 
-        public SelectScene(GameModel game_model)
-        {
-            GameModel = game_model;
-            SceneModel = new SelectSceneModel();
-        }
-
         protected override void OnRegistered()
         {
-            // 背景の設定
-            BackLayer.AddPostEffect(new BackGround("Shader/OpenGL/Select.glsl"));
+            if (!IsUsed)
+            {
+                // 背景の設定
+                BackLayer.AddPostEffect(new BackGround("Shader/OpenGL/Select.glsl"));
 
-            // シーンのタイトルを設定
-            TextLayer.AddObject(SceneTitle);
+                // シーンのタイトルを設定
+                TextLayer.AddObject(SceneTitle);
 
-            // UI レイヤーに諸々のオブジェクトを追加
-            var m = ChildManagementMode.RegistrationToLayer;
-            var t = ChildTransformingMode.Position;
-            var d = ChildDrawingMode.Color;
-            Jacket.AddDrawnChild(MusicTitle, m, t, d);
-            Jacket.AddDrawnChild(Subtitle, m, t, d);
-            Jacket.AddDrawnChild(Casual, m, t, d);
-            Jacket.AddDrawnChild(Stylish, m, t, d);
-            Jacket.AddDrawnChild(Freeky, m, t, d);
-            Jacket.AddDrawnChild(Psychic, m, t, d);
-            UILayer.AddObject(Jacket);
-            foreach (var text_obj in AppearingScores)
-                UILayer.AddObject(text_obj);
+                // UI レイヤーに諸々のオブジェクトを追加
+                var m = ChildManagementMode.RegistrationToLayer;
+                var t = ChildTransformingMode.Position;
+                var d = ChildDrawingMode.Color;
+                Jacket.AddDrawnChild(MusicTitle, m, t, d);
+                Jacket.AddDrawnChild(Subtitle, m, t, d);
+                Jacket.AddDrawnChild(Casual, m, t, d);
+                Jacket.AddDrawnChild(Stylish, m, t, d);
+                Jacket.AddDrawnChild(Freeky, m, t, d);
+                Jacket.AddDrawnChild(Psychic, m, t, d);
+                UILayer.AddObject(Jacket);
+                foreach (var text_obj in AppearingScores)
+                    UILayer.AddObject(text_obj);
 
-            UILayer.AddObject(SelectDifficultyAnnounce);
-            UILayer.AddObject(DifficultyDescription);
-            Casual_value.AddDrawnChild(Casual_label, m, t, d);
-            Stylish_value.AddDrawnChild(Stylish_label, m, t, d);
-            Freeky_value.AddDrawnChild(Freeky_label, m, t, d);
-            Psychic_value.AddDrawnChild(Psychic_label, m, t, d);
-            UILayer.AddObject(Casual_value);
-            UILayer.AddObject(Stylish_value);
-            UILayer.AddObject(Freeky_value);
-            UILayer.AddObject(Psychic_value);
+                UILayer.AddObject(SelectDifficultyAnnounce);
+                UILayer.AddObject(DifficultyDescription);
+                Casual_value.AddDrawnChild(Casual_label, m, t, d);
+                Stylish_value.AddDrawnChild(Stylish_label, m, t, d);
+                Freeky_value.AddDrawnChild(Freeky_label, m, t, d);
+                Psychic_value.AddDrawnChild(Psychic_label, m, t, d);
+                UILayer.AddObject(Casual_value);
+                UILayer.AddObject(Stylish_value);
+                UILayer.AddObject(Freeky_value);
+                UILayer.AddObject(Psychic_value);
 
-            UILayer.AddObject(SetConfigAnnounce);
-            UILayer.AddObject(HighSpeed);
-            UILayer.AddObject(Ofset);
-
-            // レイヤーの追加
-            AddLayer(BackLayer);
-            AddLayer(UILayer);
-            AddLayer(TextLayer);
+                // レイヤーの追加
+                AddLayer(BackLayer);
+                AddLayer(UILayer);
+                AddLayer(TextLayer);
+            }
         }
 
+        protected override void OnStartUpdating()
+        {
+            // BGMを再生する
+            if (!IsUsed) PlayBGM();
+        }
+
+        protected override void OnUpdated()
+        {
+            // 次回以降は OnRegistered 関数の処理を省略する
+            IsUsed = true;
+
+            // Phase の値によってオブジェクトの描画位置を変更する
+            if (Phase != 0)
+            {
+                Input.AcceptInput = false;
+                foreach (var obj in UILayer.Objects.Where(x => x.Parent == null))
+                    obj.Position += new Vector2DF(-8 * Phase, 0);
+                Phase += Phase > 0 ? -1 : 1;
+            }
+            else Input.AcceptInput = true;
+
+            if (Phase_tune != 0) --Phase_tune;
+
+            Draw();
+            Cntroll();
+        }
+
+        // 音を変更する
         private void PlayBGM()
         {
             Sound.Stop(SoundID);
-            string score = SceneModel.SelectedScore.SoundPath;
+            string score = Scores[ScoreID].SoundPath;
             var source = Sound.CreateBGM(score);
             source.IsLoopingMode = true;
             source.LoopStartingPoint = 0;
@@ -212,27 +232,10 @@ namespace DiscoFreaks.View
 
         }
 
-        protected override void OnStartUpdating()
+        // 描画関係の処理を記述する
+        private void Draw()
         {
-            PlayBGM();
-        }
-
-        protected override void OnUpdated()
-        {
-            if (Phase != 0)
-            {
-                Input.AcceptInput = false;
-                foreach (var obj in UILayer.Objects.Where(x => x.Parent == null))
-                    obj.Position += new Vector2DF(-8 * Phase, 0);
-                Phase += Phase > 0 ? -1 : 1 ;
-            }
-            else Input.AcceptInput = true;
-
-            if (Phase_tune != 0) --Phase_tune;
-
-            #region 描画部分
-
-            var score = SceneModel.SelectedScore;
+            var score = Scores[ScoreID];
 
             // 選択中の譜面の情報を変更する
             Jacket.Texture = Graphics.CreateTexture(score.JacketPath);
@@ -255,8 +258,11 @@ namespace DiscoFreaks.View
 
             // 画面に表示する曲名の変更
             for (int i = 0; i < AppearingScores.Count; ++i)
-                AppearingScores[i].Text =
-                    SceneModel.AppearingScores[i];
+            {
+                int id = ScoreID + i - (i >= 4 ? 3 : 4);
+                id = Math.Mod(id, Scores.Count);
+                AppearingScores[i].Text = Scores[id].Title;
+            }
 
             // 難易度の表示を変更する
             Casual_value.Text =
@@ -280,7 +286,7 @@ namespace DiscoFreaks.View
             Stylish_value.Color = new Color(255, 255, 255, 63);
             Freeky_value.Color = new Color(255, 255, 255, 63);
             Psychic_value.Color = new Color(255, 255, 255, 63);
-            switch (SceneModel.SelectedDifficulty)
+            switch (Difficulty)
             {
                 case Difficulty.Casual:
                     Casual_value.Color = new Color(255, 255, 255);
@@ -295,7 +301,7 @@ namespace DiscoFreaks.View
                 case Difficulty.Freeky:
                     Freeky_value.Color = new Color(255, 255, 255);
                     DifficultyDescription.Text =
-                        "音ゲーを極めた人向けの難易度です。\nラストはカッコよくキメましょう。";
+                        "音ゲーを極めた人向けの難易度です。\nお子様の手の届かないところで遊びましょう。";
                     break;
                 case Difficulty.Psychic:
                     Psychic_value.Color = new Color(255, 255, 255);
@@ -303,93 +309,116 @@ namespace DiscoFreaks.View
                         "廃人向けの難易度です。\n遊ぶな危険。";
                     break;
             }
+        }
 
-            HighSpeed.Text = string.Format("High Speed : x{0}", GameModel.HighSpeed);
-            Ofset.Text = string.Format("Ofset : {0}", GameModel.Ofset);
+        // 入力関係の処理を記述する
+        private void Cntroll()
+        {
+            // Optionシーンへ移動
+            if(Input.KeyPush(Keys.RightShift))
+                Engine.ChangeSceneWithTransition(
+                    new OptionScene(this),
+                    new TransitionFade(1, 1),
+                    false
+                );
 
-            #endregion
-
-            #region 入力受付部分
-
-            switch (SceneModel.CurrentMode)
+            switch (CurrentMode)
             {
-                case SelectSceneModel.Mode.Music:
+                case Mode.Music:
                     OnSelectingScore();
                     break;
-                case SelectSceneModel.Mode.Difficulty:
+                case Mode.Difficulty:
                     OnSelectingDifficulty();
-                    break;
-                case SelectSceneModel.Mode.Option:
-                    OnSettingConfig();
                     break;
             }
 
             void OnSelectingScore()
             {
+                // 楽曲の変更
                 if (Input.KeyPush(Keys.Up))
                 {
-                    SceneModel.MoveScore(-1);
+                    ScoreID = Math.Mod(ScoreID - 1, Scores.Count);
                     Phase_tune = 15;
                     PlayBGM();
                 }
 
                 if (Input.KeyPush(Keys.Down))
                 {
-                    SceneModel.MoveScore(1);
+                    ScoreID = Math.Mod(ScoreID + 1, Scores.Count);
                     Phase_tune = 15;
                     PlayBGM();
                 }
 
+                // 前のシーンに移行
+                if (Input.KeyPush(Keys.Backspace))
+                {
+                    Sound.Stop(SoundID);
+                    Engine.ChangeSceneWithTransition(
+                        new TitleScene(),
+                        new TransitionFade(1, 1)
+                    );
+                }
+
+                // モードの変更
                 if (Input.KeyPush(Keys.Enter))
                 {
-                    SceneModel.MoveMode(1);
-                    GameModel.Score = SceneModel.SelectedScore;
+                    ++CurrentMode;
+                    foreach (var d in Enum.GetValues<Difficulty>())
+                        if (Scores[ScoreID][(Difficulty)d] != null)
+                        {
+                            Difficulty = (Difficulty)d;
+                            break;
+                        }
                     Phase = 15;
                 }
             }
 
             void OnSelectingDifficulty()
             {
+                // 難易度の変更
                 if (Input.KeyPush(Keys.Right))
                 {
-                    SceneModel.MoveDifficulty(1);
+                    int d = (int)Difficulty;
+                    for (int i = d + 1; 0 <= i && i < 4; ++i)
+                    {
+                        if (Scores[ScoreID][(Difficulty)i] != null)
+                        {
+                            Difficulty = (Difficulty)i;
+                            break;
+                        }
+                    }
                 }
 
                 if (Input.KeyPush(Keys.Left))
                 {
-                    SceneModel.MoveDifficulty(-1);
+                    int d = (int)Difficulty;
+                    for (int i = d - 1; 0 <= i && i < 4; --i)
+                    {
+                        if (Scores[ScoreID][(Difficulty)i] != null)
+                        {
+                            Difficulty = (Difficulty)i;
+                            break;
+                        }
+                    }
                 }
 
+                // モードの変更
                 if (Input.KeyPush(Keys.Backspace))
                 {
-                    SceneModel.MoveMode(-1);
+                    --CurrentMode;
                     Phase = -15;
                 }
 
-                if (Input.KeyPush(Keys.Enter))
-                {
-                    SceneModel.MoveMode(1);
-                    GameModel.Difficulty = SceneModel.SelectedDifficulty;
-                    Phase = 15;
-                }
-            }
-
-            void OnSettingConfig()
-            {
-                if (Input.KeyPush(Keys.Backspace))
-                {
-                    SceneModel.MoveMode(-1);
-                    Phase = -15;
-                }
-
+                // シーンの変更
                 if (Input.KeyPush(Keys.Enter))
                 {
                     Sound.Stop(SoundID);
-                    Engine.ChangeScene(new GameScene());
+                    Engine.ChangeSceneWithTransition(
+                        new GameScene(),
+                        new TransitionFade(1, 1)
+                    );
                 }
             }
-
-            #endregion
         }
     }
 }

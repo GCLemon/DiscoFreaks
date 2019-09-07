@@ -1,16 +1,23 @@
 ﻿using asd;
-using DiscoFreaks.Core;
 
-namespace DiscoFreaks.View
+namespace DiscoFreaks
 {
     /// <summary>
     /// タイトルシーン
     /// </summary>
     public class TitleScene : Scene
     {
-        // モデル
-        protected readonly GameModel GameModel;
-        protected readonly TitleSceneModel SceneModel;
+        // タイトルシーンでのメニューの項目
+        private enum MenuItem
+        {
+            StartGame,
+            Tutorial,
+            Credits,
+            QuitGame
+        }
+
+        // 現在選択している項目
+        private MenuItem SelectingItem;
 
         // レイヤー
         private readonly Layer2D BackLayer = new Layer2D();
@@ -41,12 +48,6 @@ namespace DiscoFreaks.View
             }
         };
 
-        public TitleScene(GameModel game_model)
-        {
-            GameModel = game_model;
-            SceneModel = new TitleSceneModel();
-        }
-
         protected override void OnRegistered()
         {
             // 背景の設定
@@ -75,25 +76,32 @@ namespace DiscoFreaks.View
         protected override void OnUpdated()
         {
             // メニュー項目の色を設定する
-            foreach (var item in MenuItems)
-                item.Color = new Color(255, 255, 255, 63);
-            var id = (int)SceneModel.SelectingItem;
-            MenuItems[id].Color = new Color(255, 255, 255, 255);
+            for(int i = 0; i < 4; ++i)
+            {
+                var alpha = (SelectingItem == (MenuItem)i) ? 255 : 63;
+                MenuItems[i].Color = new Color(255, 255, 255, alpha);
+            }
 
             // ユーザー操作を受付
-            if (Input.KeyPush(Keys.Up)) SceneModel.PrevItem();
-            if (Input.KeyPush(Keys.Down)) SceneModel.NextItem();
+            if (Input.KeyPush(Keys.Up)) --SelectingItem;
+            if (Input.KeyPush(Keys.Down)) ++SelectingItem;
+            var id = Math.Mod((int)SelectingItem, 4);
+            SelectingItem = (MenuItem)id;
+
             if (Input.KeyPush(Keys.Enter))
-                switch (SceneModel.SelectingItem)
+                switch (SelectingItem)
                 {
-                    case TitleSceneModel.MenuItem.StartGame:
-                        Engine.ChangeScene(new SelectScene(GameModel));
+                    case MenuItem.StartGame:
+                        Engine.ChangeSceneWithTransition(
+                            new SelectScene(),
+                            new TransitionFade(1, 1)
+                        );
                         break;
-                    case TitleSceneModel.MenuItem.Tutorial:
+                    case MenuItem.Tutorial:
                         break;
-                    case TitleSceneModel.MenuItem.Credits:
+                    case MenuItem.Credits:
                         break;
-                    case TitleSceneModel.MenuItem.QuitGame:
+                    case MenuItem.QuitGame:
                         Engine.Close();
                         break;
                 }

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using asd;
 
-namespace DiscoFreaks.View
+namespace DiscoFreaks
 {
     /// <summary>
     /// 背景に使用するポストエフェクト

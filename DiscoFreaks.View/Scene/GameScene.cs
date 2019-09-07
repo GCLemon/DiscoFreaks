@@ -1,6 +1,6 @@
 ﻿using asd;
 
-namespace DiscoFreaks.View
+namespace DiscoFreaks
 {
     public class GameScene : Scene
     {

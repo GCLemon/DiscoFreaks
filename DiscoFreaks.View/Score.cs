@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace DiscoFreaks.Core
+namespace DiscoFreaks
 {
     /// <summary>
     /// 難易度

@@ -1,7 +1,6 @@
 ﻿using asd;
-using DiscoFreaks.Core;
 
-namespace DiscoFreaks.View
+namespace DiscoFreaks
 {
     class MainClass
     {
@@ -30,8 +29,10 @@ namespace DiscoFreaks.View
 #endif
 
             // シーンチェンジ
-            GameModel model = new GameModel();
-            Engine.ChangeScene(new TitleScene(model));
+            Engine.ChangeSceneWithTransition(
+                new TitleScene(),
+                new TransitionFade(0, 1)
+            );
 
             // エンジンの更新処理
             while (Engine.DoEvents())

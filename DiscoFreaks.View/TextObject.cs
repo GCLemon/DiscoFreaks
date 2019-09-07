@@ -1,6 +1,6 @@
 ﻿using asd;
 
-namespace DiscoFreaks.View
+namespace DiscoFreaks
 {
     /// <summary>
     /// このゲームで用いるテキストオブジェクト

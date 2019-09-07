@@ -47,19 +47,17 @@
     <Compile Include="Global.cs" />
     <Compile Include="TextObject.cs" />
     <Compile Include="BackGround.cs" />
-    <Compile Include="Scene\TitleScene.cs" />
     <Compile Include="Scene\SelectScene.cs" />
     <Compile Include="Scene\GameScene.cs" />
     <Compile Include="Scene\ResultScene.cs" />
+    <Compile Include="Scene\OptionScene.cs" />
+    <Compile Include="HitEffect.cs" />
+    <Compile Include="Score.cs" />
+    <Compile Include="Scene\TitleScene.cs" />
+    <Compile Include="Configuration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DiscoFreaks.Core\DiscoFreaks.Core.csproj">
-      <Project>{F8F3601E-BCF6-4DE7-9198-D5B89CBDCD1A}</Project>
-      <Name>DiscoFreaks.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scene\" />

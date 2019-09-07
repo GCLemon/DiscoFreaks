@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using asd;
 
-namespace DiscoFreaks.View
+namespace DiscoFreaks
 {
     /// <summary>
     /// キーの押下情報を取得する
@@ -120,5 +120,55 @@ namespace DiscoFreaks.View
         /// </summary>
         public static Effect CreateEffect(string path) =>
             Engine.Graphics.CreateEffect(path);
+    }
+
+    /// <summary>
+    /// 列挙型関係の操作
+    /// </summary>
+    public static class Enum
+    {
+        /// <summary>
+        /// 文字列から列挙型に変換する
+        /// </summary>
+        public static T Parse<T>(string value) =>
+            (T)System.Enum.Parse(typeof(T), value);
+
+        /// <summary>
+        /// 列挙型に含まれる値を全て列挙する
+        /// </summary>
+        public static System.Array GetValues<T>() =>
+            System.Enum.GetValues(typeof(T));
+    }
+
+    /// <summary>
+    /// 計算関係の操作
+    /// </summary>
+    public static class Math
+    {
+        /// <summary>
+        /// 最小非負剰余を求める
+        /// </summary>
+        public static int Mod(int x, int y)
+        {
+            return ((x % y) + y) % y;
+        }
+
+        /// <summary>
+        /// 累乗を求める
+        /// </summary>
+        public static double Pow(double x, double y)
+        {
+            return System.Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static double Clamp(double x, double min, double max)
+        {
+            if (x < min) return min;
+            if (x > max) return max;
+            return x;
+        }
     }
 }
