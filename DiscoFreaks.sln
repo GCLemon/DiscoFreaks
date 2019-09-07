@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoFreaks", "DiscoFreaks.View\DiscoFreaks.csproj", "{F6F76D37-1194-47FA-AF05-215655BF35AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoFreaks", "DiscoFreaks\DiscoFreaks.csproj", "{F6F76D37-1194-47FA-AF05-215655BF35AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

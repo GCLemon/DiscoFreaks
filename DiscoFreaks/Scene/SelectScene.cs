@@ -28,9 +28,6 @@ namespace DiscoFreaks
         // 現在選択している難易度
         private Difficulty Difficulty;
 
-        // Option シーンで設定する項目
-        public Configuration Configuration;
-
         // レイヤー
         private readonly Layer2D BackLayer = new Layer2D();
         private readonly Layer2D TextLayer = new Layer2D();
@@ -331,93 +328,93 @@ namespace DiscoFreaks
                     OnSelectingDifficulty();
                     break;
             }
+        }
 
-            void OnSelectingScore()
+        private void OnSelectingScore()
+        {
+            // 楽曲の変更
+            if (Input.KeyPush(Keys.Up))
             {
-                // 楽曲の変更
-                if (Input.KeyPush(Keys.Up))
-                {
-                    ScoreID = Math.Mod(ScoreID - 1, Scores.Count);
-                    Phase_tune = 15;
-                    PlayBGM();
-                }
+                ScoreID = Math.Mod(ScoreID - 1, Scores.Count);
+                Phase_tune = 15;
+                PlayBGM();
+            }
 
-                if (Input.KeyPush(Keys.Down))
-                {
-                    ScoreID = Math.Mod(ScoreID + 1, Scores.Count);
-                    Phase_tune = 15;
-                    PlayBGM();
-                }
+            if (Input.KeyPush(Keys.Down))
+            {
+                ScoreID = Math.Mod(ScoreID + 1, Scores.Count);
+                Phase_tune = 15;
+                PlayBGM();
+            }
 
-                // 前のシーンに移行
-                if (Input.KeyPush(Keys.Backspace))
-                {
-                    Sound.Stop(SoundID);
-                    Engine.ChangeSceneWithTransition(
-                        new TitleScene(),
-                        new TransitionFade(1, 1)
-                    );
-                }
+            // 前のシーンに移行
+            if (Input.KeyPush(Keys.Backspace))
+            {
+                Sound.Stop(SoundID);
+                Engine.ChangeSceneWithTransition(
+                    new TitleScene(),
+                    new TransitionFade(1, 1)
+                );
+            }
 
-                // モードの変更
-                if (Input.KeyPush(Keys.Enter))
+            // モードの変更
+            if (Input.KeyPush(Keys.Enter))
+            {
+                ++CurrentMode;
+                foreach (var d in Enum.GetValues<Difficulty>())
+                    if (Scores[ScoreID][(Difficulty)d] != null)
+                    {
+                        Difficulty = (Difficulty)d;
+                        break;
+                    }
+                Phase = 15;
+            }
+        }
+
+        private void OnSelectingDifficulty()
+        {
+            // 難易度の変更
+            if (Input.KeyPush(Keys.Right))
+            {
+                int d = (int)Difficulty;
+                for (int i = d + 1; 0 <= i && i < 4; ++i)
                 {
-                    ++CurrentMode;
-                    foreach (var d in Enum.GetValues<Difficulty>())
-                        if (Scores[ScoreID][(Difficulty)d] != null)
-                        {
-                            Difficulty = (Difficulty)d;
-                            break;
-                        }
-                    Phase = 15;
+                    if (Scores[ScoreID][(Difficulty)i] != null)
+                    {
+                        Difficulty = (Difficulty)i;
+                        break;
+                    }
                 }
             }
 
-            void OnSelectingDifficulty()
+            if (Input.KeyPush(Keys.Left))
             {
-                // 難易度の変更
-                if (Input.KeyPush(Keys.Right))
+                int d = (int)Difficulty;
+                for (int i = d - 1; 0 <= i && i < 4; --i)
                 {
-                    int d = (int)Difficulty;
-                    for (int i = d + 1; 0 <= i && i < 4; ++i)
+                    if (Scores[ScoreID][(Difficulty)i] != null)
                     {
-                        if (Scores[ScoreID][(Difficulty)i] != null)
-                        {
-                            Difficulty = (Difficulty)i;
-                            break;
-                        }
+                        Difficulty = (Difficulty)i;
+                        break;
                     }
                 }
+            }
 
-                if (Input.KeyPush(Keys.Left))
-                {
-                    int d = (int)Difficulty;
-                    for (int i = d - 1; 0 <= i && i < 4; --i)
-                    {
-                        if (Scores[ScoreID][(Difficulty)i] != null)
-                        {
-                            Difficulty = (Difficulty)i;
-                            break;
-                        }
-                    }
-                }
+            // モードの変更
+            if (Input.KeyPush(Keys.Backspace))
+            {
+                --CurrentMode;
+                Phase = -15;
+            }
 
-                // モードの変更
-                if (Input.KeyPush(Keys.Backspace))
-                {
-                    --CurrentMode;
-                    Phase = -15;
-                }
-
-                // シーンの変更
-                if (Input.KeyPush(Keys.Enter))
-                {
-                    Sound.Stop(SoundID);
-                    Engine.ChangeSceneWithTransition(
-                        new GameScene(),
-                        new TransitionFade(1, 1)
-                    );
-                }
+            // シーンの変更
+            if (Input.KeyPush(Keys.Enter))
+            {
+                Sound.Stop(SoundID);
+                Engine.ChangeSceneWithTransition(
+                    new GameScene(),
+                    new TransitionFade(1, 1)
+                );
             }
         }
     }
