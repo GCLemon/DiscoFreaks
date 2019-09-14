@@ -170,5 +170,18 @@ namespace DiscoFreaks
             if (x > max) return max;
             return x;
         }
+
+        /// <summary>
+        /// 絶対値を求める
+        /// </summary>
+        public static decimal Abs(decimal x)
+        {
+            return System.Math.Abs(x);
+        }
+
+        public static int Sign(decimal x)
+        {
+            return System.Math.Sign(x);
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace DiscoFreaks
     public class BackGround : PostEffect
     {
         private readonly Stopwatch Stopwatch;
-        private readonly Material2D Material;
+        protected readonly Material2D Material;
 
         public BackGround(string path)
         {
@@ -30,5 +30,18 @@ namespace DiscoFreaks
             // マテリアルを用いて描画
             DrawOnTexture2DWithMaterial(dst, Material);
         }
+    }
+
+    /// <summary>
+    /// 実際にゲームを行うシーンで使用するポストエフェクト
+    /// </summary>
+    public class GameBackGround : BackGround
+    {
+        /// <summary>
+        /// 背景の明るさを設定する
+        /// </summary>
+        public float Luminance { set => Material.SetFloat("luminance", value); }
+
+        public GameBackGround(string path) : base(path) { }
     }
 }
