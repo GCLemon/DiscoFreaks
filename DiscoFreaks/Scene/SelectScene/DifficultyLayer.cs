@@ -1,4 +1,5 @@
-﻿using asd;
+﻿using System.Collections.Generic;
+using asd;
 
 namespace DiscoFreaks
 {
@@ -10,20 +11,10 @@ namespace DiscoFreaks
         // コンポーネント
         public readonly UIComponent UIComponent;
 
+        // テキストオブジェクト
         private readonly Makinas SelectDifficultyAnnounce;
         private readonly Makinas DifficultyDescription;
-
-        private readonly ScoreDozer Casual_value;
-        private readonly ScoreDozer Stylish_value;
-        private readonly ScoreDozer Freeky_value;
-        private readonly ScoreDozer Psychic_value;
-
-        private readonly ScoreDozer Casual_label;
-        private readonly ScoreDozer Stylish_label;
-        private readonly ScoreDozer Freeky_label;
-        private readonly ScoreDozer Psychic_label;
-
-        public Difficulty SelectedDifficulty { get; private set; }
+        private readonly Dictionary<Difficulty, (ScoreDozer label, ScoreDozer value)> Level;
 
         public DifficultyLayer()
         {
@@ -37,17 +28,23 @@ namespace DiscoFreaks
 
             DifficultyDescription = new Makinas(36, 4, new Vector2DF(0.5f, 0.5f)) { Position = new Vector2DF(1440, 600) };
 
-            Vector2DF center = new Vector2DF(0.5f, 1.0f);
-            Casual_value = new ScoreDozer(120, new Color(166, 226, 46), 4, new Color(), center) { Position = new Vector2DF(1080, 400) };
-            Stylish_value = new ScoreDozer(120, new Color(253, 151, 31), 4, new Color(), center) { Position = new Vector2DF(1320, 400) };
-            Freeky_value = new ScoreDozer(120, new Color(249, 38, 114), 4, new Color(), center) { Position = new Vector2DF(1560, 400) };
-            Psychic_value = new ScoreDozer(120, new Color(174, 129, 255), 4, new Color(), center) { Position = new Vector2DF(1800, 400) };
-
-            center = new Vector2DF(0.5f, 0.0f);
-            Casual_label = new ScoreDozer(36, new Color(166, 226, 46), 4, new Color(), center) { Text = "CASUAL" };
-            Stylish_label = new ScoreDozer(36, new Color(253, 151, 31), 4, new Color(), center) { Text = "STYLISH" };
-            Freeky_label = new ScoreDozer(36, new Color(249, 38, 114), 4, new Color(), center){ Text = "FREEKY" };
-            Psychic_label = new ScoreDozer(36, new Color(174, 129, 255), 4, new Color(), center) { Text = "PSYCHIC" };
+            Level = new Dictionary<Difficulty, (ScoreDozer label, ScoreDozer value)>();
+            Color[] color =
+            {
+                new Color(166, 226, 46),
+                new Color(253, 151, 31),
+                new Color(249, 38, 114),
+                new Color(174, 129, 255)
+            };
+            for (int i = 0; i < 4; ++i)
+            {
+                var v = new ScoreDozer(120, color[i], 4, new Color(), new Vector2DF(0.5f, 1.0f))
+                {
+                    Position = new Vector2DF(1080 + 240 * i, 400)
+                };
+                var l = new ScoreDozer(36, color[i], 4, new Color(), new Vector2DF(0.5f, 0.0f));
+                Level.Add((Difficulty)i, (l, v));
+            }
         }
 
         protected override void OnAdded()
@@ -57,108 +54,95 @@ namespace DiscoFreaks
 
             // レイヤーに諸々のオブジェクトを追加
             var m = ChildManagementMode.RegistrationToLayer;
-            var t = ChildTransformingMode.Position;
+            var t = ChildTransformingMode.All;
             var d = ChildDrawingMode.Color;
             AddObject(SelectDifficultyAnnounce);
             AddObject(DifficultyDescription);
-            Casual_value.AddDrawnChild(Casual_label, m, t, d);
-            Stylish_value.AddDrawnChild(Stylish_label, m, t, d);
-            Freeky_value.AddDrawnChild(Freeky_label, m, t, d);
-            Psychic_value.AddDrawnChild(Psychic_label, m, t, d);
-            AddObject(Casual_value);
-            AddObject(Stylish_value);
-            AddObject(Freeky_value);
-            AddObject(Psychic_value);
+
+            foreach (var difficulty in Enum.GetValues<Difficulty>())
+            {
+                var diff = (Difficulty)difficulty;
+                var value = Level[diff].value;
+                var label = Level[diff].label;
+                value.AddDrawnChild(label, m, t, d);
+                AddObject(value);
+            }
         }
 
         protected override void OnUpdated()
         {
             // View
             //--------------------------------------------------
-
             // 難易度の表示を変更する
-            Casual_value.Text =
-                Scene.Score[Difficulty.Casual] != null ? string.Format("{0,2}", Scene.Score[Difficulty.Casual].Level) : "";
-            Stylish_value.Text =
-                Scene.Score[Difficulty.Stylish] != null ? string.Format("{0,2}", Scene.Score[Difficulty.Stylish].Level) : "";
-            Freeky_value.Text =
-                Scene.Score[Difficulty.Freeky] != null ? string.Format("{0,2}", Scene.Score[Difficulty.Freeky].Level) : "";
-            Psychic_value.Text =
-                Scene.Score[Difficulty.Psychic] != null ? string.Format("{0,2}", Scene.Score[Difficulty.Psychic].Level) : "";
-            Casual_label.Text =
-                Scene.Score[Difficulty.Casual] != null ? "CASUAL" : "";
-            Stylish_label.Text =
-                Scene.Score[Difficulty.Stylish] != null ? "STYLISH" : "";
-            Freeky_label.Text =
-                Scene.Score[Difficulty.Freeky] != null ? "FREEKY" : "";
-            Psychic_label.Text =
-                Scene.Score[Difficulty.Psychic] != null ? "PSYCHIC" : "";
+            foreach (var difficulty in Enum.GetValues<Difficulty>())
+            {
+                var diff = (Difficulty)difficulty;
+                var value = Level[diff].value;
+                var label = Level[diff].label;
 
-            Casual_value.Color = new Color(255, 255, 255, 63);
-            Stylish_value.Color = new Color(255, 255, 255, 63);
-            Freeky_value.Color = new Color(255, 255, 255, 63);
-            Psychic_value.Color = new Color(255, 255, 255, 63);
-            switch (SelectedDifficulty)
+                // テキストの変更
+                value.Text =
+                    Scene.Score[diff] != null ?
+                    string.Format("{0,2}", Scene.Score[diff].Level) :
+                    "";
+                label.Text = Scene.Score[diff] != null ? diff.ToString() : "";
+
+                // 色の変更
+                value.Color =
+                    Scene.Difficulty == diff ?
+                    new Color(255, 255, 255) :
+                    new Color(255, 255, 255, 63);
+            }
+
+            switch (Scene.Difficulty)
             {
                 case Difficulty.Casual:
-                    Casual_value.Color = new Color(255, 255, 255);
                     DifficultyDescription.Text =
                         "音ゲー初心者向けの難易度です。\n珈琲を片手にごゆっくりどうぞ。";
                     break;
                 case Difficulty.Stylish:
-                    Stylish_value.Color = new Color(255, 255, 255);
                     DifficultyDescription.Text =
                         "音ゲーにある程度慣れた人向けの難易度です。\n一人で盛り上がりたいときにおすすめ。";
                     break;
                 case Difficulty.Freeky:
-                    Freeky_value.Color = new Color(255, 255, 255);
                     DifficultyDescription.Text =
                         "音ゲーを極めた人向けの難易度です。\nお子様の手の届かないところで遊びましょう。";
                     break;
                 case Difficulty.Psychic:
-                    Psychic_value.Color = new Color(255, 255, 255);
                     DifficultyDescription.Text =
                         "廃人向けの難易度です。\n遊ぶな危険。";
                     break;
             }
-
             //--------------------------------------------------
 
 
 
             // Controll
             //--------------------------------------------------
-
-
             if (Scene.CurrentMode == SelectScene.Mode.Difficulty)
             {
                 // 難易度の変更
                 if (Input.KeyPush(Keys.Right))
                 {
-                    int d = (int)SelectedDifficulty;
+                    int d = (int)Scene.Difficulty;
                     for (int i = d + 1; 0 <= i && i < 4; ++i)
-                    {
                         if (Scene.Score[(Difficulty)i] != null)
                         {
-                            SelectedDifficulty = (Difficulty)i;
+                            Scene.Difficulty = (Difficulty)i;
                             break;
                         }
-                    }
                 }
 
                 if (Input.KeyPush(Keys.Left))
                 {
-                    int d = (int)SelectedDifficulty;
+                    int d = (int)Scene.Difficulty;
                     for (int i = d - 1; 0 <= i && i < 4; --i)
-                    {
                         if (Scene.Score[(Difficulty)i] != null)
                         {
-                            SelectedDifficulty = (Difficulty)i;
+                            Scene.Difficulty = (Difficulty)i;
                             break;
                         }
-                    }
                 }
-
                 //--------------------------------------------------
             }
         }

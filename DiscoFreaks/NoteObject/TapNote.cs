@@ -7,49 +7,25 @@ namespace DiscoFreaks
     /// </summary>
     public class TapNote : Note
     {
-        public TapNote(NoteInfo info) : base(info)
+        public TapNote(NoteInfo NoteInfo) : base(NoteInfo)
         {
-            TextureObject2D center = new TextureObject2D();
-            TextureObject2D right = new TextureObject2D();
-
-            var texture = Graphics.CreateTexture("Image/TapNote.png");
-            var size = info.RightLane - info.LeftLane;
-
-            // Left
-            //--------------------------------------------------
-            Texture = texture;
-            Src = new RectF(0, 0, 12, 16);
-            CenterPosition = new Vector2DF(0, 8);
-            //--------------------------------------------------
-
-            // Center
-            //--------------------------------------------------
-            center.Texture = texture;
-            center.Src = new RectF(12, 0, 16, 16);
-            center.Scale = new Vector2DF((size * 30 + 6) / 16.0f, 1);
-            center.CenterPosition = new Vector2DF(0, 8);
-            center.Position = new Vector2DF(12, 0);
-            //--------------------------------------------------
-
-            // Right
-            //--------------------------------------------------
-            right.Texture = texture;
-            right.Src = new RectF(28, 0, 12, 16);
-            right.CenterPosition = new Vector2DF(12, 8);
-            right.Position = new Vector2DF(size * 30 + 30, 0);
-            //--------------------------------------------------
-
-            var m = ChildManagementMode.RegistrationToLayer;
-            var t = ChildTransformingMode.Position;
-            AddChild(center, m, t);
-            AddChild(right, m, t);
+            AddComponent(
+                new TapNoteComponent
+                {
+                    TexturePath = "Image/TapNote.png",
+                    RightLane = NoteInfo.RightLane,
+                    LeftLane = NoteInfo.LeftLane
+                },
+                "TapNote"
+            );
+            AddComponent(new EffectEmitComponent(), "Effect");
         }
 
         protected override void OnUpdate()
         {
             base.OnUpdate();
 
-            foreach(var key in CorrespondingKeys)
+            foreach(var key in JudgeKeys)
                 if(Input.KeyPush(key))
                 {
                     switch (Judge())
@@ -73,11 +49,6 @@ namespace DiscoFreaks
                             break;
                     }
                 }
-        }
-
-        protected override void OnDispose()
-        {
-            foreach (var c in Children) c.Dispose();
         }
     }
 }

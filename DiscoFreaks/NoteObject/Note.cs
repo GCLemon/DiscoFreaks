@@ -1,4 +1,5 @@
-﻿using asd;
+﻿using System.Collections.Generic;
+using asd;
 
 namespace DiscoFreaks
 {
@@ -26,15 +27,12 @@ namespace DiscoFreaks
         Miss
     }
 
-    /// <summary>
-    /// ノーツに関する基本情報
-    /// </summary>
-    public struct NoteInfo
+    public class NoteInfo
     {
-        public long AudioTiming;
-        public long VisualTiming;
         public int LeftLane;
         public int RightLane;
+        public long VisualTiming;
+        public long AudioTiming;
     }
 
     /// <summary>
@@ -43,48 +41,84 @@ namespace DiscoFreaks
     public abstract class Note : TextureObject2D
     {
         /// <summary>
-        /// レーン番号に対応するキー
+        /// ソフランに関する情報を格納
         /// </summary>
-        protected readonly Keys[] CorrespondingKeys =
+        public class SofLan : EmptyObject2D
         {
-            Keys.Q, Keys.A, Keys.W, Keys.S, Keys.E,
-            Keys.D, Keys.R, Keys.F, Keys.T, Keys.G,
-            Keys.Y, Keys.H, Keys.U, Keys.J, Keys.I,
-            Keys.K, Keys.O, Keys.L, Keys.P,
-            Keys.Semicolon, Keys.LeftBracket,
-            Keys.Apostrophe, Keys.Backslash
-        };
+            long Timing;
+            double AfterSpeed;
 
-        /// <summary>
-        /// ノーツに関する基本情報
-        /// </summary>
-        protected NoteInfo NoteInfo { get; }
+            public SofLan(long Timing, double AfterSpeed)
+            {
+                this.Timing = Timing;
+                this.AfterSpeed = AfterSpeed;
+            }
 
-        /// <summary>
-        /// ノーツの位置を計算するためのタイマー
-        /// </summary>
-        public static readonly NoteTimer NoteTimer = new NoteTimer();
+            protected override void OnUpdate()
+            {
+                if (NoteTimer.AudioTime >= Timing)
+                    NoteTimer.SetSpeed(AfterSpeed);
+            }
+        }
 
-        /// <summary>
-        /// ノーツが流れる速度
-        /// </summary>
+        // ノーツが流れる速度
         public static double HighSpeed;
 
-        public Note(NoteInfo info)
+        // 判定調整
+        public static long Ofset;
+
+        // ノーツの位置を計算するためのタイマー
+        public static readonly NoteTimer NoteTimer = new NoteTimer();
+
+        // 基本情報
+        public readonly NoteInfo NoteInfo;
+
+        // レーン番号に対応するキー
+        protected readonly List<Keys> JudgeKeys;
+
+        // 登録されているシーン
+        public GameScene Scene { get => (GameScene)Layer.Scene; }
+
+        public Note(NoteInfo NoteInfo)
         {
             // 基本情報の設定
-            NoteInfo = info;
+            this.NoteInfo = NoteInfo;
+
+            // キーの設定
+            JudgeKeys = new List<Keys>();
+            for (int i = NoteInfo.LeftLane - 1; i <= NoteInfo.RightLane + 1; ++i)
+            {
+                Keys[] keys =
+                {
+                    Keys.Q, Keys.A, Keys.W, Keys.S, Keys.E,
+                    Keys.D, Keys.R, Keys.F, Keys.T, Keys.G,
+                    Keys.Y, Keys.H, Keys.U, Keys.J, Keys.I,
+                    Keys.K, Keys.O, Keys.L, Keys.P,
+                    Keys.Semicolon, Keys.LeftBracket,
+                    Keys.Apostrophe, Keys.RightBracket,
+                    Keys.Backslash
+                };
+
+                if (0 <= i && i < 24) JudgeKeys.Add(keys[i]);
+            }
+
+            System.Console.WriteLine(NoteInfo.VisualTiming);
         }
+
 
         protected override void OnUpdate()
         {
             var error = NoteTimer.VisualTime - NoteInfo.VisualTiming;
-            System.Console.WriteLine(NoteInfo.VisualTiming);
 
             // 描画位置の設定
             var pos_x = 120 + 30 * NoteInfo.LeftLane;
-            var pos_y = 600 + error * 0.075f;
-            Position = new Vector2DF(pos_x, pos_y);
+            var pos_y = 600 + error * 0.075f * HighSpeed;
+            Position = new Vector2DF(pos_x, (float)pos_y);
+        }
+
+        protected override void OnDispose()
+        {
+            foreach (var c in Children) c.Dispose();
         }
 
         /// <summary>
@@ -92,10 +126,10 @@ namespace DiscoFreaks
         /// </summary>
         protected bool IsOverlapped(Note note)
         {
-            NoteInfo note1 = NoteInfo;
-            NoteInfo note2 = note.NoteInfo;
-            return note2.LeftLane <= note1.RightLane &&
-                   note1.LeftLane <= note2.RightLane;
+            var state1 = note.Position.Y > Position.Y;
+            var state2 = NoteInfo.LeftLane - 1 < note.NoteInfo.RightLane + 1;
+            var state3 = note.NoteInfo.LeftLane - 1 < NoteInfo.RightLane + 1;
+            return state1 && state2 && state3;
         }
 
         /// <summary>

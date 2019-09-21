@@ -50,7 +50,6 @@ namespace DiscoFreaks
 
             // View
             //--------------------------------------------------
-
             BGMVolume.Text = string.Format("BGM Volume : {0}", config.BGMVolume);
             SEVolume.Text = string.Format("SE Volume : {0}", config.SEVolume);
 
@@ -68,7 +67,6 @@ namespace DiscoFreaks
                     Scene.ItemDescription.Text = "効果音の音量を設定することができます。";
                     break;
             }
-
             //--------------------------------------------------
 
 
@@ -80,10 +78,10 @@ namespace DiscoFreaks
                 if (!Scene.SettingSwitch)
                 {
                     if (Input.KeyPush(Keys.Up))
-                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 8, 2) + 7);
+                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 6, 2) + 5);
 
                     if (Input.KeyPush(Keys.Down))
-                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 6, 2) + 7);
+                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 4, 2) + 5);
                 }
 
                 else if (Scene.SettingItem == OptionScene.MenuItem.BGMVolume)

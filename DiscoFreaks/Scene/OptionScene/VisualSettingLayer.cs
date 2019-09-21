@@ -18,8 +18,6 @@ namespace DiscoFreaks
         private readonly GridGazer EffectType;
         private readonly GridGazer EffectSize;
         private readonly GridGazer Luminance;
-        private readonly GridGazer ShowLaneBorder;
-        private readonly GridGazer ShowBeatBorder;
 
         public VisualSettingLayer()
         {
@@ -35,8 +33,6 @@ namespace DiscoFreaks
             EffectType = new GridGazer(36, 4, center) { Position = new Vector2DF(1440, 250) };
             EffectSize = new GridGazer(36, 4, center) { Position = new Vector2DF(1440, 300) };
             Luminance = new GridGazer(36, 4, center) { Position = new Vector2DF(1440, 350) };
-            ShowLaneBorder = new GridGazer(36, 4, center) { Position = new Vector2DF(1440, 400) };
-            ShowBeatBorder = new GridGazer(36, 4, center) { Position = new Vector2DF(1440, 450) };
         }
 
         protected override void OnAdded()
@@ -49,8 +45,6 @@ namespace DiscoFreaks
             AddObject(EffectType);
             AddObject(EffectSize);
             AddObject(Luminance);
-            AddObject(ShowLaneBorder);
-            AddObject(ShowBeatBorder);
         }
 
         protected override void OnUpdated()
@@ -82,14 +76,10 @@ namespace DiscoFreaks
             }
             EffectSize.Text = string.Format("Effect Size : {0}", config.EffectSize);
             Luminance.Text = string.Format("Background Luminance : {0}", config.Luminance);
-            ShowLaneBorder.Text = "Lane Border : " + (config.ShowLaneBorder ? "ON" : "OFF");
-            ShowBeatBorder.Text = "Beat Border : " + (config.ShowBeatBorder ? "ON" : "OFF");
 
-                EffectType.Color =
-                EffectSize.Color =
-                 Luminance.Color =
-            ShowLaneBorder.Color =
-            ShowBeatBorder.Color = new Color(255, 255, 255, 63);
+            EffectType.Color =
+            EffectSize.Color =
+             Luminance.Color = new Color(255, 255, 255, 63);
 
             switch(Scene.SettingItem)
             {
@@ -105,14 +95,6 @@ namespace DiscoFreaks
                     Luminance.Color = new Color(255, 255, Scene.SettingSwitch ? 0 : 255, 255);
                     Scene.ItemDescription.Text = "背景の明るさを設定することができます。";
                     break;
-                case OptionScene.MenuItem.LaneBorder:
-                    ShowLaneBorder.Color = new Color(255, 255, Scene.SettingSwitch ? 0 : 255, 255);
-                    Scene.ItemDescription.Text = "レーンの境目を表示するかを設定\nすることができます。";
-                    break;
-                case OptionScene.MenuItem.BeatBorder:
-                    ShowBeatBorder.Color = new Color(255, 255, Scene.SettingSwitch ? 0 : 255, 255);
-                    Scene.ItemDescription.Text = "小節線を表示するかを設定することができます。";
-                    break;
             }
             //--------------------------------------------------
 
@@ -125,10 +107,10 @@ namespace DiscoFreaks
                 if (!Scene.SettingSwitch)
                 {
                     if (Input.KeyPush(Keys.Up))
-                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 3, 5) + 2);
+                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 3, 3) + 2);
 
                     if (Input.KeyPush(Keys.Down))
-                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 1, 5) + 2);
+                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 1, 3) + 2);
                 }
 
                 else if (Scene.SettingItem == OptionScene.MenuItem.EffectType)
@@ -160,18 +142,6 @@ namespace DiscoFreaks
 
                     config.Luminance =
                         (int)Math.Clamp(config.Luminance, 0, 100);
-                }
-
-                else if (Scene.SettingItem == OptionScene.MenuItem.LaneBorder)
-                {
-                    if (Input.KeyPush(Keys.Right) || Input.KeyPush(Keys.Left))
-                        config.ShowLaneBorder = !config.ShowLaneBorder;
-                }
-
-                else if (Scene.SettingItem == OptionScene.MenuItem.BeatBorder)
-                {
-                    if (Input.KeyPush(Keys.Right) || Input.KeyPush(Keys.Left))
-                        config.ShowBeatBorder = !config.ShowBeatBorder;
                 }
             }
             //--------------------------------------------------

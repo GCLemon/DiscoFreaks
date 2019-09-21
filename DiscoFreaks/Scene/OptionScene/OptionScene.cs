@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using asd;
+﻿using asd;
 
 namespace DiscoFreaks
 {
@@ -21,8 +20,6 @@ namespace DiscoFreaks
             EffectType,
             EffectSize,
             Luminance,
-            LaneBorder,
-            BeatBorder,
             BGMVolume,
             SEVolume
         }
@@ -36,32 +33,21 @@ namespace DiscoFreaks
         private readonly SelectScene UsedScene;
 
         // レイヤー
-        private readonly Layer2D BackLayer = new Layer2D();
-        private readonly Layer2D TextLayer = new Layer2D();
-        private readonly PlaySettingLayer PSetLayer = new PlaySettingLayer();
-        private readonly VisualSettingLayer VSetLayer = new VisualSettingLayer();
-        private readonly AudioSettingLayer ASetLayer = new AudioSettingLayer();
+        private readonly Layer2D BackLayer;
+        private readonly Layer2D TextLayer;
+        private readonly PlaySettingLayer PSetLayer;
+        private readonly VisualSettingLayer VSetLayer;
+        private readonly AudioSettingLayer ASetLayer;
 
         // シーンのタイトル
-        private readonly HeadUpDaisy SceneTitle =
-            new HeadUpDaisy(72, 4, new Vector2DF(0.5f, 0))
-            {
-                Text = "Play Option",
-                Position = new Vector2DF(480, 10)
-            };
+        private readonly HeadUpDaisy SceneTitle;
 
         // メニュー項目の説明
-        public readonly Makinas ItemDescription =
-            new Makinas(32, 4, new Vector2DF(0.5f, 0))
-            { Position = new Vector2DF(480, 550) };
+        public readonly Makinas ItemDescription;
 
         // 左右にあるメニュー項目
-        private readonly HeadUpDaisy LeftMode =
-            new HeadUpDaisy(24, 4, new Vector2DF(0.5f, 0))
-            { Position = new Vector2DF(100, 40) };
-        private readonly HeadUpDaisy RightMode =
-            new HeadUpDaisy(24, 4, new Vector2DF(0.5f, 0))
-            { Position = new Vector2DF(860, 40) };
+        private readonly HeadUpDaisy LeftMode;
+        private readonly HeadUpDaisy RightMode;
 
 
         public OptionScene(SelectScene used_scene)
@@ -69,7 +55,23 @@ namespace DiscoFreaks
             // シーンの情報を保存
             UsedScene = used_scene;
 
-            if(System.IO.File.Exists("PlaySetting.config"))
+            BackLayer = new Layer2D();
+            TextLayer = new Layer2D();
+            PSetLayer = new PlaySettingLayer();
+            VSetLayer = new VisualSettingLayer();
+            ASetLayer = new AudioSettingLayer();
+
+            var center = new Vector2DF(0.5f, 0.0f);
+            SceneTitle =  new HeadUpDaisy(72, 4, center)
+            {
+                Text = "Play Option",
+                Position = new Vector2DF(480, 10)
+            };
+            ItemDescription = new Makinas(32, 4, center) { Position = new Vector2DF(480, 550) };
+            LeftMode = new HeadUpDaisy(24, 4, center) { Position = new Vector2DF(100, 40) };
+            RightMode = new HeadUpDaisy(24, 4, center) { Position = new Vector2DF(860, 40) };
+
+            if (System.IO.File.Exists("PlaySetting.config"))
             {
                 Configuration = Configuration.Load();
             }

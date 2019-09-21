@@ -3,20 +3,20 @@
 namespace DiscoFreaks
 {
     /// <summary>
-    /// スライドノート
+    /// ホールドノートの末端
     /// </summary>
-    public class SlideNote : Note
+    public class EndNote : Note
     {
-        public SlideNote(NoteInfo NoteInfo)　: base(NoteInfo)
+        public EndNote(NoteInfo NoteInfo) : base(NoteInfo)
         {
             AddComponent(
-                new SlideNoteComponent
+                new TapNoteComponent
                 {
-                    TexturePath = "Image/SlideNote.png",
+                    TexturePath = "Image/HoldNote.png",
                     RightLane = NoteInfo.RightLane,
                     LeftLane = NoteInfo.LeftLane
                 },
-                "SlideNote"
+                "TapNote"
             );
             AddComponent(new EffectEmitComponent(), "Effect");
         }
@@ -24,6 +24,11 @@ namespace DiscoFreaks
         protected override void OnUpdate()
         {
             base.OnUpdate();
+
+            if (Judge() == Judgement.Just)
+            {
+                Dispose();
+            }
         }
     }
 }

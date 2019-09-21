@@ -28,8 +28,6 @@ namespace DiscoFreaks
         public EffectType EffectType;
         public int EffectSize;
         public int Luminance;
-        public bool ShowLaneBorder;
-        public bool ShowBeatBorder;
         //--------------------------------------------------
 
         // Audio Configuration
@@ -56,8 +54,6 @@ namespace DiscoFreaks
                 EffectType = 0,
                 EffectSize = 100,
                 Luminance = 100,
-                ShowLaneBorder = true,
-                ShowBeatBorder = true,
                 //--------------------------------------------------
 
                 // Audio Configuration
@@ -93,8 +89,6 @@ namespace DiscoFreaks
                     EffectType = (EffectType)reader.ReadInt32(),
                     EffectSize = reader.ReadInt32(),
                     Luminance = reader.ReadInt32(),
-                    ShowLaneBorder = reader.ReadBoolean(),
-                    ShowBeatBorder = reader.ReadBoolean(),
                     //--------------------------------------------------
 
                     // Audio Configuration
@@ -139,8 +133,6 @@ namespace DiscoFreaks
                 writer.Write((int)config.EffectType);
                 writer.Write(config.EffectSize);
                 writer.Write(config.Luminance);
-                writer.Write(config.ShowLaneBorder);
-                writer.Write(config.ShowBeatBorder);
                 //--------------------------------------------------
 
                 // Audio Configuration

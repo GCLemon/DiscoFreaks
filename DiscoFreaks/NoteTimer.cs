@@ -10,21 +10,22 @@ namespace DiscoFreaks
         private double LapsingSpeed = 1;
         private long Intercept;
 
-        /// <summary>
-        /// 経過時間を取得[ms]
-        /// </summary>
+        private new long ElapsedMilliseconds
+        {
+            get => base.ElapsedMilliseconds + Note.Ofset - Ofset;
+        }
+
+        public long Ofset;
+
+        // 経過時間を取得[ms]
         public long AudioTime =>
             ElapsedMilliseconds;
 
-        /// <summary>
-        /// 経過速度を考慮した経過時間[ms]
-        /// </summary>
+        // 経過速度を考慮した経過時間[ms]
         public long VisualTime =>
             (long)(ElapsedMilliseconds * LapsingSpeed) + Intercept;
 
-        /// <summary>
-        /// 経過速度を変更する
-        /// </summary>
+        // 経過速度を変更する
         public void SetSpeed(double speed)
         {
             Intercept += (long)((LapsingSpeed - speed) * ElapsedMilliseconds);

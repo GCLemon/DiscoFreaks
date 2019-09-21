@@ -24,27 +24,33 @@ namespace DiscoFreaks
         }
 
         // 現在選択している難易度
-        public Difficulty Difficulty
-        {
-            get => DiffLayer.SelectedDifficulty;
-        }
+        public Difficulty Difficulty;
 
         // レイヤー
-        private readonly Layer2D BackLayer = new Layer2D();
-        private readonly Layer2D TextLayer = new Layer2D();
-        private readonly MusicLayer TuneLayer = new MusicLayer();
-        private readonly DifficultyLayer DiffLayer = new DifficultyLayer();
+        private readonly Layer2D BackLayer;
+        private readonly Layer2D TextLayer;
+        private readonly MusicLayer TuneLayer;
+        private readonly DifficultyLayer DiffLayer;
 
         // シーンのタイトル
-        private readonly HeadUpDaisy SceneTitle =
-            new HeadUpDaisy(72, 4, new Vector2DF(0.5f, 0))
+        private readonly HeadUpDaisy SceneTitle;
+
+        private bool IsUsed;
+        private int SoundID;
+
+        public SelectScene()
+        {
+            BackLayer = new Layer2D();
+            TextLayer = new Layer2D();
+            TuneLayer = new MusicLayer();
+            DiffLayer = new DifficultyLayer();
+
+            SceneTitle = new HeadUpDaisy(72, 4, new Vector2DF(0.5f, 0))
             {
                 Text = "Music Select",
                 Position = new Vector2DF(480, 10)
             };
-
-        private bool IsUsed;
-        private int SoundID;
+        }
 
         protected override void OnRegistered()
         {
@@ -106,12 +112,7 @@ namespace DiscoFreaks
                     case Mode.Difficulty:
                         StopBGM();
                         Engine.ChangeSceneWithTransition(
-                            new GameScene(new GameInfo
-                            {
-                                Score = Score,
-                                Difficulty = Difficulty,
-                                Configuration = Configuration.Load()
-                            }),
+                            new GameScene(Score, Difficulty, Configuration.Load()),
                             new TransitionFade(1, 1)
                         );
                         break;

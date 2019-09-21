@@ -12,15 +12,13 @@ namespace DiscoFreaks
         }
 
         // コンポーネント
-        public UIComponent UIComponent { get; private set; }
+        public readonly UIComponent UIComponent;
 
         // ジャケット画像
         private readonly TextureObject2D Jacket;
 
-        // 曲名
+        // 曲名・サブタイトル
         private readonly Makinas MusicTitle;
-
-        // サブタイトル
         private readonly Makinas Subtitle;
 
         // 難易度・レベル
@@ -44,12 +42,13 @@ namespace DiscoFreaks
             get => Scores[ScoreID];
         }
 
-
-        private int Phase_tune;
-
         // コンストラクタ
         public MusicLayer()
         {
+            // コンポーネント
+            UIComponent = new UIComponent();
+
+            // オブジェクト
             Jacket = new TextureObject2D
             {
                 Scale = new Vector2DF(0.25f, 0.25f),
@@ -58,7 +57,6 @@ namespace DiscoFreaks
             };
 
             MusicTitle = new Makinas(36, 4) { Position = new Vector2DF(150, -70) };
-
             Subtitle = new Makinas(18, 4) { Position = new Vector2DF(150, -30) };
 
             Casual = new HeadUpDaisy(24, new Color(166, 226, 46), 4, new Color()) { Position = new Vector2DF(150, 0) };
@@ -82,8 +80,9 @@ namespace DiscoFreaks
         protected override void OnAdded()
         {
             // コンポーネントを追加
-            UIComponent = new UIComponent();
             AddComponent(UIComponent, "UI");
+            MusicTitle.AddComponent(new FadeInComponent(), "FadeIn");
+            Subtitle.AddComponent(new FadeInComponent(), "FadeIn");
 
             // レイヤーに諸々のオブジェクトを追加
             var m = ChildManagementMode.RegistrationToLayer;
@@ -105,7 +104,6 @@ namespace DiscoFreaks
 
             // View
             //--------------------------------------------------
-
             // 選択中の譜面の情報を変更する
             Jacket.Texture = Graphics.CreateTexture(SelectedScore.JacketPath);
             MusicTitle.Text = SelectedScore.Title;
@@ -119,12 +117,6 @@ namespace DiscoFreaks
             Psychic.Text = SelectedScore[Difficulty.Psychic] != null ?
                 "PSYCHIC [ Lv." + string.Format("{0,2}", SelectedScore[Difficulty.Psychic].Level) + " ]" : "";
 
-            // オブジェクトの描画情報を変更する
-            MusicTitle.Position = new Vector2DF(150 + (float)Math.Pow(Phase_tune, 2) * 0.5f, -70);
-            Subtitle.Position = new Vector2DF(150 + (float)Math.Pow(Phase_tune, 2) * 0.5f, -30);
-            MusicTitle.Color = new Color(255, 255, 255, 255 - Phase_tune * 17);
-            Subtitle.Color = new Color(255, 255, 255, 255 - Phase_tune * 17);
-
             // 画面に表示する曲名の変更
             for (int i = 0; i < AppearingScores.Count; ++i)
             {
@@ -132,34 +124,44 @@ namespace DiscoFreaks
                 id = Math.Mod(id, Scores.Count);
                 AppearingScores[i].Text = Scores[id].Title;
             }
-
-            if (Phase_tune != 0) --Phase_tune;
-
             //--------------------------------------------------
 
 
 
             // Controll
             //--------------------------------------------------
-
-
             if (Scene.CurrentMode == SelectScene.Mode.Music)
             {
                 if (Input.KeyPush(Keys.Up))
                 {
                     ScoreID = Math.Mod(ScoreID - 1, Scores.Count);
-                    Scene.PlayBGM();
-                    Phase_tune = 15;
+                    Change();
                 }
 
                 if (Input.KeyPush(Keys.Down))
                 {
                     ScoreID = Math.Mod(ScoreID + 1, Scores.Count);
+                    Change();
+                }
+
+                void Change()
+                {
                     Scene.PlayBGM();
-                    Phase_tune = 15;
+                    ((ITextComponent)MusicTitle.GetComponent("FadeIn")).Trigger();
+                    ((ITextComponent)Subtitle.GetComponent("FadeIn")).Trigger();
+                }
+
+                // 選択中の難易度の変更
+                foreach (var difficulty in Enum.GetValues<Difficulty>())
+                {
+                    var diff = (Difficulty)difficulty;
+                    if (Scores[ScoreID][diff] != null)
+                    {
+                        Scene.Difficulty = diff;
+                        break;
+                    }
                 }
             }
-
             //--------------------------------------------------
         }
     }
