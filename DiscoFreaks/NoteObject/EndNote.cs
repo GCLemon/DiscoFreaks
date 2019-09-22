@@ -25,10 +25,7 @@ namespace DiscoFreaks
         {
             base.OnUpdate();
 
-            if (Judge() == Judgement.Just)
-            {
-                Dispose();
-            }
+            if (Judge() == Judgement.Just) { Dispose(); }
         }
     }
 }

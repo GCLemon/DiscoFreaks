@@ -53,8 +53,9 @@ namespace DiscoFreaks
 
             var m = ChildManagementMode.RegistrationToLayer;
             var t = ChildTransformingMode.Position;
-            Owner.AddChild(Center, m, t);
-            Owner.AddChild(Right, m, t);
+            var d = ChildDrawingMode.Color;
+            Owner.AddDrawnChild(Center, m, t, d);
+            Owner.AddDrawnChild(Right, m, t, d);
         }
 
         protected override void OnObjectDisposed()
@@ -116,8 +117,9 @@ namespace DiscoFreaks
 
             var m = ChildManagementMode.RegistrationToLayer;
             var t = ChildTransformingMode.Position;
-            Owner.AddChild(Center, m, t);
-            Owner.AddChild(Right, m, t);
+            var d = ChildDrawingMode.Color;
+            Owner.AddDrawnChild(Center, m, t, d);
+            Owner.AddDrawnChild(Right, m, t, d);
         }
 
         protected override void OnObjectDisposed()

@@ -95,4 +95,35 @@ namespace DiscoFreaks
             Phase = 10;
         }
     }
+
+    /// <summary>
+    /// 文字に色をつけるコンポーネント
+    /// </summary>
+    public class ColorComponent : Object2DComponent, ITextComponent
+    {
+        private int Phase;
+        private Color Color;
+
+        protected override void OnUpdate()
+        {
+            if (Phase >= 0)
+            {
+                Color.A = (byte)(127 * (double)Phase / 50);
+                ((TextObject2D)Owner).Color = Color;
+                --Phase;
+            }
+        }
+
+        public void Trigger()
+        {
+            Color = new Color(255, 255, 255);
+            Phase = 50;
+        }
+
+        public void Trigger(Color color)
+        {
+            Color = color;
+            Phase = 50;
+        }
+    }
 }

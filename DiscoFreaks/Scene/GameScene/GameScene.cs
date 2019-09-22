@@ -10,7 +10,7 @@ namespace DiscoFreaks
         public readonly Configuration Configuration;
 
         // ゲームの結果
-        // private Result Result;
+        public Result Result;
 
         // レイヤー
         private readonly Layer2D BackLayer;
@@ -27,8 +27,8 @@ namespace DiscoFreaks
 
             BackLayer = new Layer2D();
             GroundLayer = new GroundLayer();
-            NoteLayer = new NoteLayer();
-            InfoLayer = new InfoLayer();
+            NoteLayer = new NoteLayer(Score[Difficulty]);
+            InfoLayer = new InfoLayer(Score, Difficulty);
             EffectLayer = new Layer2D();
         }
 
@@ -54,7 +54,7 @@ namespace DiscoFreaks
                 EffectLayer.AddObject(
                     new PressEffect(keys[i])
                     {
-                        Position = new Vector2DF(120 + 30 * i, 600)
+                        Position = new Vector2DF(135 + 30 * i, 600)
                     }
                 );
             }
@@ -65,7 +65,7 @@ namespace DiscoFreaks
             AddLayer(InfoLayer);
             AddLayer(EffectLayer);
 
-            // Result = new Result();
+            Result = new Result(Score[Difficulty]);
 
             Note.HighSpeed = Configuration.HighSpeed;
             Note.Ofset = Configuration.Ofset;
@@ -74,6 +74,15 @@ namespace DiscoFreaks
 
         protected override void OnTransitionFinished()
         {
+            StartGame();
+        }
+
+        protected override void OnUpdated()
+        {
+        }
+
+        private void StartGame()
+        {
             Sound.Play(Sound.CreateBGM(Score.SoundPath));
             Note.NoteTimer.Start();
         }
@@ -81,7 +90,7 @@ namespace DiscoFreaks
         public void AddEffect(Vector2DF Position)
         {
             HitEffect effect = null;
-            float scale = Configuration.EffectSize * 4;
+            float scale = Configuration.EffectSize * 2;
             switch (Configuration.EffectType)
             {
                 case EffectType.Simple:

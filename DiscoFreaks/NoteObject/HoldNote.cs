@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using asd;
 
 namespace DiscoFreaks
@@ -12,6 +13,9 @@ namespace DiscoFreaks
         private readonly EndNote EndNote;
 
         private bool IsMoving = true;
+        private int TempJudge;
+        private Stopwatch HoldTimer;
+        private Stopwatch TotalTimer;
 
         public HoldNote(NoteInfo NoteInfo, NoteInfo EndNoteInfo) : base(NoteInfo)
         {
@@ -38,59 +42,102 @@ namespace DiscoFreaks
             Debug.Assert(NoteInfo.LeftLane == EndNoteInfo.LeftLane);
             EndNote = new EndNote(EndNoteInfo);
             EndNote.DrawingPriority = 1;
+
+            HoldTimer = new Stopwatch();
+            TotalTimer = new Stopwatch();
         }
 
         protected override void OnAdded()
         {
             var m = ChildManagementMode.RegistrationToLayer;
             var t = ChildTransformingMode.Nothing;
-            AddChild(LinkPart, m, t);
-            AddChild(EndNote, m, t);
+            var d = ChildDrawingMode.Color;
+            AddDrawnChild(LinkPart, m, t, d);
+            AddDrawnChild(EndNote, m, t, d);
         }
 
         protected override void OnUpdate()
         {
             if(IsMoving) base.OnUpdate();
 
+            // 描画設定
             LinkPart.Position = Position + new Vector2DF(12, 0);
             var size_x = (NoteInfo.RightLane - NoteInfo.LeftLane + 1) * 30 - 24;
             var size_y = EndNote.GetGlobalPosition().Y - LinkPart.GetGlobalPosition().Y;
             var area = new RectF(0, 0, size_x, size_y);
             ((RectangleShape)LinkPart.Shape).DrawingArea = area;
 
-            foreach (var key in JudgeKeys)
-                if (Input.KeyPush(key))
-                {
-                    switch (Judge())
+            // 先頭のノートが未反応の状態における動作
+            if (IsMoving)
+            {
+                //if (Layer.Objects.Where(x => x is Note).Any(x => IsOverlapped((Note)x)))
+                //{
+                    foreach (var key in JudgeKeys)
                     {
-                        case Judgement.None:
-                            break;
-                        case Judgement.Just:
+                        if (Input.KeyPush(key) && Judge() != Judgement.None)
+                        {
                             Position = new Vector2DF(Position.X, 600);
                             IsMoving = false;
-                            break;
-                        case Judgement.Cool:
-                            Position = new Vector2DF(Position.X, 600);
-                            IsMoving = false;
-                            break;
-                        case Judgement.Good:
-                            Position = new Vector2DF(Position.X, 600);
-                            IsMoving = false;
-                            break;
-                        case Judgement.Near:
-                            Position = new Vector2DF(Position.X, 600);
-                            IsMoving = false;
-                            break;
-                        case Judgement.Miss:
-                            Position = new Vector2DF(Position.X, 600);
-                            IsMoving = false;
-                            break;
+                            TempJudge = (int)Judge();
+                            HoldTimer.Start();
+                            TotalTimer.Start();
+                        }
                     }
+                //}
+
+                // Miss判定の場合は強制的に判定する
+                if (Judge() == Judgement.Miss)
+                {
+                    Scene.Result.ChangePointByTapNote(Judge());
+                    EndNote.RemoveComponent("Effect");
+                    Dispose();
+                }
+            }
+
+            // 先頭のノートが反応済の状態における動作
+            else
+            {
+                bool is_holding = false;
+
+                // ホールドされているかを判定
+                foreach (var key in JudgeKeys)
+                    is_holding |= Input.KeyHold(key);
+
+                // ホールドされている場合
+                if (is_holding)
+                {
+                    if (!HoldTimer.IsRunning) HoldTimer.Start();
+                    Color = new Color(255, 255, 255, 255);
                 }
 
-            if (!EndNote.IsAlive)
-            {
-                Dispose();
+                // ホールドされていない場合
+                else
+                {
+                    if (HoldTimer.IsRunning) HoldTimer.Stop();
+                    Color = new Color(255, 255, 255, 63);
+                }
+
+                // 終端のノートがDisposeされた時に判定
+                if (!EndNote.IsAlive)
+                {
+                    HoldTimer.Stop();
+                    TotalTimer.Stop();
+
+                    var h_msec = HoldTimer.ElapsedMilliseconds;
+                    var t_msec = TotalTimer.ElapsedMilliseconds;
+                    double rate = (double)h_msec / t_msec;
+
+                    if (rate > 0.9) TempJudge += 0;
+                    else if (rate > 0.8) TempJudge += 1;
+                    else if (rate > 0.7) TempJudge += 2;
+                    else if (rate > 0.6) TempJudge += 3;
+                    else if (rate > 0.5) TempJudge += 4;
+
+                    if (TempJudge > 5) TempJudge = 5;
+                    Scene.Result.ChangePointByHoldNote((Judgement)TempJudge);
+
+                    Dispose();
+                }
             }
         }
     }

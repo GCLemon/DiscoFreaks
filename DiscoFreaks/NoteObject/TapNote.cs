@@ -1,4 +1,4 @@
-﻿using asd;
+﻿using System.Linq;
 
 namespace DiscoFreaks
 {
@@ -25,30 +25,27 @@ namespace DiscoFreaks
         {
             base.OnUpdate();
 
-            foreach(var key in JudgeKeys)
-                if(Input.KeyPush(key))
+            // キーの押下によって判定
+            
+            //if (Layer.Objects.Where(x => x is Note).Any(x => IsOverlapped((Note)x)))
+            //{
+                foreach (var key in JudgeKeys)
                 {
-                    switch (Judge())
+                    if (Input.KeyPush(key) && Judge() != Judgement.None)
                     {
-                        case Judgement.None:
-                            break;
-                        case Judgement.Just:
-                            Dispose();
-                            break;
-                        case Judgement.Cool:
-                            Dispose();
-                            break;
-                        case Judgement.Good:
-                            Dispose();
-                            break;
-                        case Judgement.Near:
-                            Dispose();
-                            break;
-                        case Judgement.Miss:
-                            Dispose();
-                            break;
+                        Scene.Result.ChangePointByTapNote(Judge());
+                        Dispose();
                     }
                 }
+            //}
+
+            // Miss判定の場合は強制的に判定する
+            if(Judge() == Judgement.Miss)
+            {
+                Scene.Result.ChangePointByTapNote(Judge());
+                RemoveComponent("Effect");
+                Dispose();
+            }
         }
     }
 }

@@ -101,8 +101,6 @@ namespace DiscoFreaks
 
                 if (0 <= i && i < 24) JudgeKeys.Add(keys[i]);
             }
-
-            System.Console.WriteLine(NoteInfo.VisualTiming);
         }
 
 

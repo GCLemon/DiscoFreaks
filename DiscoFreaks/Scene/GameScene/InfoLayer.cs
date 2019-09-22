@@ -10,11 +10,46 @@ namespace DiscoFreaks
             get => (GameScene)base.Scene;
         }
 
-        // 得点の表示
+        private readonly Makinas Title;
+        private readonly Makinas Level;
         private readonly Makinas Score;
 
-        public InfoLayer()
+        public InfoLayer(Score score, Difficulty difficulty)
         {
+            Title = new Makinas(24, 4)
+            {
+                Text = score.Title,
+                Position = new Vector2DF(10, 10)
+            };
+
+            var level = score[difficulty].Level;
+            var level_text = "Lv." + level;
+            var level_color = new Color();
+            switch (difficulty)
+            {
+                case Difficulty.Casual:
+                    level_text = "CASUAL     " + level_text;
+                    level_color = new Color(166, 226, 46);
+                    break;
+                case Difficulty.Stylish:
+                    level_text = "STYLISH    " + level_text;
+                    level_color = new Color(230, 219, 116);
+                    break;
+                case Difficulty.Freeky:
+                    level_text = "FREEKY     " + level_text;
+                    level_color = new Color(249, 38, 114);
+                    break;
+                case Difficulty.Psychic:
+                    level_text = "PSYCHIC    " + level_text;
+                    level_color = new Color(174, 129, 255);
+                    break;
+            }
+            Level = new Makinas(18, level_color, 4, new Color())
+            {
+                Text = level_text,
+                Position = new Vector2DF(10, 40)
+            };
+
             Score = new Makinas(36, 4, new Vector2DF(1, 0))
             {
                 Text = "SCORE : 000000",
@@ -24,45 +59,14 @@ namespace DiscoFreaks
 
         protected override void OnAdded()
         {
-            AddObject(new Makinas(24, 4)
-            {
-                Text = Scene.Score.Title,
-                Position = new Vector2DF(10, 10)
-            });
-
-            switch (Scene.Difficulty)
-            {
-                case Difficulty.Casual:
-                    AddObject(new Makinas(18, new Color(166, 226, 46), 4, new Color())
-                    {
-                        Text = Scene.Difficulty + "     Lv." + Scene.Score[Scene.Difficulty].Level,
-                        Position = new Vector2DF(10, 40)
-                    });
-                    break;
-                case Difficulty.Stylish:
-                    AddObject(new Makinas(18, new Color(230, 219, 116), 4, new Color())
-                    {
-                        Text = Scene.Difficulty + "    Lv." + Scene.Score[Scene.Difficulty].Level,
-                        Position = new Vector2DF(10, 40)
-                    });
-                    break;
-                case Difficulty.Freeky:
-                    AddObject(new Makinas(18, new Color(249, 38, 114), 4, new Color())
-                    {
-                        Text = Scene.Difficulty + "     Lv." + Scene.Score[Scene.Difficulty].Level,
-                        Position = new Vector2DF(10, 40)
-                    });
-                    break;
-                case Difficulty.Psychic:
-                    AddObject(new Makinas(18, new Color(174, 129, 255), 4, new Color())
-                    {
-                        Text = Scene.Difficulty + "    Lv." + Scene.Score[Scene.Difficulty].Level,
-                        Position = new Vector2DF(10, 40)
-                    });
-                    break;
-            }
-
+            AddObject(Title);
+            AddObject(Level);
             AddObject(Score);
+        }
+
+        protected override void OnUpdated()
+        {
+            Score.Text = "SCORE : " + Scene.Result.Score.ToString("000000");
         }
     }
 }
