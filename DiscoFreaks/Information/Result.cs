@@ -49,7 +49,7 @@ namespace DiscoFreaks
             combo = reset_combo ? 0 : combo + 1;
             if (best_combo < combo) best_combo = combo;
             var raw_point = (int)(((double)note_point) / max_note_point * 90_0000);
-            var combo_point = (int)(((double)combo) / max_combo * 10_0000);
+            var combo_point = (int)(((double)best_combo) / max_combo * 10_0000);
             score = raw_point + combo_point;
         }
 

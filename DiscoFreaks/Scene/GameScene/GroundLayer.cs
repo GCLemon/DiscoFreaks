@@ -32,10 +32,10 @@ namespace DiscoFreaks
                 Color = new Color(255, 255, 255, 63),
                 Position = new Vector2DF(480, 370)
             };
-            Judgement = new ScoreDozer(96, 0, center)
+            Judgement = new ScoreDozer(center)
             {
                 Color = new Color(255, 255, 255, 0),
-                Position = new Vector2DF(480, 450)
+                Position = new Vector2DF(480, 480)
             };
         }
 
@@ -75,41 +75,46 @@ namespace DiscoFreaks
 
             if(Scene.Result.Just > Result.Just)
             {
+                Judgement.ResetFont(96, new Color(255, 255, 0), 4, new Color(255, 255, 255));
                 Judgement.Text = "JUST";
                 ComboValue.Text = Scene.Result.Combo.ToString();
-                ((ColorComponent)Judgement.GetComponent("Color")).Trigger(new Color(255, 255, 0));
+                ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
                 ((ITextComponent)ComboValue.GetComponent("Shrink")).Trigger();
             }
 
             if (Scene.Result.Cool > Result.Cool)
             {
+                Judgement.ResetFont(96, new Color(255, 0, 255), 4, new Color(255, 255, 255));
                 Judgement.Text = "COOL";
                 ComboValue.Text = Scene.Result.Combo.ToString();
-                ((ColorComponent)Judgement.GetComponent("Color")).Trigger(new Color(255, 0, 255));
+                ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
                 ((ITextComponent)ComboValue.GetComponent("Shrink")).Trigger();
             }
 
             if (Scene.Result.Good > Result.Good)
             {
+                Judgement.ResetFont(96, new Color(0, 255, 255), 4, new Color(255, 255, 255));
                 Judgement.Text = "GOOD";
                 ComboValue.Text = Scene.Result.Combo.ToString();
-                ((ColorComponent)Judgement.GetComponent("Color")).Trigger(new Color(0, 255, 255));
+                ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
                 ((ITextComponent)ComboValue.GetComponent("Shrink")).Trigger();
             }
 
             if (Scene.Result.Near > Result.Near)
             {
+                Judgement.ResetFont(96, new Color(0, 0, 255), 4, new Color(255, 255, 255));
                 Judgement.Text = "NEAR";
                 ComboValue.Text = Scene.Result.Combo.ToString();
-                ((ColorComponent)Judgement.GetComponent("Color")).Trigger(new Color(0, 0, 255));
+                ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
                 ((ITextComponent)ComboValue.GetComponent("Shrink")).Trigger();
             }
 
             if (Scene.Result.Miss > Result.Miss)
             {
+                Judgement.ResetFont(96, new Color(0, 0, 0), 4, new Color(255, 0, 0));
                 Judgement.Text = "MISS";
                 ComboValue.Text = Scene.Result.Combo.ToString();
-                ((ColorComponent)Judgement.GetComponent("Color")).Trigger(new Color(255, 0, 0));
+                ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
                 ((ITextComponent)ComboValue.GetComponent("Shrink")).Trigger();
             }
 

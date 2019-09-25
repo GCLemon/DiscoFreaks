@@ -9,9 +9,10 @@ namespace DiscoFreaks
     public class BackGround : PostEffect
     {
         private readonly Stopwatch Stopwatch;
-        protected readonly Material2D Material;
+        private readonly Material2D Material;
+        private readonly int Luminance;
 
-        public BackGround(string path)
+        public BackGround(string path, int luminance)
         {
             // マテリアルの生成
             Material = Graphics.CreateMaterial(path);
@@ -19,6 +20,9 @@ namespace DiscoFreaks
             // ストップウォッチの生成・開始
             Stopwatch = new Stopwatch();
             Stopwatch.Start();
+
+            // 明るさの設定
+            Luminance = luminance;
         }
 
         protected override void OnDraw(RenderTexture2D dst, RenderTexture2D src)
@@ -26,22 +30,10 @@ namespace DiscoFreaks
             // 変数の設定
             Material.SetVector2DF("resolution", Engine.WindowSize.To2DF());
             Material.SetFloat("time", Stopwatch.ElapsedMilliseconds * 0.001f);
+            Material.SetFloat("luminance", Luminance);
 
             // マテリアルを用いて描画
             DrawOnTexture2DWithMaterial(dst, Material);
         }
-    }
-
-    /// <summary>
-    /// 実際にゲームを行うシーンで使用するポストエフェクト
-    /// </summary>
-    public class GameBackGround : BackGround
-    {
-        /// <summary>
-        /// 背景の明るさを設定する
-        /// </summary>
-        public float Luminance { set => Material.SetFloat("luminance", value); }
-
-        public GameBackGround(string path) : base(path) { }
     }
 }

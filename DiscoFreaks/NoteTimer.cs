@@ -12,7 +12,7 @@ namespace DiscoFreaks
 
         private new long ElapsedMilliseconds
         {
-            get => base.ElapsedMilliseconds + Note.Ofset - Ofset;
+            get => base.ElapsedMilliseconds - Note.Ofset - Ofset - 2000;
         }
 
         public long Ofset;

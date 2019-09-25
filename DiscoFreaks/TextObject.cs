@@ -7,10 +7,8 @@ namespace DiscoFreaks
     /// </summary>
     public abstract class GeneralText : TextObject2D
     {
-        /// <summary>
-        /// オブジェクトを描画する際の描画原点
-        /// </summary>
         private new Vector2DF CenterPosition;
+        private string FontPath;
 
         /// <summary>
         /// 描画する文字列を設定する
@@ -42,16 +40,36 @@ namespace DiscoFreaks
 
         protected GeneralText(string path, int size, Color color, int o_size, Color o_color, Vector2DF center = new Vector2DF())
         {
+            FontPath = path;
             Font = Graphics.CreateDFont(path, size, color, o_size, o_color);
             CenterPosition = center;
         }
 
         protected GeneralText(string path, int size, int o_size, Vector2DF center = new Vector2DF())
         {
+            FontPath = path;
             Color white = new Color(255, 255, 255);
             Color black = new Color(0, 0, 0);
             Font = Graphics.CreateDFont(path, size, white, o_size, black);
             CenterPosition = center;
+        }
+
+        protected GeneralText(string path, Vector2DF center = new Vector2DF())
+        {
+            FontPath = path;
+            CenterPosition = center;
+        }
+
+        public void ResetFont(int size, Color color, int o_size, Color o_color)
+        {
+            Font = Graphics.CreateDFont(FontPath, size, color, o_size, o_color);
+        }
+
+        public void ResetFont(int size, int o_size)
+        {
+            Color white = new Color(255, 255, 255);
+            Color black = new Color(0, 0, 0);
+            Font = Graphics.CreateDFont(FontPath, size, white, o_size, black);
         }
     }
 
@@ -61,12 +79,17 @@ namespace DiscoFreaks
     public class TheStrongGamer : GeneralText
     {
         public TheStrongGamer(int size, Color color, int o_size, Color o_color, Vector2DF center = new Vector2DF())
-            :base("Font/TheStrongGamer.ttf", size, color, o_size, o_color, center)
+            : base("Font/TheStrongGamer.ttf", size, color, o_size, o_color, center)
         {
         }
 
         public TheStrongGamer(int size, int o_size, Vector2DF center = new Vector2DF())
-            :base("Font/TheStrongGamer.ttf", size, o_size, center)
+            : base("Font/TheStrongGamer.ttf", size, o_size, center)
+        {
+        }
+
+        public TheStrongGamer(Vector2DF center = new Vector2DF())
+            : base("Font/TheStrongGamer.ttf", center)
         {
         }
     }
@@ -85,6 +108,11 @@ namespace DiscoFreaks
             : base("Font/ScanLine.ttf", size, o_size, center)
         {
         }
+
+        public ScanLine(Vector2DF center = new Vector2DF())
+            : base("Font/ScanLine.ttf", center)
+        {
+        }
     }
 
     /// <summary>
@@ -99,6 +127,11 @@ namespace DiscoFreaks
 
         public ScoreDozer(int size, int o_size, Vector2DF center = new Vector2DF())
             :base("Font/ScoreDozer.ttf", size, o_size, center)
+        {
+        }
+
+        public ScoreDozer(Vector2DF center = new Vector2DF())
+            : base("Font/ScoreDozer.ttf", center)
         {
         }
     }
@@ -117,6 +150,11 @@ namespace DiscoFreaks
             : base("Font/HeadUpDaisy.ttf", size, o_size, center)
         {
         }
+
+        public HeadUpDaisy(Vector2DF center = new Vector2DF())
+            : base("Font/HeadUpDaisy.ttf", center)
+        {
+        }
     }
 
     /// <summary>
@@ -133,6 +171,11 @@ namespace DiscoFreaks
             : base("Font/GridGazer.ttf", size, o_size, center)
         {
         }
+
+        public GridGazer(Vector2DF center = new Vector2DF())
+            : base("Font/GridGazer.ttf", center)
+        {
+        }
     }
 
     /// <summary>
@@ -147,6 +190,11 @@ namespace DiscoFreaks
 
         public Makinas(int size, int o_size, Vector2DF center = new Vector2DF())
             : base("Font/Makinas.otf", size, o_size, center)
+        {
+        }
+
+        public Makinas(Vector2DF center = new Vector2DF())
+            : base("Font/Makinas.otf", center)
         {
         }
     }

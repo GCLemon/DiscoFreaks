@@ -12,7 +12,10 @@ namespace DiscoFreaks
         }
 
         // コンポーネント
-        public readonly UIComponent UIComponent;
+        public UIComponent UIComponent
+        {
+            get => (UIComponent)GetComponent("UI");
+        }
 
         // ジャケット画像
         private readonly TextureObject2D Jacket;
@@ -45,8 +48,8 @@ namespace DiscoFreaks
         // コンストラクタ
         public MusicLayer()
         {
-            // コンポーネント
-            UIComponent = new UIComponent();
+            // コンポーネントを作成・追加
+            AddComponent(new UIComponent(), "UI");
 
             // オブジェクト
             Jacket = new TextureObject2D
@@ -80,7 +83,6 @@ namespace DiscoFreaks
         protected override void OnAdded()
         {
             // コンポーネントを追加
-            AddComponent(UIComponent, "UI");
             MusicTitle.AddComponent(new FadeInComponent(), "FadeIn");
             Subtitle.AddComponent(new FadeInComponent(), "FadeIn");
 

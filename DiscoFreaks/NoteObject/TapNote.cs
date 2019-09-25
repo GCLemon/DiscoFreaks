@@ -27,8 +27,11 @@ namespace DiscoFreaks
 
             // キーの押下によって判定
             
-            //if (Layer.Objects.Where(x => x is Note).Any(x => IsOverlapped((Note)x)))
-            //{
+            if (!Layer.Objects
+                .Where(x => x is Note)
+                .Any(x => IsOverlapped((Note)x))
+            )
+            {
                 foreach (var key in JudgeKeys)
                 {
                     if (Input.KeyPush(key) && Judge() != Judgement.None)
@@ -37,7 +40,7 @@ namespace DiscoFreaks
                         Dispose();
                     }
                 }
-            //}
+            }
 
             // Miss判定の場合は強制的に判定する
             if(Judge() == Judgement.Miss)

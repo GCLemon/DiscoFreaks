@@ -9,7 +9,10 @@ namespace DiscoFreaks
         private new SelectScene Scene => (SelectScene)base.Scene;
 
         // コンポーネント
-        public readonly UIComponent UIComponent;
+        public UIComponent UIComponent
+        {
+            get => (UIComponent)GetComponent("UI");
+        }
 
         // テキストオブジェクト
         private readonly Makinas SelectDifficultyAnnounce;
@@ -18,7 +21,8 @@ namespace DiscoFreaks
 
         public DifficultyLayer()
         {
-            UIComponent = new UIComponent();
+            // コンポーネントを作成・追加
+            AddComponent(new UIComponent(), "UI");
 
             SelectDifficultyAnnounce = new Makinas(48, 4, new Vector2DF(0.5f, 0.5f))
             {
@@ -49,9 +53,6 @@ namespace DiscoFreaks
 
         protected override void OnAdded()
         {
-            // コンポーネントを追加
-            AddComponent(UIComponent, "UI");
-
             // レイヤーに諸々のオブジェクトを追加
             var m = ChildManagementMode.RegistrationToLayer;
             var t = ChildTransformingMode.All;

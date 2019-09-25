@@ -11,8 +11,14 @@ namespace DiscoFreaks
         }
 
         // コンポーネント
-        public readonly UIComponent UIComponent;
-        public readonly LoopingUIComponent LoopingUIComponent;
+        public UIComponent UIComponent
+        {
+            get => (UIComponent)GetComponent("UI");
+        }
+        public LoopingUIComponent LoopingUIComponent
+        {
+            get => (LoopingUIComponent)GetComponent("LoopingUI");
+        }
 
         private readonly GridGazer VisualSetting;
         private readonly GridGazer EffectType;
@@ -21,8 +27,9 @@ namespace DiscoFreaks
 
         public VisualSettingLayer()
         {
-            UIComponent = new UIComponent();
-            LoopingUIComponent = new LoopingUIComponent(3);
+            // コンポーネントを作成・追加
+            AddComponent(new UIComponent(), "UI");
+            AddComponent(new LoopingUIComponent(3), "LoopingUI");
 
             Vector2DF center = new Vector2DF(0.5f, 0.0f);
             VisualSetting = new GridGazer(48, 4, center)
@@ -37,10 +44,6 @@ namespace DiscoFreaks
 
         protected override void OnAdded()
         {
-            // コンポーネントを追加
-            AddComponent(UIComponent, "UI");
-            AddComponent(LoopingUIComponent, "LoopingUI");
-
             AddObject(VisualSetting);
             AddObject(EffectType);
             AddObject(EffectSize);

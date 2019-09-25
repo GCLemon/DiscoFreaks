@@ -84,6 +84,18 @@ namespace DiscoFreaks
         /// </summary>
         public static void StopAll() =>
             Engine.Sound.StopAll();
+
+        /// <summary>
+        /// 音量を変更する
+        /// </summary>
+        public static void SetVolume(int id, float volume) =>
+            Engine.Sound.SetVolume(id, volume * 0.01f);
+
+        /// <summary>
+        /// ID に指定された音が再生されているかを取得する
+        /// </summary>
+        public static bool GetIsPlaying(int id) =>
+            Engine.Sound.GetIsPlaying(id);
     }
 
     /// <summary>

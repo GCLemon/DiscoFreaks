@@ -27,60 +27,54 @@ namespace DiscoFreaks
         public Difficulty Difficulty;
 
         // レイヤー
-        private readonly Layer2D BackLayer;
-        private readonly Layer2D TextLayer;
         private readonly MusicLayer TuneLayer;
         private readonly DifficultyLayer DiffLayer;
 
-        // シーンのタイトル
-        private readonly HeadUpDaisy SceneTitle;
-
-        private bool IsUsed;
+        // 再生されている音声のID
         private int SoundID;
 
         public SelectScene()
         {
-            BackLayer = new Layer2D();
-            TextLayer = new Layer2D();
-            TuneLayer = new MusicLayer();
-            DiffLayer = new DifficultyLayer();
+            // コンポーネントを追加
+            AddComponent(new BackgroundComponent("Shader/OpenGL/Select.glsl", 100), "Background");
+            AddComponent(new InputManageComponent(), "Input");
+            AddComponent(new FixedUIComponent("Music Select"), "FixedUI");
 
-            SceneTitle = new HeadUpDaisy(72, 4, new Vector2DF(0.5f, 0))
-            {
-                Text = "Music Select",
-                Position = new Vector2DF(480, 10)
-            };
+            // インスタンスを代入
+            TuneLayer = new MusicLayer { DrawingPriority = 1, IsDrawn = false };
+            DiffLayer = new DifficultyLayer { DrawingPriority = 1, IsDrawn = false };
         }
 
         protected override void OnRegistered()
         {
-            if (!IsUsed)
+            // レイヤーの追加
+            if (!TuneLayer.IsDrawn)
             {
-                // 背景の設定
-                BackLayer.AddPostEffect(new BackGround("Shader/OpenGL/Select.glsl"));
-
-                // シーンのタイトルを設定
-                TextLayer.AddObject(SceneTitle);
-
-                // レイヤーの追加
-                AddLayer(BackLayer);
                 AddLayer(TuneLayer);
+                TuneLayer.IsDrawn = true;
+            }
+            if (!DiffLayer.IsDrawn)
+            {
                 AddLayer(DiffLayer);
-                AddLayer(TextLayer);
+                DiffLayer.IsDrawn = true;
+            }
+
+            // PlaySetting.config の作成
+            if (!System.IO.File.Exists("PlaySetting.config"))
+            {
+                var config = Configuration.Init();
+                Configuration.Save(config);
             }
         }
 
         protected override void OnStartUpdating()
         {
             // BGMを再生する
-            if (!IsUsed) PlayBGM();
+            if (!Sound.GetIsPlaying(SoundID)) PlayBGM();
         }
         
         protected override void OnUpdated()
         {
-            // 次回以降は OnRegistered 関数の処理を省略する
-            IsUsed = true;
-
             if (Input.KeyPush(Keys.Backspace))
             {
                 switch (CurrentMode)
@@ -139,7 +133,7 @@ namespace DiscoFreaks
             source.LoopStartingPoint = 0;
             source.LoopEndPoint = source.Length;
             SoundID = Sound.Play(source);
-
+            Sound.SetVolume(SoundID, 70);
         }
 
         public void StopBGM()

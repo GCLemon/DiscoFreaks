@@ -58,8 +58,8 @@ namespace DiscoFreaks
 
                 // Audio Configuration
                 //--------------------------------------------------
-                BGMVolume = 100,
-                SEVolume = 100
+                BGMVolume = 50,
+                SEVolume = 50
                 //--------------------------------------------------
             };
         }

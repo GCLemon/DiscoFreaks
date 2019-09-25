@@ -4,6 +4,16 @@ namespace DiscoFreaks
 {
     public class GameScene : Scene
     {
+        // 現在のゲームの状態
+        private enum GameState
+        {
+            Ready,
+            Playing,
+            Pausing,
+            Finished,
+        }
+        private GameState CurrentState;
+
         // ゲームの設定
         public readonly Score Score;
         public readonly Difficulty Difficulty;
@@ -12,31 +22,50 @@ namespace DiscoFreaks
         // ゲームの結果
         public Result Result;
 
+        // フレームカウンタ
+        private int FrameCount;
+
+        // 再生されている音源のID
+        private int SoundID;
+
+        // 音が再生されたか
+        private bool IsSoundStarted;
+
+        // ゲームが終わったか
+        private bool IsGameFinished;
+
         // レイヤー
-        private readonly Layer2D BackLayer;
         private readonly GroundLayer GroundLayer;
         private readonly NoteLayer NoteLayer;
         private readonly InfoLayer InfoLayer;
         private readonly Layer2D EffectLayer;
 
+        // ゲーム開始時に再生するエフェクト
+        private readonly ReadyGoEffect ReadyGo;
+
         public GameScene(Score Score, Difficulty Difficulty, Configuration Configuration)
         {
+            // 入力情報の受け取り
             this.Configuration = Configuration;
             this.Difficulty = Difficulty;
             this.Score = Score;
 
-            BackLayer = new Layer2D();
-            GroundLayer = new GroundLayer();
-            NoteLayer = new NoteLayer(Score[Difficulty]);
-            InfoLayer = new InfoLayer(Score, Difficulty);
-            EffectLayer = new Layer2D();
+            // コンポーネントを追加
+            var luminance = Configuration.Luminance;
+            AddComponent(new BackgroundComponent("Shader/OpenGL/Game.glsl", luminance), "Background");
+            AddComponent(new InputManageComponent(), "Input");
+
+            // インスタンスを代入
+            GroundLayer = new GroundLayer { DrawingPriority = 1 };
+            NoteLayer = new NoteLayer(Score[Difficulty]) { DrawingPriority = 2 };
+            EffectLayer = new Layer2D { DrawingPriority = 3 };
+            InfoLayer = new InfoLayer(Score, Difficulty) { DrawingPriority = 4 };
+
+            ReadyGo = new ReadyGoEffect();
         }
 
         protected override void OnRegistered()
         {
-            var back = new GameBackGround("Shader/OpenGL/Game.glsl");
-            back.Luminance = Configuration.Luminance;
-            BackLayer.AddPostEffect(back);
 
             for(int i = 0; i < 23; ++i)
             {
@@ -59,7 +88,6 @@ namespace DiscoFreaks
                 );
             }
 
-            AddLayer(BackLayer);
             AddLayer(GroundLayer);
             AddLayer(NoteLayer);
             AddLayer(InfoLayer);
@@ -72,19 +100,67 @@ namespace DiscoFreaks
             Note.NoteTimer.Ofset = Score[Difficulty].Ofset;
         }
 
-        protected override void OnTransitionFinished()
-        {
-            StartGame();
-        }
-
         protected override void OnUpdated()
         {
+            switch (CurrentState)
+            {
+                case GameState.Ready: OnReady(); break;
+                case GameState.Playing: OnPlaying(); break;
+                case GameState.Pausing: OnPausing(); break;
+                case GameState.Finished: OnFinished(); break;
+            }
+
         }
 
-        private void StartGame()
+        private void OnReady()
         {
-            Sound.Play(Sound.CreateBGM(Score.SoundPath));
-            Note.NoteTimer.Start();
+            // エフェクトを再生する
+            if (FrameCount == 180)
+            {
+                EffectLayer.AddObject(ReadyGo);
+            }
+
+            // エフェクトの再生が終わったらゲームを開始する
+            if (!ReadyGo.IsAlive)
+            {
+                Note.NoteTimer.Start();
+                CurrentState = GameState.Playing;
+            }
+
+            ++FrameCount;
+        }
+
+        private void OnPlaying()
+        {
+            // 音を再生する
+            if (!IsSoundStarted && Note.NoteTimer.ElapsedMilliseconds >= 2000)
+            {
+                var source = Sound.CreateBGM(Score.SoundPath);
+                source.IsLoopingMode = false;
+                SoundID = Sound.Play(source);
+                Sound.SetVolume(SoundID, Configuration.BGMVolume);
+                IsSoundStarted = true;
+            }
+
+            // 音の再生が終わったらゲームを終了する
+            if (IsSoundStarted && !Sound.GetIsPlaying(SoundID))
+            {
+                CurrentState = GameState.Finished;
+            }
+        }
+
+        private void OnPausing()
+        {
+
+        }
+
+        private void OnFinished()
+        {
+            if(!IsGameFinished)
+            {
+                Engine.ChangeSceneWithTransition(new ResultScene(Score, Difficulty, Result), new TransitionFade(1, 1));
+                IsGameFinished = true;
+            }
         }
 
         public void AddEffect(Vector2DF Position)

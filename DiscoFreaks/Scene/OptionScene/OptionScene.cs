@@ -33,14 +33,9 @@ namespace DiscoFreaks
         private readonly SelectScene UsedScene;
 
         // レイヤー
-        private readonly Layer2D BackLayer;
-        private readonly Layer2D TextLayer;
         private readonly PlaySettingLayer PSetLayer;
         private readonly VisualSettingLayer VSetLayer;
         private readonly AudioSettingLayer ASetLayer;
-
-        // シーンのタイトル
-        private readonly HeadUpDaisy SceneTitle;
 
         // メニュー項目の説明
         public readonly Makinas ItemDescription;
@@ -52,21 +47,19 @@ namespace DiscoFreaks
 
         public OptionScene(SelectScene used_scene)
         {
+            // コンポーネントを追加
+            AddComponent(new BackgroundComponent("Shader/OpenGL/Option.glsl", 100), "Background");
+            AddComponent(new InputManageComponent(), "Input");
+            AddComponent(new FixedUIComponent("Play Option"), "FixedUI");
+
             // シーンの情報を保存
             UsedScene = used_scene;
 
-            BackLayer = new Layer2D();
-            TextLayer = new Layer2D();
-            PSetLayer = new PlaySettingLayer();
-            VSetLayer = new VisualSettingLayer();
-            ASetLayer = new AudioSettingLayer();
+            PSetLayer = new PlaySettingLayer { DrawingPriority = 1 };
+            VSetLayer = new VisualSettingLayer { DrawingPriority = 1 };
+            ASetLayer = new AudioSettingLayer { DrawingPriority = 1 };
 
             var center = new Vector2DF(0.5f, 0.0f);
-            SceneTitle =  new HeadUpDaisy(72, 4, center)
-            {
-                Text = "Play Option",
-                Position = new Vector2DF(480, 10)
-            };
             ItemDescription = new Makinas(32, 4, center) { Position = new Vector2DF(480, 550) };
             LeftMode = new HeadUpDaisy(24, 4, center) { Position = new Vector2DF(100, 40) };
             RightMode = new HeadUpDaisy(24, 4, center) { Position = new Vector2DF(860, 40) };
@@ -84,18 +77,13 @@ namespace DiscoFreaks
 
         protected override void OnRegistered()
         {
-            // 背景の設定
-            BackLayer.AddPostEffect(new BackGround("Shader/OpenGL/Option.glsl"));
-
             // シーンのタイトルを設定
-            TextLayer.AddObject(SceneTitle);
-            TextLayer.AddObject(ItemDescription);
-            TextLayer.AddObject(LeftMode);
-            TextLayer.AddObject(RightMode);
+            var fixed_ui = (FixedUIComponent)GetComponent("FixedUI");
+            fixed_ui.AddObject(ItemDescription);
+            fixed_ui.AddObject(LeftMode);
+            fixed_ui.AddObject(RightMode);
 
             // レイヤーの追加
-            AddLayer(BackLayer);
-            AddLayer(TextLayer);
             AddLayer(PSetLayer);
             AddLayer(VSetLayer);
             AddLayer(ASetLayer);

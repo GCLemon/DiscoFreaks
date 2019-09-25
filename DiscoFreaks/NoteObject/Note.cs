@@ -106,12 +106,22 @@ namespace DiscoFreaks
 
         protected override void OnUpdate()
         {
-            var error = NoteTimer.VisualTime - NoteInfo.VisualTiming;
-
             // 描画位置の設定
+            var error = NoteTimer.VisualTime - NoteInfo.VisualTiming;
             var pos_x = 120 + 30 * NoteInfo.LeftLane;
             var pos_y = 600 + error * 0.075f * HighSpeed;
             Position = new Vector2DF(pos_x, (float)pos_y);
+
+            // 色の設定
+            if (NoteTimer.ElapsedMilliseconds < 1000)
+            {
+                var alpha = (int)(NoteTimer.ElapsedMilliseconds * 255 / 1000);
+                Color = new Color(255, 255, 255, alpha);
+            }
+            else
+            {
+                Color = new Color(255, 255, 255, 255);
+            }
         }
 
         protected override void OnDispose()
