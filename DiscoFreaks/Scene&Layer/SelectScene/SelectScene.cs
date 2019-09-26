@@ -58,13 +58,6 @@ namespace DiscoFreaks
                 AddLayer(DiffLayer);
                 DiffLayer.IsDrawn = true;
             }
-
-            // PlaySetting.config の作成
-            if (!System.IO.File.Exists("PlaySetting.config"))
-            {
-                var config = Configuration.Init();
-                Configuration.Save(config);
-            }
         }
 
         protected override void OnStartUpdating()
@@ -105,22 +98,13 @@ namespace DiscoFreaks
                         break;
                     case Mode.Difficulty:
                         StopBGM();
-                        Engine.ChangeSceneWithTransition(
-                            new GameScene(Score, Difficulty, Configuration.Load()),
-                            new TransitionFade(1, 1)
-                        );
+                        Engine.ChangeSceneWithTransition(new GameScene(Score, Difficulty, Configuration.Load()), new TransitionFade(1, 1));
                         break;
                 }
             }
 
             if (Input.KeyPush(Keys.RightShift))
-            {
-                Engine.ChangeSceneWithTransition(
-                    new OptionScene(this),
-                    new TransitionFade(1, 1),
-                    false
-                );
-            }
+                Engine.ChangeSceneWithTransition(new OptionScene(this), new TransitionFade(1, 1), false);
         }
 
         // 音を変更する

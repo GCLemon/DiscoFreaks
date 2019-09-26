@@ -26,19 +26,17 @@ namespace DiscoFreaks
             base.OnUpdate();
 
             // キーの押下によって判定
-            
             if (!Layer.Objects
                 .Where(x => x is Note)
                 .Any(x => IsOverlapped((Note)x))
             )
             {
-                foreach (var key in JudgeKeys)
+                bool is_pressed = JudgeKeys.Any(x => Input.KeyPush(x));
+                bool is_judgable = Judge() != Judgement.None;
+                if (is_pressed && is_judgable)
                 {
-                    if (Input.KeyPush(key) && Judge() != Judgement.None)
-                    {
                         Scene.Result.ChangePointByTapNote(Judge());
                         Dispose();
-                    }
                 }
             }
 

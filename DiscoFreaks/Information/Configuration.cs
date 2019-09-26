@@ -70,7 +70,7 @@ namespace DiscoFreaks
         public static Configuration Load()
         {
             // ファイルを読み込み
-            using (var stream = new FileStream("PlaySetting.config",　FileMode.Open))
+            using (var stream = new FileStream("PlayData/Setting.config",　FileMode.Open))
             {
                 // バイナリ読み込み用オブジェクト
                 var reader = new BinaryReader(stream);
@@ -113,12 +113,12 @@ namespace DiscoFreaks
         public static void Save(Configuration config)
         {
             var filemode =
-                File.Exists("PlaySetting.config") ?
+                File.Exists("PlayData/Setting.config") ?
                 FileMode.Open :
                 FileMode.Create;
 
             // ファイルを読み込み
-            using (var stream = new FileStream("PlaySetting.config", filemode))
+            using (var stream = new FileStream("PlayData/Setting.config", filemode))
             {
                 var writer = new BinaryWriter(stream);
 

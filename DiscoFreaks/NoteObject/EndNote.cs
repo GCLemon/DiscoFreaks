@@ -25,7 +25,7 @@ namespace DiscoFreaks
         {
             base.OnUpdate();
 
-            if (Judge() == Judgement.Just) { Dispose(); }
+            if (NoteTimer.AudioTime - NoteInfo.AudioTiming > 0) { Dispose(); }
         }
     }
 }

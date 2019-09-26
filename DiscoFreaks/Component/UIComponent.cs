@@ -10,19 +10,45 @@ namespace DiscoFreaks
     public class UIComponent : Layer2DComponent
     {
         private int Phase;
+        private bool IsMoving;
 
         protected override void OnLayerUpdated()
         {
-            Input.AcceptInput = Phase == 0;
-            var objs = Owner.Objects.Where(x => x.Parent == null);
-            foreach(var obj in objs)
-                obj.Position += new Vector2DF(-8 * Phase, 0);
-            Phase -= Math.Sign(Phase);
+            // 動いている時の処理
+            if (IsMoving)
+            {
+                var objs = Owner.Objects.Where(x => x.Parent == null);
+                foreach (var obj in objs)
+                    obj.Position += new Vector2DF(-8 * Phase, 0);
+
+                if (Phase == 0)
+                {
+                    Input.AcceptInput = true;
+                    IsMoving = false;
+                }
+                else Phase -= Math.Sign(Phase);
+            }
         }
 
-        public void MoveRight() { if (Phase == 0) Phase = -15; }
+        public void MoveRight()
+        {
+            if (Phase == 0)
+            {
+                Phase = -15;
+                Input.AcceptInput = false;
+                IsMoving = true;
+            }
+        }
 
-        public void MoveLeft() { if (Phase == 0) Phase = 15; }
+        public void MoveLeft()
+        {
+            if (Phase == 0)
+            {
+                Phase = 15;
+                Input.AcceptInput = false;
+                IsMoving = true;
+            }
+        }
     }
 
     /// <summary>

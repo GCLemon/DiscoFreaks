@@ -66,8 +66,7 @@ namespace DiscoFreaks
 
         protected override void OnRegistered()
         {
-
-            for(int i = 0; i < 23; ++i)
+            for(int i = 0; i < 24; ++i)
             {
                 Keys[] keys =
                 {
@@ -112,6 +111,7 @@ namespace DiscoFreaks
 
         }
 
+        // ゲームが始まっていない場合の処理
         private void OnReady()
         {
             // エフェクトを再生する
@@ -130,6 +130,7 @@ namespace DiscoFreaks
             ++FrameCount;
         }
 
+        // ゲーム中の処理
         private void OnPlaying()
         {
             // 音を再生する
@@ -149,11 +150,13 @@ namespace DiscoFreaks
             }
         }
 
+        // ポーズ中の処理
         private void OnPausing()
         {
 
         }
 
+        // ゲーム終了後の処理
         private void OnFinished()
         {
             if(!IsGameFinished)

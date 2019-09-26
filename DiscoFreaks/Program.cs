@@ -29,10 +29,14 @@ namespace DiscoFreaks
 #endif
 
             // シーンチェンジ
-            Engine.ChangeSceneWithTransition(
-                new TitleScene(),
-                new TransitionFade(0, 1)
-            );
+            Engine.ChangeSceneWithTransition(new TitleScene(), new TransitionFade(0, 1));
+
+            // 必要なファイル・ディレクトリを用意する
+            if (!System.IO.File.Exists("PlayData/Setting.config"))
+            {
+                var config = Configuration.Init();
+                Configuration.Save(config);
+            }
 
             // エンジンの更新処理
             while (Engine.DoEvents())

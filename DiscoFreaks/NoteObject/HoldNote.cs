@@ -75,16 +75,15 @@ namespace DiscoFreaks
                     .Any(x => IsOverlapped((Note)x))
                 )
                 {
-                    foreach (var key in JudgeKeys)
+                    bool is_pressed = JudgeKeys.Any(x => Input.KeyPush(x));
+                    bool is_judgable = Judge() != Judgement.None;
+                    if (is_pressed && is_judgable)
                     {
-                        if (Input.KeyPush(key) && Judge() != Judgement.None)
-                        {
-                            Position = new Vector2DF(Position.X, 600);
-                            IsMoving = false;
-                            TempJudge = (int)Judge();
-                            HoldTimer.Start();
-                            TotalTimer.Start();
-                        }
+                        Position = new Vector2DF(Position.X, 600);
+                        IsMoving = false;
+                        TempJudge = (int)Judge();
+                        HoldTimer.Start();
+                        TotalTimer.Start();
                     }
                 }
 

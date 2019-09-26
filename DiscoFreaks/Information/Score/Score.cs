@@ -129,6 +129,7 @@ namespace DiscoFreaks
 
                             while(hold_info_count < hold_info.Count)
                             {
+                                // ホールドノートの追加
                                 var info = hold_info[hold_info_count].info;
                                 var end_beat = hold_info[hold_info_count].end_beat;
                                 var _timing = timing.prev + (end_beat - beat.prev) / bpm * 60_000;
@@ -150,6 +151,7 @@ namespace DiscoFreaks
                             {
                                 case "tap_note":
 
+                                    // タップノートを追加する
                                     init_info.DetailInfo.Notes.Add(new TapNote(new NoteInfo
                                     {
                                         LeftLane = int.Parse(matches[1].Value),
@@ -162,6 +164,7 @@ namespace DiscoFreaks
 
                                 case "hold_note":
 
+                                    // ホールドノートを一旦保留する
                                     var info = new NoteInfo
                                     {
                                         LeftLane = int.Parse(matches[2].Value),
@@ -176,6 +179,7 @@ namespace DiscoFreaks
 
                                 case "slide_note":
 
+                                    // スライドノートを追加する
                                     init_info.DetailInfo.Notes.Add(new SlideNote(new NoteInfo
                                     {
                                         LeftLane = int.Parse(matches[1].Value),
@@ -188,6 +192,7 @@ namespace DiscoFreaks
 
                                 case "speed_change":
 
+                                    // ソフランを追加する
                                     intercept += (speed - double.Parse(matches[1].Value)) * timing.curr;
                                     speed = double.Parse(matches[1].Value);
                                     var sof_lan = new Note.SofLan((long)timing.curr, speed);
@@ -197,6 +202,7 @@ namespace DiscoFreaks
 
                                 case "tempo_change":
 
+                                    // テンポを変更するs
                                     bpm = double.Parse(matches[1].Value);
 
                                     break;

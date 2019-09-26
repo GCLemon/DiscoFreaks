@@ -18,6 +18,9 @@ namespace DiscoFreaks
         {
             // ノートを追加
             while (Notes.Peek().NoteInfo.VisualTiming < 10000)
+
+
+
                 AddObject(Notes.Dequeue());
 
             // ソフランオブジェクトを追加

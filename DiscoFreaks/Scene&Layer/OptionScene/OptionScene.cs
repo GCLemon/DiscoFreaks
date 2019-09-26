@@ -64,7 +64,7 @@ namespace DiscoFreaks
             LeftMode = new HeadUpDaisy(24, 4, center) { Position = new Vector2DF(100, 40) };
             RightMode = new HeadUpDaisy(24, 4, center) { Position = new Vector2DF(860, 40) };
 
-            if (System.IO.File.Exists("PlaySetting.config"))
+            if (System.IO.File.Exists("PlayData/Setting.config"))
             {
                 Configuration = Configuration.Load();
             }

@@ -135,8 +135,8 @@ namespace DiscoFreaks
         protected bool IsOverlapped(Note note)
         {
             var state1 = note.Position.Y > Position.Y;
-            var state2 = NoteInfo.LeftLane - 1 < note.NoteInfo.RightLane + 1;
-            var state3 = note.NoteInfo.LeftLane - 1 < NoteInfo.RightLane + 1;
+            var state2 = NoteInfo.LeftLane < note.NoteInfo.RightLane;
+            var state3 = note.NoteInfo.LeftLane < NoteInfo.RightLane;
             return state1 && state2 && state3;
         }
 

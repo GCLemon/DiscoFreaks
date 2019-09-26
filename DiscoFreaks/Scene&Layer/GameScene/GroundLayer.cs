@@ -75,7 +75,7 @@ namespace DiscoFreaks
 
             if(Scene.Result.Just > Result.Just)
             {
-                Judgement.ResetFont(96, new Color(255, 255, 0), 4, new Color(255, 255, 255));
+                Judgement.ResetFont(96, new Color(230, 219, 116), 4, new Color(255, 255, 0));
                 Judgement.Text = "JUST";
                 ComboValue.Text = Scene.Result.Combo.ToString();
                 ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
@@ -84,7 +84,7 @@ namespace DiscoFreaks
 
             if (Scene.Result.Cool > Result.Cool)
             {
-                Judgement.ResetFont(96, new Color(255, 0, 255), 4, new Color(255, 255, 255));
+                Judgement.ResetFont(96, new Color(249, 38, 114), 4, new Color(255, 0, 255));
                 Judgement.Text = "COOL";
                 ComboValue.Text = Scene.Result.Combo.ToString();
                 ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
@@ -93,7 +93,7 @@ namespace DiscoFreaks
 
             if (Scene.Result.Good > Result.Good)
             {
-                Judgement.ResetFont(96, new Color(0, 255, 255), 4, new Color(255, 255, 255));
+                Judgement.ResetFont(96, new Color(166, 226, 46), 4, new Color(0, 255, 0));
                 Judgement.Text = "GOOD";
                 ComboValue.Text = Scene.Result.Combo.ToString();
                 ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
@@ -102,7 +102,7 @@ namespace DiscoFreaks
 
             if (Scene.Result.Near > Result.Near)
             {
-                Judgement.ResetFont(96, new Color(0, 0, 255), 4, new Color(255, 255, 255));
+                Judgement.ResetFont(96, new Color(49, 137, 211), 4, new Color(0, 255, 255));
                 Judgement.Text = "NEAR";
                 ComboValue.Text = Scene.Result.Combo.ToString();
                 ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
