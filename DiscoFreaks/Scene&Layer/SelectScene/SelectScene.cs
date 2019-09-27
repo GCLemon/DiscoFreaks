@@ -27,7 +27,7 @@ namespace DiscoFreaks
         public Difficulty Difficulty;
 
         // レイヤー
-        private readonly MusicLayer TuneLayer;
+        private readonly TuneLayer TuneLayer;
         private readonly DifficultyLayer DiffLayer;
 
         // 再生されている音声のID
@@ -41,7 +41,7 @@ namespace DiscoFreaks
             AddComponent(new FixedUIComponent("Music Select"), "FixedUI");
 
             // インスタンスを代入
-            TuneLayer = new MusicLayer { DrawingPriority = 1, IsDrawn = false };
+            TuneLayer = new TuneLayer { DrawingPriority = 1, IsDrawn = false };
             DiffLayer = new DifficultyLayer { DrawingPriority = 1, IsDrawn = false };
         }
 

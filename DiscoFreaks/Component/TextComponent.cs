@@ -84,7 +84,7 @@ namespace DiscoFreaks
         {
             if (Phase >= 0)
             {
-                var scale = Scale - Phase * Phase * (Scale - 1) * 0.01f;
+                var scale = Scale - Phase * Phase * (Scale - 1) * 0.0025f;
                 Owner.Scale = new Vector2DF(scale, scale);
                 --Phase;
             }
@@ -92,7 +92,7 @@ namespace DiscoFreaks
 
         public void Trigger()
         {
-            Phase = 10;
+            Phase = 20;
         }
     }
 
@@ -101,14 +101,20 @@ namespace DiscoFreaks
     /// </summary>
     public class ColorComponent : Object2DComponent, ITextComponent
     {
+        private int MaxPhase;
         private int Phase;
         private Color Color;
+
+        public ColorComponent(int MaxPhase)
+        {
+            this.MaxPhase = MaxPhase;
+        }
 
         protected override void OnUpdate()
         {
             if (Phase >= 0)
             {
-                Color.A = (byte)(127 * (double)Phase / 50);
+                Color.A = (byte)(127 * (double)Phase / MaxPhase);
                 ((TextObject2D)Owner).Color = Color;
                 --Phase;
             }
@@ -117,13 +123,13 @@ namespace DiscoFreaks
         public void Trigger()
         {
             Color = new Color(255, 255, 255);
-            Phase = 50;
+            Phase = MaxPhase;
         }
 
         public void Trigger(Color color)
         {
             Color = color;
-            Phase = 50;
+            Phase = MaxPhase;
         }
     }
 }

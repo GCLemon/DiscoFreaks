@@ -37,70 +37,76 @@ namespace DiscoFreaks
         //--------------------------------------------------
 
         /// <summary>
-        /// プレイヤー設定を初期化する
-        /// </summary>
-        public static Configuration Init()
-        {
-            return new Configuration
-            {
-                // Play Configuration
-                //--------------------------------------------------
-                HighSpeed = 1,
-                Ofset = 0,
-                //--------------------------------------------------
-
-                // Visual Configuration
-                //--------------------------------------------------
-                EffectType = 0,
-                EffectSize = 100,
-                Luminance = 100,
-                //--------------------------------------------------
-
-                // Audio Configuration
-                //--------------------------------------------------
-                BGMVolume = 50,
-                SEVolume = 50
-                //--------------------------------------------------
-            };
-        }
-
-        /// <summary>
         /// 設定をファイルから読み込む
         /// </summary>
         public static Configuration Load()
         {
             // ファイルを読み込み
-            using (var stream = new FileStream("PlayData/Setting.config",　FileMode.Open))
+            try
             {
-                // バイナリ読み込み用オブジェクト
-                var reader = new BinaryReader(stream);
+                using (var stream = new FileStream("PlaySetting.config", FileMode.Open))
+                {
+                    // バイナリ読み込み用オブジェクト
+                    var reader = new BinaryReader(stream);
 
-                // ファイル読み込み
+                    // ファイル読み込み
+                    var config = new Configuration
+                    {
+                        // Play Configuration
+                        //--------------------------------------------------
+                        HighSpeed = reader.ReadDouble(),
+                        Ofset = reader.ReadInt32(),
+                        //--------------------------------------------------
+
+                        // Visual Configuration
+                        //--------------------------------------------------
+                        EffectType = (EffectType)reader.ReadInt32(),
+                        EffectSize = reader.ReadInt32(),
+                        Luminance = reader.ReadInt32(),
+                        //--------------------------------------------------
+
+                        // Audio Configuration
+                        //--------------------------------------------------
+                        BGMVolume = reader.ReadInt32(),
+                        SEVolume = reader.ReadInt32()
+                        //--------------------------------------------------
+                    };
+
+                    // ファイルを閉じる
+                    reader.Close();
+                    reader.Dispose();
+
+                    // 設定を戻す
+                    return config;
+                }
+            }
+            catch(IOException)
+            {
+                // 設定の初期化
                 var config = new Configuration
                 {
                     // Play Configuration
                     //--------------------------------------------------
-                    HighSpeed = reader.ReadDouble(),
-                    Ofset = reader.ReadInt32(),
+                    HighSpeed = 1,
+                    Ofset = 0,
                     //--------------------------------------------------
 
                     // Visual Configuration
                     //--------------------------------------------------
-                    EffectType = (EffectType)reader.ReadInt32(),
-                    EffectSize = reader.ReadInt32(),
-                    Luminance = reader.ReadInt32(),
+                    EffectType = 0,
+                    EffectSize = 100,
+                    Luminance = 100,
                     //--------------------------------------------------
 
                     // Audio Configuration
                     //--------------------------------------------------
-                    BGMVolume = reader.ReadInt32(),
-                    SEVolume = reader.ReadInt32()
+                    BGMVolume = 50,
+                    SEVolume = 50
                     //--------------------------------------------------
                 };
 
-                // ファイルを閉じる
-                reader.Close();
-                reader.Dispose();
+                // 設定を保存
+                Save(config);
 
                 // 設定を戻す
                 return config;
@@ -113,12 +119,12 @@ namespace DiscoFreaks
         public static void Save(Configuration config)
         {
             var filemode =
-                File.Exists("PlayData/Setting.config") ?
+                File.Exists("PlaySetting.config") ?
                 FileMode.Open :
                 FileMode.Create;
 
             // ファイルを読み込み
-            using (var stream = new FileStream("PlayData/Setting.config", filemode))
+            using (var stream = new FileStream("PlaySetting.config", filemode))
             {
                 var writer = new BinaryWriter(stream);
 

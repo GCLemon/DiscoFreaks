@@ -18,9 +18,6 @@ namespace DiscoFreaks
         {
             // ノートを追加
             while (Notes.Peek().NoteInfo.VisualTiming < 10000)
-
-
-
                 AddObject(Notes.Dequeue());
 
             // ソフランオブジェクトを追加
@@ -32,17 +29,14 @@ namespace DiscoFreaks
         {
             while (Notes.Count != 0)
             {
-                // ノートを追加
-                AddObject(Notes.Dequeue());
-
-                // キューが空になったらループ終了
-                if (Notes.Count == 0) break;
-
                 // 必要以上の追加を行わないように
                 // 追加を制限する
                 var timing = Notes.Peek().NoteInfo.VisualTiming;
                 var border = Note.NoteTimer.VisualTime + 10000;
                 if (timing > border) break;
+
+                // ノートを追加
+                AddObject(Notes.Dequeue());
             }
         }
     }

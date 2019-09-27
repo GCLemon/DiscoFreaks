@@ -43,7 +43,7 @@ namespace DiscoFreaks
         {
             // コンポーネントを追加
             ComboValue.AddComponent(new ShrinkComponent(1.1f), "Shrink");
-            Judgement.AddComponent(new ColorComponent(), "Color");
+            Judgement.AddComponent(new ColorComponent(50), "Color");
 
             // 判定ライン
             AddObject(new GeometryObject2D

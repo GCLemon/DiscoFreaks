@@ -4,12 +4,6 @@ namespace DiscoFreaks
 {
     public class ResultLayer : Layer2D
     {
-        // レイヤーが登録されているシーン
-        private new ResultScene Scene
-        {
-            get => (ResultScene)base.Scene;
-        }
-
         // フレームカウント
         private int Frame;
 
@@ -35,6 +29,8 @@ namespace DiscoFreaks
         private readonly ScoreDozer Near;
         private readonly ScoreDozer Miss;
         private readonly ScoreDozer Combo;
+
+        private readonly RankObject Rank;
 
         public ResultLayer(Score score , Difficulty difficulty, Result result)
         {
@@ -138,6 +134,8 @@ namespace DiscoFreaks
                 Position = new Vector2DF(350, 630),
                 IsDrawn = false
             };
+
+            Rank = new RankObject(result.Rank);
             //--------------------------------------------------
         }
 
@@ -177,6 +175,7 @@ namespace DiscoFreaks
             AddObject(Combo);
             AddObject(ScoreLabel);
             AddObject(ScoreValue);
+            AddObject(Rank);
             //--------------------------------------------------
         }
 
@@ -199,8 +198,9 @@ namespace DiscoFreaks
                 if (Frame == 170) { FadeIn(Near).Trigger(); Near.IsDrawn = true; }
                 if (Frame == 180) { FadeIn(Miss).Trigger(); Miss.IsDrawn = true; }
                 if (Frame == 190) { FadeIn(Combo).Trigger(); Combo.IsDrawn = true; }
+                if (Frame == 230) Rank.Impact();
 
-                if (Frame == 210) IsShownAll = true;
+                if(Frame == 250) IsShownAll = true;
 
                 ++Frame;
             }
@@ -231,6 +231,9 @@ namespace DiscoFreaks
                 Miss.Position = new Vector2DF(350, 580);
                 Combo.Position = new Vector2DF(350, 630);
                 //--------------------------------------------------
+
+                // インパクト再生の中し
+                Rank.Interrupt();
             }
         }
     }
