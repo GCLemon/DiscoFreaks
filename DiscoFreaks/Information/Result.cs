@@ -78,7 +78,7 @@ namespace DiscoFreaks
         /// <summary>
         /// パーフェクト(ランクがEXC)
         /// </summary>
-        Perfect
+        Excellent
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ namespace DiscoFreaks
                     {
                         if (good == 0 && cool == 0)
                         {
-                            return ClearJudgement.Perfect;
+                            return ClearJudgement.Excellent;
                         }
                         return ClearJudgement.Fullcombo;
                     }

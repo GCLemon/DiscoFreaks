@@ -4,8 +4,19 @@ namespace DiscoFreaks
 {
     public class ResultScene : Scene
     {
+        // リザルトシーンのモード
+        public enum Mode
+        {
+            Result,
+            Tweet
+        }
+
+        // 現在のモード
+        public Mode CurrentMode { get; private set; }
+
         // レイヤー
         private readonly ResultLayer ResultLayer;
+        private readonly TweetLayer TweetLayer;
 
         public ResultScene(Score score, Difficulty difficulty, Result result)
         {
@@ -22,12 +33,14 @@ namespace DiscoFreaks
 
             // インスタンスを代入
             ResultLayer = new ResultLayer(score, difficulty, result) { DrawingPriority = 1 };
+            TweetLayer = new TweetLayer(score, result) { DrawingPriority = 1 };
         }
 
         protected override void OnRegistered()
         {
             // レイヤーの追加
             AddLayer(ResultLayer);
+            AddLayer(TweetLayer);
         }
 
         protected override void OnStartUpdating()
@@ -39,12 +52,29 @@ namespace DiscoFreaks
 
         protected override void OnUpdated()
         {
-            if(Input.KeyPush(Keys.Enter))
+            if (CurrentMode == Mode.Result)
             {
-                if (ResultLayer.IsShownAll)
-                    Engine.ChangeSceneWithTransition(new SelectScene(), new TransitionFade(1, 1));
+                if (!ResultLayer.IsShownAll)
+                {
+                    // キー押下でリザルトの全表示
+                    foreach (var k in Enum.GetValues<Keys>())
+                        if (Input.KeyPush((Keys)k))
+                            ResultLayer.ShowAll();
+                }
+                else
+                {
+                    // エンターで次の曲へ
+                    if (Input.KeyPush(Keys.Enter))
+                        Engine.ChangeSceneWithTransition(new SelectScene(), new TransitionFade(1, 1));
 
-                else ResultLayer.IsShownAll = true;
+                    // 左シフトでツイートへ
+                    if (Input.KeyPush(Keys.RightShift))
+                    {
+                        ((UIComponent)ResultLayer.GetComponent("UI")).MoveLeft();
+                        ((UIComponent)TweetLayer.GetComponent("UI")).MoveLeft();
+                        CurrentMode = Mode.Tweet;
+                    }
+                }
             }
         }
     }

@@ -31,6 +31,7 @@ namespace DiscoFreaks
             // シーンチェンジ
             Engine.ChangeSceneWithTransition(new TitleScene(), new TransitionFade(0, 1));
 
+
             // エンジンの更新処理
             while (Engine.DoEvents())
             {

@@ -65,8 +65,10 @@ namespace DiscoFreaks
         protected override void OnAdded()
         {
             // コンポーネントを追加
-            MusicTitle.AddComponent(new FadeInComponent(), "FadeIn");
-            Subtitle.AddComponent(new FadeInComponent(), "FadeIn");
+            MusicTitle.AddComponent(new SlideComponent(), "Slide");
+            MusicTitle.AddComponent(new FadeInComponent(15, 255), "FadeIn");
+            Subtitle.AddComponent(new SlideComponent(), "Slide");
+            Subtitle.AddComponent(new FadeInComponent(15, 255), "FadeIn");
 
             // 子オブジェクトの描画方法を設定
             var m = ChildManagementMode.RegistrationToLayer;
@@ -157,7 +159,9 @@ namespace DiscoFreaks
             // コンポーネントの効果を発動する
             try
             {
+                ((ITextComponent)MusicTitle.GetComponent("Slide")).Trigger();
                 ((ITextComponent)MusicTitle.GetComponent("FadeIn")).Trigger();
+                ((ITextComponent)Subtitle.GetComponent("Slide")).Trigger();
                 ((ITextComponent)Subtitle.GetComponent("FadeIn")).Trigger();
             }
             catch(NullReferenceException)

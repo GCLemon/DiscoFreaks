@@ -42,8 +42,8 @@ namespace DiscoFreaks
         protected override void OnAdded()
         {
             // コンポーネントを追加
-            ComboValue.AddComponent(new ShrinkComponent(1.1f), "Shrink");
-            Judgement.AddComponent(new ColorComponent(50), "Color");
+            ComboValue.AddComponent(new ShrinkComponent(10, 1.1f), "Shrink");
+            Judgement.AddComponent(new FadeOutComponent(50, 127), "Color");
 
             // 判定ライン
             AddObject(new GeometryObject2D

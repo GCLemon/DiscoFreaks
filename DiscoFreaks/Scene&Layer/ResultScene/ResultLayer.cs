@@ -9,6 +9,7 @@ namespace DiscoFreaks
 
         // 全て表示し終わったか
         public bool IsShownAll;
+        public bool IsResultTaken;
 
         // 難易度表示の色
         private readonly Color DiffColor;
@@ -141,32 +142,24 @@ namespace DiscoFreaks
 
         protected override void OnAdded()
         {
-            // コンポーネントの追加
-            //--------------------------------------------------
-            ScoreValue.AddComponent(new FadeInComponent(), "FadeIn");
-            ScoreLabel.AddComponent(new FadeInComponent(), "FadeIn");
-            Just.AddComponent(new FadeInComponent(), "FadeIn");
-            Cool.AddComponent(new FadeInComponent(), "FadeIn");
-            Good.AddComponent(new FadeInComponent(), "FadeIn");
-            Just.AddComponent(new FadeInComponent(), "FadeIn");
-            Near.AddComponent(new FadeInComponent(), "FadeIn");
-            Miss.AddComponent(new FadeInComponent(), "FadeIn");
-            Combo.AddComponent(new FadeInComponent(), "FadeIn");
-            //--------------------------------------------------
-
-
             // オブジェクトの追加
             // 曲名・サブタイトル・ジャケット・難易度
             //--------------------------------------------------
-            AddObject(Jacket);
-            AddObject(Title);
-            AddObject(Subtitle);
-            AddObject(LevelLabel);
-            AddObject(LevelValue);
+            base.AddObject(Jacket);
+            base.AddObject(Title);
+            base.AddObject(Subtitle);
+            base.AddObject(LevelLabel);
+            base.AddObject(LevelValue);
             //--------------------------------------------------
 
             // 得点その他詳細
             //--------------------------------------------------
+            void AddObject(ScoreDozer obj)
+            {
+                obj.AddComponent(new SlideComponent(), "Slide");
+                obj.AddComponent(new FadeInComponent(15, 225), "FadeIn");
+                base.AddObject(obj);
+            }
             AddObject(Just);
             AddObject(Cool);
             AddObject(Good);
@@ -183,58 +176,66 @@ namespace DiscoFreaks
         {
             if (!IsShownAll)
             {
-                ITextComponent FadeIn(TextObject2D text)
-                    => (ITextComponent)text.GetComponent("FadeIn");
+                void Trigger(TextObject2D text)
+                {
+                    ((ITextComponent)text.GetComponent("Slide")).Trigger();
+                    ((ITextComponent)text.GetComponent("FadeIn")).Trigger();
+                }
 
                 if (Frame == 100)
                 {
-                    FadeIn(ScoreLabel).Trigger(); ScoreLabel.IsDrawn = true;
-                    FadeIn(ScoreValue).Trigger(); ScoreValue.IsDrawn = true;
+                    Trigger(ScoreLabel); ScoreLabel.IsDrawn = true;
+                    Trigger(ScoreValue); ScoreValue.IsDrawn = true;
                 }
 
-                if (Frame == 140) { FadeIn(Just).Trigger(); Just.IsDrawn = true; }
-                if (Frame == 150) { FadeIn(Cool).Trigger(); Cool.IsDrawn = true; }
-                if (Frame == 160) { FadeIn(Good).Trigger(); Good.IsDrawn = true; }
-                if (Frame == 170) { FadeIn(Near).Trigger(); Near.IsDrawn = true; }
-                if (Frame == 180) { FadeIn(Miss).Trigger(); Miss.IsDrawn = true; }
-                if (Frame == 190) { FadeIn(Combo).Trigger(); Combo.IsDrawn = true; }
+                if (Frame == 140) { Trigger(Just); Just.IsDrawn = true; }
+                if (Frame == 150) { Trigger(Cool); Cool.IsDrawn = true; }
+                if (Frame == 160) { Trigger(Good); Good.IsDrawn = true; }
+                if (Frame == 170) { Trigger(Near); Near.IsDrawn = true; }
+                if (Frame == 180) { Trigger(Miss); Miss.IsDrawn = true; }
+                if (Frame == 190) { Trigger(Combo); Combo.IsDrawn = true; }
                 if (Frame == 230) Rank.Impact();
 
-                if(Frame == 250) IsShownAll = true;
+                if (Frame == 250) ShowAll();
 
                 ++Frame;
             }
-            else
+            else if(!IsResultTaken)
             {
-                foreach (var obj in Objects) obj.IsDrawn = true;
-
-                // 色のリセット
-                //--------------------------------------------------
-                ScoreLabel.Color = new Color(255, 255, 255);
-                ScoreValue.Color = new Color(255, 255, 255);
-                Just.Color = new Color(255, 255, 255);
-                Cool.Color = new Color(255, 255, 255);
-                Good.Color = new Color(255, 255, 255);
-                Near.Color = new Color(255, 255, 255);
-                Miss.Color = new Color(255, 255, 255);
-                Combo.Color = new Color(255, 255, 255);
-                //--------------------------------------------------
-
-                // 位置のリセット
-                //--------------------------------------------------
-                ScoreLabel.Position = new Vector2DF(350, 260);
-                ScoreValue.Position = new Vector2DF(350, 300);
-                Just.Position = new Vector2DF(350, 420);
-                Cool.Position = new Vector2DF(350, 460);
-                Good.Position = new Vector2DF(350, 500);
-                Near.Position = new Vector2DF(350, 540);
-                Miss.Position = new Vector2DF(350, 580);
-                Combo.Position = new Vector2DF(350, 630);
-                //--------------------------------------------------
-
-                // インパクト再生の中し
-                Rank.Interrupt();
+                // スクリーンショットの撮影
+                Engine.TakeScreenshot("Result.png");
+                IsResultTaken = true;
             }
+        }
+
+        public void ShowAll()
+        {
+            // 全ての描画
+            IsShownAll = true;
+            foreach (var obj in Objects) obj.IsDrawn = true;
+
+            void Reset(TextObject2D text, Vector2DF pos)
+            {
+                text.RemoveComponent("Slide");
+                text.RemoveComponent("FadeIn");
+                text.Color = new Color(255, 255, 255);
+                text.Position = pos;
+            }
+
+            // 位置のリセット
+            //--------------------------------------------------
+            Reset(ScoreLabel, new Vector2DF(350, 260));
+            Reset(ScoreValue, new Vector2DF(350, 300));
+            Reset(Just, new Vector2DF(350, 420));
+            Reset(Cool, new Vector2DF(350, 460));
+            Reset(Good, new Vector2DF(350, 500));
+            Reset(Near, new Vector2DF(350, 540));
+            Reset(Miss, new Vector2DF(350, 580));
+            Reset(Combo, new Vector2DF(350, 630));
+            //--------------------------------------------------
+
+            // インパクト再生の中止
+            Rank.Interrupt();
         }
     }
 }

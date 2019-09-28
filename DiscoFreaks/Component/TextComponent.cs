@@ -13,7 +13,7 @@ namespace DiscoFreaks
     /// <summary>
     /// 横からフェードインするテキストのコンポーネント
     /// </summary>
-    public class FadeInComponent : Object2DComponent, ITextComponent
+    public class SlideComponent : Object2DComponent, ITextComponent
     {
         private float PositionX;
         private int Phase;
@@ -43,19 +43,22 @@ namespace DiscoFreaks
     /// </summary>
     public class ShrinkComponent : Object2DComponent, ITextComponent
     {
+        private readonly int MaxPhase;
         private int Phase;
-        private float Scale;
+        private readonly float Scale;
 
-        public ShrinkComponent(float scale)
+        public ShrinkComponent(int max_phase, float scale)
         {
+            MaxPhase = max_phase;
             Scale = scale;
+            Phase = -1;
         }
 
         protected override void OnUpdate()
         {
             if (Phase >= 0)
             {
-                var scale = 1 + Phase * Phase * (Scale - 1) * 0.01f;
+                var scale = 1 + (float)Math.Pow((double)Phase / MaxPhase, 2) * (Scale - 1);
                 Owner.Scale = new Vector2DF(scale, scale);
                 --Phase;
             }
@@ -63,7 +66,7 @@ namespace DiscoFreaks
 
         public void Trigger()
         {
-            Phase = 10;
+            Phase = MaxPhase;
         }
     }
 
@@ -72,19 +75,22 @@ namespace DiscoFreaks
     /// </summary>
     public class SwellComponent : Object2DComponent, ITextComponent
     {
+        private readonly int MaxPhase;
         private int Phase;
-        private float Scale;
+        private readonly float Scale;
 
-        public SwellComponent(float scale)
+        public SwellComponent(int max_phase, float scale)
         {
+            MaxPhase = max_phase;
             Scale = scale;
+            Phase = -1;
         }
 
         protected override void OnUpdate()
         {
             if (Phase >= 0)
             {
-                var scale = Scale - Phase * Phase * (Scale - 1) * 0.0025f;
+                var scale = Scale - (float)Math.Pow((double)Phase / MaxPhase, 2) * (Scale - 1);
                 Owner.Scale = new Vector2DF(scale, scale);
                 --Phase;
             }
@@ -92,29 +98,32 @@ namespace DiscoFreaks
 
         public void Trigger()
         {
-            Phase = 20;
+            Phase = MaxPhase;
         }
     }
 
     /// <summary>
     /// 文字に色をつけるコンポーネント
     /// </summary>
-    public class ColorComponent : Object2DComponent, ITextComponent
+    public class FadeOutComponent : Object2DComponent, ITextComponent
     {
-        private int MaxPhase;
+        private readonly int MaxPhase;
+        private readonly int MaxAlpha;
         private int Phase;
         private Color Color;
 
-        public ColorComponent(int MaxPhase)
+        public FadeOutComponent(int max_phase, int max_alpha)
         {
-            this.MaxPhase = MaxPhase;
+            MaxPhase = max_phase;
+            MaxAlpha = max_alpha;
+            Phase = -1;
         }
 
         protected override void OnUpdate()
         {
             if (Phase >= 0)
             {
-                Color.A = (byte)(127 * (double)Phase / MaxPhase);
+                Color.A = (byte)(MaxAlpha * (double)Phase / MaxPhase);
                 ((TextObject2D)Owner).Color = Color;
                 --Phase;
             }
@@ -123,6 +132,46 @@ namespace DiscoFreaks
         public void Trigger()
         {
             Color = new Color(255, 255, 255);
+            Phase = MaxPhase;
+        }
+
+        public void Trigger(Color color)
+        {
+            Color = color;
+            Phase = MaxPhase;
+        }
+    }
+
+    /// <summary>
+    /// 文字に色をつけるコンポーネント
+    /// </summary>
+    public class FadeInComponent : Object2DComponent, ITextComponent
+    {
+        private readonly int MaxPhase;
+        private readonly int MaxAlpha;
+        private int Phase;
+        private Color Color;
+
+        public FadeInComponent(int max_phase, int max_alpha)
+        {
+            MaxPhase = max_phase;
+            MaxAlpha = max_alpha;
+            Phase = -1;
+        }
+
+        protected override void OnUpdate()
+        {
+            if (Phase >= 0)
+            {
+                Color.A = (byte)(MaxAlpha * (1 - (double)Phase / MaxPhase));
+                ((TextObject2D)Owner).Color = Color;
+                --Phase;
+            }
+        }
+
+        public void Trigger()
+        {
+            Color = new Color(255, 255, 255, 0);
             Phase = MaxPhase;
         }
 

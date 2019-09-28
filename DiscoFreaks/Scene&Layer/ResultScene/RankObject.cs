@@ -65,7 +65,7 @@ namespace DiscoFreaks
 
             Judge = new ScoreDozer(36, color, 4, o_color, center)
             {
-                Text = ((int)rank) >= 3 ? "SUCCESS" : "FAILURE",
+                Text = ((int)rank) >= 9 ? "EXCELLENT!" : ((int)rank) >= 3 ? "SUCCESS" : "FAILURE",
                 Position = new Vector2DF(0, 75),
                 IsDrawn = false
             };
@@ -86,7 +86,7 @@ namespace DiscoFreaks
 
             ImpactJudge = new ScoreDozer(36, color, 4, o_color, center)
             {
-                Text = ((int)rank) >= 3 ? "SUCCESS" : "FAILURE",
+                Text = ((int)rank) >= 9 ? "EXCELLENT!" : ((int)rank) >= 3 ? "SUCCESS" : "FAILURE",
                 Position = new Vector2DF(0, 75),
                 IsDrawn = false
             };
@@ -106,8 +106,8 @@ namespace DiscoFreaks
             // インパクトの設定
             ImpactValue.AddDrawnChild(ImpactLabel, m, t, d);
             ImpactValue.AddDrawnChild(ImpactJudge, m, t, d);
-            ImpactValue.AddComponent(new SwellComponent(1.2f), "Swell");
-            ImpactValue.AddComponent(new ColorComponent(20), "Color");
+            ImpactValue.AddComponent(new SwellComponent(20, 1.2f), "Swell");
+            ImpactValue.AddComponent(new FadeOutComponent(20, 255), "FadeOut");
             Layer.AddObject(ImpactValue);
         }
 
@@ -120,7 +120,7 @@ namespace DiscoFreaks
             ImpactLabel.IsDrawn = true;
             ImpactJudge.IsDrawn = true;
             ((ITextComponent)ImpactValue.GetComponent("Swell")).Trigger();
-            ((ITextComponent)ImpactValue.GetComponent("Color")).Trigger();
+            ((ITextComponent)ImpactValue.GetComponent("FadeOut")).Trigger();
         }
 
         public void Interrupt()
