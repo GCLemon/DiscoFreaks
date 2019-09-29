@@ -102,8 +102,8 @@ namespace DiscoFreaks
                 var difficulty = (Difficulty)diff;
                 var score = Layer.SelectedScore[difficulty];
                 var high_score_obj = HighScore.Load(Layer.SelectedScore.Title);
-                var high_score = high_score_obj[difficulty].Score;
-                var judgement = high_score_obj[difficulty].Judge;
+                var high_score = high_score_obj[difficulty].score;
+                var judgement = high_score_obj[difficulty].judge;
 
                 if (score != null)
                 {

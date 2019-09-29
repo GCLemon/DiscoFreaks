@@ -48,10 +48,10 @@ namespace DiscoFreaks
             long Timing;
             double AfterSpeed;
 
-            public SofLan(long Timing, double AfterSpeed)
+            public SofLan(long timing, double after_speed)
             {
-                this.Timing = Timing;
-                this.AfterSpeed = AfterSpeed;
+                Timing = timing;
+                AfterSpeed = after_speed;
             }
 
             protected override void OnUpdate()
@@ -79,14 +79,14 @@ namespace DiscoFreaks
         // 登録されているシーン
         public GameScene Scene { get => (GameScene)Layer.Scene; }
 
-        public Note(NoteInfo NoteInfo)
+        public Note(NoteInfo note_info)
         {
             // 基本情報の設定
-            this.NoteInfo = NoteInfo;
+            NoteInfo = note_info;
 
             // キーの設定
             JudgeKeys = new List<Keys>();
-            for (int i = NoteInfo.LeftLane - 1; i <= NoteInfo.RightLane + 1; ++i)
+            for (int i = note_info.LeftLane - 1; i <= note_info.RightLane + 1; ++i)
             {
                 Keys[] keys =
                 {

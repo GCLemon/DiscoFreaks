@@ -7,15 +7,10 @@ namespace DiscoFreaks
     /// </summary>
     public class TapNote : Note
     {
-        public TapNote(NoteInfo NoteInfo) : base(NoteInfo)
+        public TapNote(NoteInfo note_info) : base(note_info)
         {
             AddComponent(
-                new TapNoteComponent
-                {
-                    TexturePath = "Image/TapNote.png",
-                    RightLane = NoteInfo.RightLane,
-                    LeftLane = NoteInfo.LeftLane
-                },
+                new TapNoteComponent("Image/TapNote.png", NoteInfo.RightLane, NoteInfo.LeftLane),
                 "TapNote"
             );
             AddComponent(new EffectEmitComponent(), "Effect");

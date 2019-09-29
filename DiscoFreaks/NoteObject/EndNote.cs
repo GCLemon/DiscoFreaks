@@ -1,21 +1,14 @@
-﻿using asd;
-
-namespace DiscoFreaks
+﻿namespace DiscoFreaks
 {
     /// <summary>
     /// ホールドノートの末端
     /// </summary>
     public class EndNote : Note
     {
-        public EndNote(NoteInfo NoteInfo) : base(NoteInfo)
+        public EndNote(NoteInfo note_info) : base(note_info)
         {
             AddComponent(
-                new TapNoteComponent
-                {
-                    TexturePath = "Image/HoldNote.png",
-                    RightLane = NoteInfo.RightLane,
-                    LeftLane = NoteInfo.LeftLane
-                },
+                new TapNoteComponent("Image/HoldNote.png", NoteInfo.RightLane, NoteInfo.LeftLane),
                 "TapNote"
             );
             AddComponent(new EffectEmitComponent(), "Effect");

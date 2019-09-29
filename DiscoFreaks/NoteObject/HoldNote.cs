@@ -17,17 +17,12 @@ namespace DiscoFreaks
         private Stopwatch HoldTimer;
         private Stopwatch TotalTimer;
 
-        public HoldNote(NoteInfo NoteInfo, NoteInfo EndNoteInfo) : base(NoteInfo)
+        public HoldNote(NoteInfo note_info, NoteInfo end_note_info) : base(note_info)
         {
             DrawingPriority = 1;
 
             AddComponent(
-                new TapNoteComponent
-                {
-                    TexturePath = "Image/HoldNote.png",
-                    RightLane = NoteInfo.RightLane,
-                    LeftLane = NoteInfo.LeftLane
-                },
+                new TapNoteComponent("Image/HoldNote.png", NoteInfo.RightLane, NoteInfo.LeftLane),
                 "TapNote"
             );
 
@@ -38,9 +33,9 @@ namespace DiscoFreaks
                 DrawingPriority = 0
             };
 
-            Debug.Assert(NoteInfo.RightLane == EndNoteInfo.RightLane);
-            Debug.Assert(NoteInfo.LeftLane == EndNoteInfo.LeftLane);
-            EndNote = new EndNote(EndNoteInfo);
+            Debug.Assert(NoteInfo.RightLane == end_note_info.RightLane);
+            Debug.Assert(NoteInfo.LeftLane == end_note_info.LeftLane);
+            EndNote = new EndNote(end_note_info);
             EndNote.DrawingPriority = 1;
 
             HoldTimer = new Stopwatch();

@@ -22,7 +22,7 @@ namespace DiscoFreaks
         {
             // 自己ベストのロード・変更・セーブ
             var high_score = HighScore.Load(score.Title);
-            if (high_score[difficulty].Score < result.Score)
+            if (high_score[difficulty].score < result.Score)
                 high_score[difficulty] = (result.Score, result.ClearJudgement);
             HighScore.Save(high_score, score.Title);
 

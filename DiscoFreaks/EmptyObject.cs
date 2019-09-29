@@ -13,12 +13,12 @@ namespace DiscoFreaks
             private readonly Override MRemoved;
             private readonly Override MDispose;
 
-            public ObjectCore(Override MAdded,Override MUpdate,Override MRemoved,Override MDispose)
+            public ObjectCore(Override m_added,Override m_update,Override m_removed,Override m_dispose)
             {
-                this.MAdded = MAdded;
-                this.MUpdate = MUpdate;
-                this.MRemoved = MRemoved;
-                this.MDispose = MDispose;
+                MAdded = m_added;
+                MUpdate = m_update;
+                MRemoved = m_removed;
+                MDispose = m_dispose;
             }
 
             protected override void OnAdded() => MAdded();
@@ -39,25 +39,13 @@ namespace DiscoFreaks
             Core = new ObjectCore(OnAdded, OnUpdate, OnRemoved, OnDispose);
         }
 
-        protected virtual void OnAdded()
-        {
+        protected virtual void OnAdded() {}
 
-        }
+        protected virtual void OnUpdate() {}
+        
+        protected virtual void OnRemoved() {}
 
-        protected virtual void OnUpdate()
-        {
-
-        }
-
-        protected virtual void OnRemoved()
-        {
-
-        }
-
-        protected virtual void OnDispose()
-        {
-
-        }
+        protected virtual void OnDispose() {}
 
         public void Dispose() => Core.Dispose();
     }

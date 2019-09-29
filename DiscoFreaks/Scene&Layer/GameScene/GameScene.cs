@@ -44,12 +44,12 @@ namespace DiscoFreaks
         // ゲーム開始時に再生するエフェクト
         private readonly ReadyGoEffect ReadyGo;
 
-        public GameScene(Score Score, Difficulty Difficulty, Configuration Configuration)
+        public GameScene(Score score, Difficulty difficulty, Configuration configuration)
         {
             // 入力情報の受け取り
-            this.Configuration = Configuration;
-            this.Difficulty = Difficulty;
-            this.Score = Score;
+            Configuration = configuration;
+            Difficulty = difficulty;
+            Score = score;
 
             // コンポーネントを追加
             var luminance = Configuration.Luminance;
@@ -58,9 +58,9 @@ namespace DiscoFreaks
 
             // インスタンスを代入
             GroundLayer = new GroundLayer { DrawingPriority = 1 };
-            NoteLayer = new NoteLayer(Score[Difficulty]) { DrawingPriority = 2 };
+            NoteLayer = new NoteLayer(score[difficulty]) { DrawingPriority = 2 };
             EffectLayer = new Layer2D { DrawingPriority = 3 };
-            InfoLayer = new InfoLayer(Score, Difficulty) { DrawingPriority = 4 };
+            InfoLayer = new InfoLayer(score, difficulty) { DrawingPriority = 4 };
             PauseLayer = new PauseLayer { DrawingPriority = 5 };
 
             ReadyGo = new ReadyGoEffect();
@@ -194,7 +194,9 @@ namespace DiscoFreaks
                         CurrentState = GameState.Playing;
                         break;
                     case PauseLayer.Item.Retry:
-                        var new_scene = new GameScene(Score, Difficulty, Configuration);
+                        var score_list = Score.CreateList();
+                        var score = score_list.Find(x => x.Title == Score.Title);
+                        var new_scene = new GameScene(score, Difficulty, Configuration);
                         Engine.ChangeSceneWithTransition(new_scene, new TransitionFade(1, 1));
                         break;
                     case PauseLayer.Item.Return:
@@ -214,7 +216,7 @@ namespace DiscoFreaks
             }
         }
 
-        public void AddEffect(Vector2DF Position)
+        public void AddEffect(Vector2DF position)
         {
             HitEffect effect = null;
             float scale = Configuration.EffectSize * 2;
@@ -239,7 +241,7 @@ namespace DiscoFreaks
                     effect = new StarDust(scale);
                     break;
             }
-            effect.Position = Position;
+            effect.Position = position;
             EffectLayer.AddObject(effect);
         }
     }

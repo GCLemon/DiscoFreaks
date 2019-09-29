@@ -12,12 +12,19 @@ namespace DiscoFreaks
             get => (TextureObject2D)base.Owner;
         }
 
-        public string TexturePath;
-        public int RightLane;
-        public int LeftLane;
+        private string TexturePath;
+        private int RightLane;
+        private int LeftLane;
 
         TextureObject2D Center;
         TextureObject2D Right;
+
+        public TapNoteComponent(string texture_path, int right_lane, int left_lane)
+        {
+            TexturePath = texture_path;
+            RightLane = right_lane;
+            LeftLane = left_lane;
+        }
 
         protected override void OnObjectAdded()
         {
@@ -75,12 +82,19 @@ namespace DiscoFreaks
             get => (TextureObject2D)base.Owner;
         }
 
-        public string TexturePath;
-        public int RightLane;
-        public int LeftLane;
+        private string TexturePath;
+        private int RightLane;
+        private int LeftLane;
 
         TextureObject2D Center;
         TextureObject2D Right;
+
+        public SlideNoteComponent(string texture_path, int right_lane, int left_lane)
+        {
+            TexturePath = texture_path;
+            RightLane = right_lane;
+            LeftLane = left_lane;
+        }
 
         protected override void OnObjectAdded()
         {

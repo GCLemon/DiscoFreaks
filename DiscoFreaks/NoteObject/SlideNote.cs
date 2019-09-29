@@ -7,15 +7,10 @@ namespace DiscoFreaks
     /// </summary>
     public class SlideNote : Note
     {
-        public SlideNote(NoteInfo NoteInfo)　: base(NoteInfo)
+        public SlideNote(NoteInfo note_info)　: base(note_info)
         {
             AddComponent(
-                new SlideNoteComponent
-                {
-                    TexturePath = "Image/SlideNote.png",
-                    RightLane = NoteInfo.RightLane,
-                    LeftLane = NoteInfo.LeftLane
-                },
+                new SlideNoteComponent("Image/SlideNote.png", note_info.RightLane, note_info.LeftLane),
                 "SlideNote"
             );
             AddComponent(new EffectEmitComponent(), "Effect");

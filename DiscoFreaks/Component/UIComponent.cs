@@ -58,14 +58,14 @@ namespace DiscoFreaks
     {
         private int Pages;
 
-        public LoopingUIComponent(int Pages)
+        public LoopingUIComponent(int pages)
         {
-            if (Pages < 2)
+            if (pages < 2)
             {
                 Console.WriteLine("ERROR : Pages must be larger than 1.");
                 Engine.Close();
             }
-            this.Pages = Pages;
+            Pages = pages;
         }
 
         protected override void OnLayerUpdated()
