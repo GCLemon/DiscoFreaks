@@ -38,7 +38,7 @@ namespace DiscoFreaks
             // コンポーネントを追加
             AddComponent(new BackgroundComponent("Shader/OpenGL/Select.glsl", 100), "Background");
             AddComponent(new InputManageComponent(), "Input");
-            AddComponent(new FixedUIComponent("Music Select"), "FixedUI");
+            AddComponent(new FixedUIComponent("Tune Select"), "FixedUI");
 
             // インスタンスを代入
             TuneLayer = new TuneLayer { DrawingPriority = 1, IsDrawn = false };
@@ -103,7 +103,7 @@ namespace DiscoFreaks
                 }
             }
 
-            if (Input.KeyPush(Keys.RightShift))
+            else if (Input.KeyPush(Keys.RightShift))
                 Engine.ChangeSceneWithTransition(new OptionScene(this), new TransitionFade(1, 1), false);
         }
 

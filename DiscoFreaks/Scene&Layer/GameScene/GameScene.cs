@@ -39,6 +39,7 @@ namespace DiscoFreaks
         private readonly NoteLayer NoteLayer;
         private readonly InfoLayer InfoLayer;
         private readonly Layer2D EffectLayer;
+        private readonly PauseLayer PauseLayer;
 
         // ゲーム開始時に再生するエフェクト
         private readonly ReadyGoEffect ReadyGo;
@@ -60,6 +61,7 @@ namespace DiscoFreaks
             NoteLayer = new NoteLayer(Score[Difficulty]) { DrawingPriority = 2 };
             EffectLayer = new Layer2D { DrawingPriority = 3 };
             InfoLayer = new InfoLayer(Score, Difficulty) { DrawingPriority = 4 };
+            PauseLayer = new PauseLayer { DrawingPriority = 5 };
 
             ReadyGo = new ReadyGoEffect();
         }
@@ -91,12 +93,17 @@ namespace DiscoFreaks
             AddLayer(NoteLayer);
             AddLayer(InfoLayer);
             AddLayer(EffectLayer);
+            AddLayer(PauseLayer);
 
             Result = new Result(Score[Difficulty]);
 
             Note.HighSpeed = Configuration.HighSpeed;
             Note.Ofset = Configuration.Ofset;
             Note.NoteTimer.Ofset = Score[Difficulty].Ofset;
+
+            // ノートタイマーの初期化
+            Note.NoteTimer.Stop();
+            Note.NoteTimer.Reset();
         }
 
         protected override void OnUpdated()
@@ -116,9 +123,7 @@ namespace DiscoFreaks
         {
             // エフェクトを再生する
             if (FrameCount == 180)
-            {
                 EffectLayer.AddObject(ReadyGo);
-            }
 
             // エフェクトの再生が終わったらゲームを開始する
             if (!ReadyGo.IsAlive)
@@ -133,6 +138,8 @@ namespace DiscoFreaks
         // ゲーム中の処理
         private void OnPlaying()
         {
+            System.Console.WriteLine(Score[Difficulty].Notes.Count);
+
             // 音を再生する
             if (!IsSoundStarted && Note.NoteTimer.ElapsedMilliseconds >= 2000)
             {
@@ -141,6 +148,16 @@ namespace DiscoFreaks
                 SoundID = Sound.Play(source);
                 Sound.SetVolume(SoundID, Configuration.BGMVolume);
                 IsSoundStarted = true;
+            }
+
+            // バックスペースが押されたらポーズ画面へ
+            if (Input.KeyPush(Keys.Backspace))
+            {
+                Sound.Pause(SoundID);
+                Note.NoteTimer.Stop();
+                PauseLayer.IsDrawn = true;
+                PauseLayer.IsUpdated = true;
+                CurrentState = GameState.Pausing;
             }
 
             // 音の再生が終わったらゲームを終了する
@@ -153,7 +170,38 @@ namespace DiscoFreaks
         // ポーズ中の処理
         private void OnPausing()
         {
+            if (Input.KeyPush(Keys.Up))
+            {
+                int x = Math.Mod((int)PauseLayer.SelectingItem - 1, 3);
+                PauseLayer.SelectingItem = (PauseLayer.Item)x;
+            }
 
+            if (Input.KeyPush(Keys.Down))
+            {
+                int x = Math.Mod((int)PauseLayer.SelectingItem + 1, 3);
+                PauseLayer.SelectingItem = (PauseLayer.Item)x;
+            }
+
+            if (Input.KeyPush(Keys.Enter))
+            {
+                switch (PauseLayer.SelectingItem)
+                {
+                    case PauseLayer.Item.Resume:
+                        Sound.Resume(SoundID);
+                        Note.NoteTimer.Start();
+                        PauseLayer.IsDrawn = false;
+                        PauseLayer.IsUpdated = false;
+                        CurrentState = GameState.Playing;
+                        break;
+                    case PauseLayer.Item.Retry:
+                        var new_scene = new GameScene(Score, Difficulty, Configuration);
+                        Engine.ChangeSceneWithTransition(new_scene, new TransitionFade(1, 1));
+                        break;
+                    case PauseLayer.Item.Return:
+                        Engine.ChangeSceneWithTransition(new SelectScene(), new TransitionFade(1, 1));
+                        break;
+                }
+            }
         }
 
         // ゲーム終了後の処理

@@ -43,13 +43,6 @@ namespace DiscoFreaks
             AddLayer(TweetLayer);
         }
 
-        protected override void OnStartUpdating()
-        {
-            // ノートタイマーの停止
-            Note.NoteTimer.Stop();
-            Note.NoteTimer.Reset();
-        }
-
         protected override void OnUpdated()
         {
             if (CurrentMode == Mode.Result)
