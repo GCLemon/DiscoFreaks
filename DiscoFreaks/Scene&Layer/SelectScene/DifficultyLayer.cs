@@ -68,13 +68,37 @@ namespace DiscoFreaks
                 value.AddDrawnChild(label, m, t, d);
                 AddObject(value);
             }
+
+            ChangeInfoOfDifficultyShowingObjects();
         }
 
         protected override void OnUpdated()
         {
-            // View
-            //--------------------------------------------------
-            // 難易度の表示を変更する
+            if (Scene.CurrentMode == SelectScene.Mode.Difficulty)
+            {
+                void SetInfo(int move)
+                {
+                    int d = (int)Scene.Difficulty;
+
+                    for (int i = d + move; 0 <= i && i < 4; i += move)
+                        if (Scene.Score[(Difficulty)i] != null)
+                        {
+                            Scene.Difficulty = (Difficulty)i;
+                            break;
+                        }
+                }
+
+                ChangeInfoOfDifficultyShowingObjects();
+
+                // 難易度の変更
+                if (Input.KeyPush(Keys.Right)) SetInfo(1);
+                if (Input.KeyPush(Keys.Left)) SetInfo(-1);
+            }
+        }
+
+        private void ChangeInfoOfDifficultyShowingObjects()
+        {
+
             foreach (var difficulty in Enum.GetValues<Difficulty>())
             {
                 var diff = (Difficulty)difficulty;
@@ -113,38 +137,6 @@ namespace DiscoFreaks
                     DifficultyDescription.Text =
                         "廃人向けの難易度です。\n遊ぶな危険。";
                     break;
-            }
-            //--------------------------------------------------
-
-
-
-            // Controll
-            //--------------------------------------------------
-            if (Scene.CurrentMode == SelectScene.Mode.Difficulty)
-            {
-                // 難易度の変更
-                if (Input.KeyPush(Keys.Right))
-                {
-                    int d = (int)Scene.Difficulty;
-                    for (int i = d + 1; 0 <= i && i < 4; ++i)
-                        if (Scene.Score[(Difficulty)i] != null)
-                        {
-                            Scene.Difficulty = (Difficulty)i;
-                            break;
-                        }
-                }
-
-                if (Input.KeyPush(Keys.Left))
-                {
-                    int d = (int)Scene.Difficulty;
-                    for (int i = d - 1; 0 <= i && i < 4; --i)
-                        if (Scene.Score[(Difficulty)i] != null)
-                        {
-                            Scene.Difficulty = (Difficulty)i;
-                            break;
-                        }
-                }
-                //--------------------------------------------------
             }
         }
     }

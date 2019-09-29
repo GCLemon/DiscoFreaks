@@ -64,51 +64,50 @@ namespace DiscoFreaks
                 AddObject(text_obj);
 
             ScoreInfo.SetInfo();
+            ChangeInfoOfAppearingScores();
         }
 
         protected override void OnUpdated()
         {
-            // View
-            //--------------------------------------------------
-            // 画面に表示する曲名の変更
+            if (Scene.CurrentMode == SelectScene.Mode.Music)
+            {
+                void SetInfo(int move)
+                {
+                    // 譜面情報の変更
+                    ScoreID = Math.Mod(ScoreID + move, Scores.Count);
+
+                    // 再生する楽曲の変更
+                    Scene.PlayBGM();
+
+                    // 楽曲情報の変更
+                    ScoreInfo.SetInfo();
+                    ChangeInfoOfAppearingScores();
+
+                    // 選択中の難易度の変更
+                    foreach (var difficulty in Enum.GetValues<Difficulty>())
+                    {
+                        var diff = (Difficulty)difficulty;
+                        if (Scores[ScoreID][diff] != null)
+                        {
+                            Scene.Difficulty = diff;
+                            break;
+                        }
+                    }
+                }
+
+                if (Input.KeyPush(Keys.Up)) SetInfo(-1);
+                if (Input.KeyPush(Keys.Down)) SetInfo(1);
+            }
+        }
+
+        private void ChangeInfoOfAppearingScores()
+        {
             for (int i = 0; i < AppearingScores.Count; ++i)
             {
                 int id = ScoreID + i - (i >= 4 ? 3 : 4);
                 id = Math.Mod(id, Scores.Count);
                 AppearingScores[i].Text = Scores[id].Title;
             }
-            //--------------------------------------------------
-
-            // Controll
-            //--------------------------------------------------
-            if (Scene.CurrentMode == SelectScene.Mode.Music)
-            {
-                if (Input.KeyPush(Keys.Up))
-                {
-                    ScoreID = Math.Mod(ScoreID - 1, Scores.Count);
-                    Scene.PlayBGM();
-                    ScoreInfo.SetInfo();
-                }
-
-                if (Input.KeyPush(Keys.Down))
-                {
-                    ScoreID = Math.Mod(ScoreID + 1, Scores.Count);
-                    Scene.PlayBGM();
-                    ScoreInfo.SetInfo();
-                }
-
-                // 選択中の難易度の変更
-                foreach (var difficulty in Enum.GetValues<Difficulty>())
-                {
-                    var diff = (Difficulty)difficulty;
-                    if (Scores[ScoreID][diff] != null)
-                    {
-                        Scene.Difficulty = diff;
-                        break;
-                    }
-                }
-            }
-            //--------------------------------------------------
         }
     }
 }
