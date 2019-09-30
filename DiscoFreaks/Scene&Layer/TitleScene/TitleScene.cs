@@ -28,7 +28,7 @@ namespace DiscoFreaks
         public TitleScene()
         {
             // コンポーネントを追加
-            AddComponent(new BackgroundComponent("Shader/OpenGL/Title.glsl", 100), "Background");
+            AddComponent(new BackgroundComponent("Shader/OpenGL/Title.glsl"), "Background");
             AddComponent(new InputManageComponent(), "Input");
 
             // インスタンスを代入

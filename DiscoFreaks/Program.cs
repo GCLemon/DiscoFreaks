@@ -1,4 +1,5 @@
-﻿using asd;
+﻿using System.IO;
+using asd;
 
 namespace DiscoFreaks
 {
@@ -6,6 +7,10 @@ namespace DiscoFreaks
     {
         public static void Main()
         {
+            // 必要なディレクトリを用意
+            if(!Directory.Exists("HighScore"))
+                Directory.CreateDirectory("HighScore");
+
             // ビルドモードによって初期化条件を切り替える
             EngineOption option = new EngineOption
             {
@@ -31,16 +36,12 @@ namespace DiscoFreaks
             // シーンチェンジ
             Engine.ChangeSceneWithTransition(new TitleScene(), new TransitionFade(0, 1));
 
-
             // エンジンの更新処理
             while (Engine.DoEvents())
             {
                 Engine.Update();
 
-                if(Input.KeyPush(Keys.Escape))
-                {
-                    break;
-                }
+                if(Input.KeyPush(Keys.Escape)) break;
             }
 
             // エンジンの終了宣言

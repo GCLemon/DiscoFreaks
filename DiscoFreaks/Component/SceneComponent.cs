@@ -9,17 +9,15 @@ namespace DiscoFreaks
     public class BackgroundComponent : SceneComponent
     {
         private string ShaderPath;
-        private int Luminance;
 
-        public BackgroundComponent(string path, int luminance)
+        public BackgroundComponent(string path)
         {
             ShaderPath = path;
-            Luminance = luminance;
         }
 
         protected override void OnSceneRegistered()
         {
-            var back = new BackGround(ShaderPath, Luminance);
+            var back = new BackGround(ShaderPath);
             var back_layer = new Layer2D { DrawingPriority = 0};
             back_layer.AddPostEffect(back);
             Owner.AddLayer(back_layer);

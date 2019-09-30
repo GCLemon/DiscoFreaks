@@ -35,6 +35,7 @@ namespace DiscoFreaks
         private bool IsGameFinished;
 
         // レイヤー
+        private readonly Layer2D MaskLayer;
         private readonly GroundLayer GroundLayer;
         private readonly NoteLayer NoteLayer;
         private readonly InfoLayer InfoLayer;
@@ -52,22 +53,28 @@ namespace DiscoFreaks
             Score = score;
 
             // コンポーネントを追加
-            var luminance = Configuration.Luminance;
-            AddComponent(new BackgroundComponent("Shader/OpenGL/Game.glsl", luminance), "Background");
+            AddComponent(new BackgroundComponent("Shader/OpenGL/Game.glsl"), "Background");
             AddComponent(new InputManageComponent(), "Input");
 
             // インスタンスを代入
-            GroundLayer = new GroundLayer { DrawingPriority = 1 };
-            NoteLayer = new NoteLayer(score[difficulty]) { DrawingPriority = 2 };
-            EffectLayer = new Layer2D { DrawingPriority = 3 };
-            InfoLayer = new InfoLayer(score, difficulty) { DrawingPriority = 4 };
-            PauseLayer = new PauseLayer { DrawingPriority = 5 };
+            MaskLayer = new Layer2D { DrawingPriority = 1 };
+            GroundLayer = new GroundLayer { DrawingPriority = 2 };
+            NoteLayer = new NoteLayer(score[difficulty]) { DrawingPriority = 3 };
+            EffectLayer = new Layer2D { DrawingPriority = 4 };
+            InfoLayer = new InfoLayer(score, difficulty) { DrawingPriority = 5 };
+            PauseLayer = new PauseLayer { DrawingPriority = 6 };
 
             ReadyGo = new ReadyGoEffect();
         }
 
         protected override void OnRegistered()
         {
+            MaskLayer.AddObject(new GeometryObject2D
+            {
+                Shape = new RectangleShape { DrawingArea = new RectF(0, 0, 960, 720) },
+                Color = new Color(0, 0, 0, (int)((100 - Configuration.Luminance) * 2.55) )
+            });
+
             for(int i = 0; i < 24; ++i)
             {
                 Keys[] keys =
@@ -89,6 +96,7 @@ namespace DiscoFreaks
                 );
             }
 
+            AddLayer(MaskLayer);
             AddLayer(GroundLayer);
             AddLayer(NoteLayer);
             AddLayer(InfoLayer);
@@ -138,8 +146,6 @@ namespace DiscoFreaks
         // ゲーム中の処理
         private void OnPlaying()
         {
-            System.Console.WriteLine(Score[Difficulty].Notes.Count);
-
             // 音を再生する
             if (!IsSoundStarted && Note.NoteTimer.ElapsedMilliseconds >= 2000)
             {

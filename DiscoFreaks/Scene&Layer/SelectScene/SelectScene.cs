@@ -36,7 +36,7 @@ namespace DiscoFreaks
         public SelectScene()
         {
             // コンポーネントを追加
-            AddComponent(new BackgroundComponent("Shader/OpenGL/Select.glsl", 100), "Background");
+            AddComponent(new BackgroundComponent("Shader/OpenGL/Select.glsl"), "Background");
             AddComponent(new InputManageComponent(), "Input");
             AddComponent(new FixedUIComponent("Tune Select"), "FixedUI");
 

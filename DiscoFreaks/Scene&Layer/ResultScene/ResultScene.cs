@@ -27,7 +27,7 @@ namespace DiscoFreaks
             HighScore.Save(high_score, score.Title);
 
             // コンポーネントを追加
-            AddComponent(new BackgroundComponent("Shader/OpenGL/Result.glsl", 100), "Background");
+            AddComponent(new BackgroundComponent("Shader/OpenGL/Result.glsl"), "Background");
             AddComponent(new InputManageComponent(), "Input");
             AddComponent(new FixedUIComponent("Result"), "FixedUI");
 

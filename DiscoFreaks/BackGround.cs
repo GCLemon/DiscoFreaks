@@ -10,9 +10,8 @@ namespace DiscoFreaks
     {
         private readonly Stopwatch Stopwatch;
         private readonly Material2D Material;
-        private readonly int Luminance;
 
-        public BackGround(string path, int luminance)
+        public BackGround(string path)
         {
             // マテリアルの生成
             Material = Graphics.CreateMaterial(path);
@@ -20,9 +19,6 @@ namespace DiscoFreaks
             // ストップウォッチの生成・開始
             Stopwatch = new Stopwatch();
             Stopwatch.Start();
-
-            // 明るさの設定
-            Luminance = luminance;
         }
 
         protected override void OnDraw(RenderTexture2D dst, RenderTexture2D src)
@@ -30,7 +26,6 @@ namespace DiscoFreaks
             // 変数の設定
             Material.SetVector2DF("resolution", Engine.WindowSize.To2DF());
             Material.SetFloat("time", Stopwatch.ElapsedMilliseconds * 0.001f);
-            Material.SetFloat("luminance", Luminance);
 
             // マテリアルを用いて描画
             DrawOnTexture2DWithMaterial(dst, Material);
