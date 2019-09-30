@@ -29,8 +29,6 @@
 ## ゲームの流れ
 
 ### タイトルシーン
-
-
 ### 曲選択シーン・オプションシーン
 ### ゲームシーン
 ### リザルトシーン
@@ -39,6 +37,9 @@
 
 ## ゲームルール
 
+### 画面の見方
+### ノーツの種類
+### 得点・ランクの計算
 
 
 
@@ -51,16 +52,31 @@
 ## 収録楽曲
 
 - **「ぼるてーじ！」**  
-kinaphar vs CAPRa ~Wishes より~
+kinaphar vs CAPRa \~Wishes より\~
 
 - **Rosetta_Reflection**  
-dim. ~TRANSMISSION より~  
+dim. \~TRANSMISSION より\~  
+
+- **Snowy Night Fall**  
+corok-Pp \~Diamond dust より\~  
+
+- **Belaestigung**  
+Lu.Pulon \~サウンドハラスメント より\~  
+
+- **Operation_ALTAIR**  
+kinaphar vs dim. \~Alternative Current より\~  
+
+- **失われた森をとり返せ！**  
+mihiraki \~Tsukuba Dragon Legend より\~  
+
+- **ov3rflow**  
+tukumo99 \~BEAT MISSION より\~  
 
 - **breakthrough**  
-morucule ~Four on the floor より~
+morucule \~Four on the floor より\~
 
 - **Nagare-Boshi Eccentric Party Night**  
-0x63 ~THE COCONUT より~
+0x63 \~THE COCONUT より\~
 
 
 
