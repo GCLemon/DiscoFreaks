@@ -14,12 +14,16 @@ namespace DiscoFreaks
         // 現在のモード
         public Mode CurrentMode { get; private set; }
 
+        private Score SelectedScore;
+
         // レイヤー
         private readonly ResultLayer ResultLayer;
         private readonly TweetLayer TweetLayer;
 
         public ResultScene(Score score, Difficulty difficulty, Result result)
         {
+            SelectedScore = score;
+
             // 自己ベストのロード・変更・セーブ
             var high_score = HighScore.Load(score.Title);
             if (high_score[difficulty].score < result.Score)
@@ -58,7 +62,7 @@ namespace DiscoFreaks
                 {
                     // エンターで次の曲へ
                     if (Input.KeyPush(Keys.Enter))
-                        Engine.ChangeSceneWithTransition(new SelectScene(), new TransitionFade(1, 1));
+                        Engine.ChangeSceneWithTransition(new SelectScene(SelectedScore), new TransitionFade(1, 1));
 
                     // 左シフトでツイートへ
                     if (Input.KeyPush(Keys.RightShift))

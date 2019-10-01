@@ -5,8 +5,14 @@ namespace DiscoFreaks
 {
     public class DifficultyLayer : Layer2D
     {
+        // 選択された難易度
+        public Difficulty SelectedDifficulty;
+
         // レイヤーが登録されているシーン
-        private new SelectScene Scene => (SelectScene)base.Scene;
+        private new SelectScene Scene
+        {
+            get => (SelectScene)base.Scene;
+        }
 
         // コンポーネント
         public UIComponent UIComponent
@@ -78,12 +84,12 @@ namespace DiscoFreaks
             {
                 void SetInfo(int move)
                 {
-                    int d = (int)Scene.Difficulty;
+                    int d = (int)SelectedDifficulty;
 
                     for (int i = d + move; 0 <= i && i < 4; i += move)
                         if (Scene.Score[(Difficulty)i] != null)
                         {
-                            Scene.Difficulty = (Difficulty)i;
+                            SelectedDifficulty = (Difficulty)i;
                             break;
                         }
                 }
@@ -114,7 +120,7 @@ namespace DiscoFreaks
 
                 // 色の変更
                 value.Color =
-                    Scene.Difficulty == diff ?
+                    SelectedDifficulty == diff ?
                     new Color(255, 255, 255) :
                     new Color(255, 255, 255, 63);
             }

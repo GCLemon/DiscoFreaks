@@ -14,6 +14,7 @@ namespace DiscoFreaks
             // ビルドモードによって初期化条件を切り替える
             EngineOption option = new EngineOption
             {
+                ColorSpace = ColorSpaceType.LinearSpace,
 #if DEBUG
                 GraphicsDevice = GraphicsDeviceType.OpenGL,
                 WindowPosition = WindowPositionType.Centering

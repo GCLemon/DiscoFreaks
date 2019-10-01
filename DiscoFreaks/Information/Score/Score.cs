@@ -54,7 +54,6 @@ namespace DiscoFreaks
             Detail = new Dictionary<Difficulty, Detail>();
             Detail[info.Difficulty] = new Detail(info.DetailInfo);
         }
-
         public static List<Score> CreateList()
         {
             // 譜面リスト
@@ -127,7 +126,7 @@ namespace DiscoFreaks
                             beat.curr = double.Parse(matches[0].Value);
                             timing.curr = timing.prev + (beat.curr - beat.prev) / bpm * 60_000;
 
-                            while(hold_info_count < hold_info.Count)
+                            while (hold_info_count < hold_info.Count)
                             {
                                 // ホールドノートの追加
                                 var info = hold_info[hold_info_count].info;
@@ -218,7 +217,8 @@ namespace DiscoFreaks
                         x.Title == init_info.Title &&
                         x.Subtitle == init_info.Subtitle &&
                         x.SoundPath == init_info.SoundPath &&
-                        x.JacketPath == init_info.JacketPath);
+                        x.JacketPath == init_info.JacketPath
+                    );
 
                     // 条件を満たすオブジェクトがあった場合
                     // 既存のオブジェクトに詳細情報を追加

@@ -29,8 +29,8 @@ namespace DiscoFreaks
         public MenuItem SettingItem;
         public Configuration Configuration;
 
-        // シーン切り替え前に使われていたシーン
-        private readonly SelectScene UsedScene;
+        // シーン切り替え前に選択されていた譜面
+        private readonly Score SelectedScore;
 
         // レイヤー
         private readonly PlaySettingLayer PSetLayer;
@@ -45,15 +45,15 @@ namespace DiscoFreaks
         private readonly HeadUpDaisy RightMode;
 
 
-        public OptionScene(SelectScene used_scene)
+        public OptionScene(Score selected_score)
         {
             // コンポーネントを追加
             AddComponent(new BackgroundComponent("Shader/OpenGL/Option.glsl"), "Background");
             AddComponent(new InputManageComponent(), "Input");
             AddComponent(new FixedUIComponent("Play Option"), "FixedUI");
 
-            // シーンの情報を保存
-            UsedScene = used_scene;
+            // 譜面の情報を保存
+            SelectedScore = selected_score;
 
             PSetLayer = new PlaySettingLayer { DrawingPriority = 1 };
             VSetLayer = new VisualSettingLayer { DrawingPriority = 1 };
@@ -167,7 +167,7 @@ namespace DiscoFreaks
                 else
                 {
                     Configuration.Save(Configuration);
-                    Engine.ChangeSceneWithTransition(UsedScene, new TransitionFade(1, 1));
+                    Engine.ChangeSceneWithTransition(new SelectScene(SelectedScore), new TransitionFade(1, 1));
                 }
             }
         }

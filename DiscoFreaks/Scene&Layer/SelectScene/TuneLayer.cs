@@ -6,7 +6,7 @@ namespace DiscoFreaks
     public class TuneLayer : Layer2D
     {
         // 読み込んだ譜面
-        private List<Score> Scores = Score.CreateList();
+        private List<Score> Scores;
 
         // 現在選択している譜面のID
         private int ScoreID;
@@ -36,8 +36,11 @@ namespace DiscoFreaks
         private readonly List<Makinas> AppearingScores;
 
         // コンストラクタ
-        public TuneLayer()
+        public TuneLayer(Score init_score)
         {
+            // 譜面の作成
+            Scores = Score.CreateList();
+
             // コンポーネントを作成・追加
             AddComponent(new UIComponent(), "UI");
 
@@ -54,6 +57,15 @@ namespace DiscoFreaks
                 new Makinas(32, 3) { Position = new Vector2DF(30, 600), Color = new Color(255, 255, 255,  31) },
                 new Makinas(32, 3) { Position = new Vector2DF(30, 650), Color = new Color(255, 255, 255,  15) }
             };
+
+            // ScoreIDの変更
+            if (init_score != null)
+                ScoreID = Scores.FindIndex(x =>
+                    x.Title == init_score.Title &&
+                    x.Subtitle == init_score.Subtitle &&
+                    x.SoundPath == init_score.SoundPath &&
+                    x.JacketPath == init_score.JacketPath
+                );
         }
 
         protected override void OnAdded()

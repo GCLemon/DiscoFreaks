@@ -24,7 +24,11 @@ namespace DiscoFreaks
         }
 
         // 現在選択している難易度
-        public Difficulty Difficulty;
+        public Difficulty Difficulty
+        {
+            get => DiffLayer.SelectedDifficulty;
+            set => DiffLayer.SelectedDifficulty = value;
+        }
 
         // レイヤー
         private readonly TuneLayer TuneLayer;
@@ -33,7 +37,7 @@ namespace DiscoFreaks
         // 再生されている音声のID
         private int SoundID;
 
-        public SelectScene()
+        public SelectScene(Score init_score = null)
         {
             // コンポーネントを追加
             AddComponent(new BackgroundComponent("Shader/OpenGL/Select.glsl"), "Background");
@@ -41,7 +45,7 @@ namespace DiscoFreaks
             AddComponent(new FixedUIComponent("Tune Select"), "FixedUI");
 
             // インスタンスを代入
-            TuneLayer = new TuneLayer { DrawingPriority = 1, IsDrawn = false };
+            TuneLayer = new TuneLayer(init_score) { DrawingPriority = 1, IsDrawn = false };
             DiffLayer = new DifficultyLayer { DrawingPriority = 1, IsDrawn = false };
         }
 
@@ -104,7 +108,7 @@ namespace DiscoFreaks
             }
 
             else if (Input.KeyPush(Keys.RightShift))
-                Engine.ChangeSceneWithTransition(new OptionScene(this), new TransitionFade(1, 1), false);
+                Engine.ChangeSceneWithTransition(new OptionScene(Score), new TransitionFade(1, 1));
         }
 
         // 音を変更する
