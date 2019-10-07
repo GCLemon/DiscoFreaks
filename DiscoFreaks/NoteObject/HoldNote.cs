@@ -25,6 +25,7 @@ namespace DiscoFreaks
                 new TapNoteComponent("Image/HoldNote.png", NoteInfo.RightLane, NoteInfo.LeftLane),
                 "TapNote"
             );
+            AddComponent(new EffectEmitComponent(), "Effect");
 
             LinkPart = new GeometryObject2D
             {
@@ -124,13 +125,15 @@ namespace DiscoFreaks
                     var t_msec = TotalTimer.ElapsedMilliseconds;
                     double rate = (double)h_msec / t_msec;
 
-                    if (rate > 0.9) TempJudge += 0;
-                    else if (rate > 0.8) TempJudge += 1;
-                    else if (rate > 0.7) TempJudge += 2;
-                    else if (rate > 0.6) TempJudge += 3;
-                    else if (rate > 0.5) TempJudge += 4;
+                    if (rate > 0.9) TempJudge -= 1;
+                    else if (rate > 0.7) TempJudge += 0;
+                    else if (rate > 0.5) TempJudge += 1;
+                    else if (rate > 0.3) TempJudge += 2;
+                    else                 TempJudge += 3;
 
-                    if (TempJudge > 5) TempJudge = 5;
+                    if (TempJudge >= 5) TempJudge = 4;
+                    if (TempJudge <  0) TempJudge = 0;
+                    if (TempJudge >= 3)  RemoveComponent("Effect");
                     Scene.Result.ChangePointByHoldNote((Judgement)TempJudge);
 
                     Dispose();

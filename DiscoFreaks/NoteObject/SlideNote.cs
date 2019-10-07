@@ -38,12 +38,15 @@ namespace DiscoFreaks
             // ホールドされていない場合
             else
             {
+                var judgement = Judge();
+
                 bool is_pressed = JudgeKeys.Any(x => Input.KeyPush(x));
-                bool is_judgable = Judge() != Judgement.None;
+                bool is_judgable = judgement != Judgement.None;
                 if (is_pressed && is_judgable)
                 {
                     var error = NoteTimer.VisualTime - NoteInfo.VisualTiming;
-                    Scene.Result.ChangePointBySlideNote(error > 0 ? Judge() : Judgement.Just);
+                    Scene.Result.ChangePointBySlideNote(error > 0 ? judgement : Judgement.Just);
+                    if(judgement == Judgement.Near) RemoveComponent("Effect");
                     Dispose();
                 }
             }

@@ -1,4 +1,5 @@
-﻿using asd;
+﻿using System.Threading.Tasks;
+using asd;
 
 namespace DiscoFreaks
 {
@@ -31,9 +32,10 @@ namespace DiscoFreaks
         private readonly ScoreDozer Miss;
         private readonly ScoreDozer Combo;
 
-        private readonly RankObject Rank;
+        private readonly TextureObject2D RankObject;
+        private readonly TextureObject2D RankImpact;
 
-        public ResultLayer(Score score , Difficulty difficulty, Result result)
+        public ResultLayer(Score score, Difficulty difficulty, Result result)
         {
             // コンポーネントを作成・追加
             AddComponent(new UIComponent(), "UI");
@@ -136,7 +138,20 @@ namespace DiscoFreaks
                 IsDrawn = false
             };
 
-            Rank = new RankObject(result.Rank);
+            RankObject = new TextureObject2D
+            {
+                Texture = Graphics.CreateTexture("Image/Rank_" + result.Rank + ".png"),
+                CenterPosition = new Vector2DF(165, 105),
+                Position = new Vector2DF(765, 540),
+                IsDrawn = false
+            };
+            RankImpact = new TextureObject2D
+            {
+                Texture = Graphics.CreateTexture("Image/Rank_" + result.Rank + ".png"),
+                CenterPosition = new Vector2DF(165, 105),
+                Position = new Vector2DF(765, 540),
+                IsDrawn = false
+            };
             //--------------------------------------------------
         }
 
@@ -168,7 +183,9 @@ namespace DiscoFreaks
             AddObject(Combo);
             AddObject(ScoreLabel);
             AddObject(ScoreValue);
-            AddObject(Rank);
+
+            base.AddObject(RankObject);
+            base.AddObject(RankImpact);
             //--------------------------------------------------
         }
 
@@ -194,17 +211,23 @@ namespace DiscoFreaks
                 if (Frame == 170) { Trigger(Near); Near.IsDrawn = true; }
                 if (Frame == 180) { Trigger(Miss); Miss.IsDrawn = true; }
                 if (Frame == 190) { Trigger(Combo); Combo.IsDrawn = true; }
-                if (Frame == 230) Rank.Impact();
+                if (Frame == 230)
+                {
+                    RankObject.IsDrawn = true;
+                    RankImpact.IsDrawn = true;
+                }
+                if (230 <= Frame && Frame < 250)
+                {
+                    var v = (Frame - 230) / 20.0f;
+                    var s = 1.2 - (1.0 - v) * (1.0 - v) * (1.0 - v) * 0.2f;
+
+                    RankImpact.Color = new Color(255, 255, 255, (int)(255 * (1.0 - v)));
+                    RankImpact.Scale = new Vector2DF((float)s, (float)s);
+                }
 
                 if (Frame == 250) ShowAll();
 
                 ++Frame;
-            }
-            else if(!IsResultTaken)
-            {
-                // スクリーンショットの撮影
-                Engine.TakeScreenshot("Result.png");
-                IsResultTaken = true;
             }
         }
 
@@ -234,8 +257,7 @@ namespace DiscoFreaks
             Reset(Combo, new Vector2DF(350, 630));
             //--------------------------------------------------
 
-            // インパクト再生の中止
-            Rank.Interrupt();
+            RankImpact.Dispose();
         }
     }
 }

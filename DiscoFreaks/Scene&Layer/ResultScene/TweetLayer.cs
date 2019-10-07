@@ -164,6 +164,8 @@ namespace DiscoFreaks
 
         private void OnFinished()
         {
+            System.IO.File.Delete("Result.png");
+
             if (Frame == 0)
             {
                 ((ITextComponent)Announce.GetComponent("FadeOut")).Trigger();

@@ -37,7 +37,7 @@ namespace DiscoFreaks
         // 再生されている音声のID
         private int SoundID;
 
-        public SelectScene(Score init_score = null)
+        public SelectScene(Score init_score = null, int sound_id = 0)
         {
             // コンポーネントを追加
             AddComponent(new BackgroundComponent("Shader/OpenGL/Select.glsl"), "Background");
@@ -47,6 +47,9 @@ namespace DiscoFreaks
             // インスタンスを代入
             TuneLayer = new TuneLayer(init_score) { DrawingPriority = 1, IsDrawn = false };
             DiffLayer = new DifficultyLayer { DrawingPriority = 1, IsDrawn = false };
+
+            // SoundIDの設定
+            SoundID = sound_id;
         }
 
         protected override void OnRegistered()
@@ -108,7 +111,7 @@ namespace DiscoFreaks
             }
 
             else if (Input.KeyPush(Keys.RightShift))
-                Engine.ChangeSceneWithTransition(new OptionScene(Score), new TransitionFade(1, 1));
+                Engine.ChangeSceneWithTransition(new OptionScene(Score, SoundID), new TransitionFade(1, 1));
         }
 
         // 音を変更する

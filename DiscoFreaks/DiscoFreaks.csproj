@@ -80,7 +80,7 @@
     <Compile Include="Scene&amp;Layer\GameScene\GroundLayer.cs" />
     <Compile Include="Scene&amp;Layer\GameScene\InfoLayer.cs" />
     <Compile Include="Information\Result.cs" />
-    <Compile Include="Component\TextComponent.cs" />
+    <Compile Include="Component\ObjectComponent.cs" />
     <Compile Include="NoteObject\EndNote.cs" />
     <Compile Include="Component\NoteComponent.cs" />
     <Compile Include="EmptyObject.cs" />
@@ -94,7 +94,6 @@
     <Compile Include="SpriteEffect\ReadyGoEffect.cs" />
     <Compile Include="Scene&amp;Layer\ResultScene\ResultLayer.cs" />
     <Compile Include="Information\HighScore.cs" />
-    <Compile Include="Scene&amp;Layer\ResultScene\RankObject.cs" />
     <Compile Include="Scene&amp;Layer\SelectScene\ScoreInfoObject.cs" />
     <Compile Include="TweetManager.cs" />
     <Compile Include="Scene&amp;Layer\ResultScene\TweetLayer.cs" />

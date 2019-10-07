@@ -31,6 +31,7 @@ namespace DiscoFreaks
 
         // シーン切り替え前に選択されていた譜面
         private readonly Score SelectedScore;
+        private readonly int PlayingSoundID;
 
         // レイヤー
         private readonly PlaySettingLayer PSetLayer;
@@ -45,7 +46,7 @@ namespace DiscoFreaks
         private readonly HeadUpDaisy RightMode;
 
 
-        public OptionScene(Score selected_score)
+        public OptionScene(Score selected_score, int sound_id)
         {
             // コンポーネントを追加
             AddComponent(new BackgroundComponent("Shader/OpenGL/Option.glsl"), "Background");
@@ -65,6 +66,9 @@ namespace DiscoFreaks
             RightMode = new HeadUpDaisy(24, 4, center) { Position = new Vector2DF(860, 40) };
 
             Configuration = Configuration.Load();
+
+            // BGMの情報を保存
+            PlayingSoundID = sound_id;
         }
 
         protected override void OnRegistered()
@@ -167,7 +171,7 @@ namespace DiscoFreaks
                 else
                 {
                     Configuration.Save(Configuration);
-                    Engine.ChangeSceneWithTransition(new SelectScene(SelectedScore), new TransitionFade(1, 1));
+                    Engine.ChangeSceneWithTransition(new SelectScene(SelectedScore, PlayingSoundID), new TransitionFade(1, 1));
                 }
             }
         }

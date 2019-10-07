@@ -35,7 +35,28 @@ namespace DiscoFreaks
 #endif
 
             // シーンチェンジ
+#if DEBUG
+            var IsFirstResult = false;
+            if(IsFirstResult)
+            {
+                var score = Score.CreateList()[7];
+                var diff = Difficulty.Casual;
+                var result = new Result(score[diff]);
+                foreach(var n in score[diff].Notes)
+                {
+                    if (n is TapNote) result.ChangePointByTapNote(Judgement.Just);
+                    if (n is HoldNote) result.ChangePointByHoldNote(Judgement.Just);
+                    if (n is SlideNote) result.ChangePointBySlideNote(Judgement.Just);
+                }
+                Engine.ChangeScene(new ResultScene(score, diff, result));
+            }
+            else
+            {
+                Engine.ChangeSceneWithTransition(new TitleScene(), new TransitionFade(0, 1));
+            }
+#else
             Engine.ChangeSceneWithTransition(new TitleScene(), new TransitionFade(0, 1));
+#endif
 
             // エンジンの更新処理
             while (Engine.DoEvents())

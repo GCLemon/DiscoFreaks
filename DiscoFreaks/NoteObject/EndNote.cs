@@ -11,7 +11,6 @@
                 new TapNoteComponent("Image/HoldNote.png", NoteInfo.RightLane, NoteInfo.LeftLane),
                 "TapNote"
             );
-            AddComponent(new EffectEmitComponent(), "Effect");
         }
 
         protected override void OnUpdate()

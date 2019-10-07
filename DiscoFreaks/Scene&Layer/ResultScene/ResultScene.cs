@@ -67,6 +67,8 @@ namespace DiscoFreaks
                     // 左シフトでツイートへ
                     if (Input.KeyPush(Keys.RightShift))
                     {
+                        Engine.TakeScreenshot("Result.png");
+
                         ((UIComponent)ResultLayer.GetComponent("UI")).MoveLeft();
                         ((UIComponent)TweetLayer.GetComponent("UI")).MoveLeft();
                         CurrentMode = Mode.Tweet;
