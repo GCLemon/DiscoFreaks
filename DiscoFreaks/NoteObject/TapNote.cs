@@ -7,10 +7,11 @@ namespace DiscoFreaks
     /// </summary>
     public class TapNote : Note
     {
-        public TapNote(NoteInfo note_info) : base(note_info)
+        public TapNote(int left_lane, int right_lane, long visual_timing, long audio_timing)
+            :　base(left_lane, right_lane, visual_timing, audio_timing)
         {
             AddComponent(
-                new TapNoteComponent("Image/TapNote.png", NoteInfo.RightLane, NoteInfo.LeftLane),
+                new TapNoteComponent("Image/TapNote.png", RightLane, LeftLane),
                 "TapNote"
             );
             AddComponent(new EffectEmitComponent(), "Effect");

@@ -11,17 +11,17 @@ namespace DiscoFreaks
         public int Ofset { get; }
         public double InitialBPM { get; }
 
-        public Queue<Note> Notes { get; }
-        public Queue<Note.SofLan> SofLans { get; }
+        public List<NoteInfo> Notes { get; }
+        public List<SofLanInfo> SofLans { get; }
 
         internal Detail (InitInfo.Detail info)
         {
-            info.Notes.Sort((x, y) => (int)(x.NoteInfo.AudioTiming - y.NoteInfo.AudioTiming));
+            info.Notes.Sort((x, y) => (int)(x.AudioTiming - y.AudioTiming));
             Level = info.Level;
             Ofset = info.Ofset;
             InitialBPM = info.InitialBPM;
-            Notes = new Queue<Note>(info.Notes);
-            SofLans = new Queue<Note.SofLan>(info.SofLans);
+            Notes = new List<NoteInfo>(info.Notes);
+            SofLans = new List<SofLanInfo>(info.SofLans);
         }
     }
 }

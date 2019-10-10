@@ -13,8 +13,8 @@ namespace DiscoFreaks
             public int Ofset;
             public double InitialBPM;
 
-            public List<Note> Notes;
-            public List<Note.SofLan> SofLans;
+            public List<NoteInfo> Notes;
+            public List<SofLanInfo> SofLans;
         }
 
         public string Title;

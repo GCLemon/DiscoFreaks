@@ -72,7 +72,7 @@ namespace DiscoFreaks
             {
                 Position = new Vector2DF(990, 530)
             };
-            AndYou = new CreditObject("...そして、このゲームをプレイしてくださっているあなた", "この度は Disco Freaks をご遊戯いただき、誠にありがとうございます。")
+            AndYou = new CreditObject("...そして、このゲームをプレイしてくださっているあなた方", "この度は Disco Freaks をご遊戯いただき、誠にありがとうございます。")
             {
                 Position = new Vector2DF(990, 610)
             };

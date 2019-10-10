@@ -200,9 +200,7 @@ namespace DiscoFreaks
                         CurrentState = GameState.Playing;
                         break;
                     case PauseLayer.Item.Retry:
-                        var score_list = Score.CreateList();
-                        var score = score_list.Find(x => x.Title == Score.Title);
-                        var new_scene = new GameScene(score, Difficulty, Configuration);
+                        var new_scene = new GameScene(Score, Difficulty, Configuration);
                         Engine.ChangeSceneWithTransition(new_scene, new TransitionFade(1, 1));
                         break;
                     case PauseLayer.Item.Return:

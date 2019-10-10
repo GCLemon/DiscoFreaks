@@ -27,14 +27,6 @@ namespace DiscoFreaks
         Miss
     }
 
-    public class NoteInfo
-    {
-        public int LeftLane;
-        public int RightLane;
-        public long VisualTiming;
-        public long AudioTiming;
-    }
-
     /// <summary>
     /// ノーツの親クラス
     /// </summary>
@@ -71,7 +63,10 @@ namespace DiscoFreaks
         public static readonly NoteTimer NoteTimer = new NoteTimer();
 
         // 基本情報
-        public readonly NoteInfo NoteInfo;
+        public readonly int LeftLane;
+        public readonly int RightLane;
+        public readonly long VisualTiming;
+        public readonly long AudioTiming;
 
         // レーン番号に対応するキー
         protected readonly List<Keys> JudgeKeys;
@@ -79,14 +74,17 @@ namespace DiscoFreaks
         // 登録されているシーン
         public GameScene Scene { get => (GameScene)Layer.Scene; }
 
-        public Note(NoteInfo note_info)
+        public Note(int left_lane, int right_lane, long visual_timing, long audio_timing)
         {
             // 基本情報の設定
-            NoteInfo = note_info;
+            LeftLane = left_lane;
+            RightLane = right_lane;
+            VisualTiming = visual_timing;
+            AudioTiming = audio_timing;
 
             // キーの設定
             JudgeKeys = new List<Keys>();
-            for (int i = note_info.LeftLane - 1; i <= note_info.RightLane + 1; ++i)
+            for (int i = LeftLane - 1; i <= RightLane + 1; ++i)
             {
                 Keys[] keys =
                 {
@@ -107,8 +105,8 @@ namespace DiscoFreaks
         protected override void OnUpdate()
         {
             // 描画位置の設定
-            var error = NoteTimer.VisualTime - NoteInfo.VisualTiming;
-            var pos_x = 120 + 30 * NoteInfo.LeftLane;
+            var error = NoteTimer.VisualTime -VisualTiming;
+            var pos_x = 120 + 30 * LeftLane;
             var pos_y = 600 + error * 0.075f * HighSpeed;
             Position = new Vector2DF(pos_x, (float)pos_y);
 
@@ -135,8 +133,8 @@ namespace DiscoFreaks
         protected bool IsOverlapped(Note note)
         {
             var state1 = note.Position.Y > Position.Y;
-            var state2 = NoteInfo.LeftLane < note.NoteInfo.RightLane;
-            var state3 = note.NoteInfo.LeftLane < NoteInfo.RightLane;
+            var state2 = LeftLane < note.RightLane;
+            var state3 = note.LeftLane < RightLane;
             return state1 && state2 && state3;
         }
 
@@ -145,7 +143,7 @@ namespace DiscoFreaks
         /// </summary>
         protected Judgement Judge()
         {
-            var error = NoteTimer.AudioTime - NoteInfo.AudioTiming;
+            var error = NoteTimer.AudioTime - AudioTiming;
 
             if (Math.Abs(error) <= 33) return Judgement.Just;
             if (Math.Abs(error) <= 67) return Judgement.Cool;

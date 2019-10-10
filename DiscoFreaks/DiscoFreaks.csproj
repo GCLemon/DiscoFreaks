@@ -17,6 +17,7 @@
     <DefineConstants>DEBUG</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -40,6 +41,7 @@
         </Command>
       </CustomCommands>
     </CustomCommands>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -101,6 +103,7 @@
     <Compile Include="Scene&amp;Layer\GameScene\PauseLayer.cs" />
     <Compile Include="Scene&amp;Layer\TitleScene\MenuLayer.cs" />
     <Compile Include="Scene&amp;Layer\TitleScene\CreditLayer.cs" />
+    <Compile Include="NoteObject\NoteInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scene&amp;Layer\" />
@@ -114,6 +117,7 @@
     <Folder Include="Information\Score\" />
     <Folder Include="Scene&amp;Layer\ResultScene\" />
     <Folder Include="SpriteEffect\" />
+    <Folder Include="Scene&amp;Layer\TutorialScene\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -54,6 +54,7 @@ namespace DiscoFreaks
             Detail = new Dictionary<Difficulty, Detail>();
             Detail[info.Difficulty] = new Detail(info.DetailInfo);
         }
+
         public static List<Score> CreateList()
         {
             // 譜面リスト
@@ -72,8 +73,8 @@ namespace DiscoFreaks
                     Level = 1,
                     Ofset = 0,
                     InitialBPM = 120,
-                    Notes = new List<Note>(),
-                    SofLans = new List<Note.SofLan>()
+                    Notes = new List<NoteInfo>(),
+                    SofLans = new List<SofLanInfo>()
                 }
             };
 
@@ -132,17 +133,12 @@ namespace DiscoFreaks
                                 var info = hold_info[hold_info_count].info;
                                 var end_beat = hold_info[hold_info_count].end_beat;
                                 var _timing = timing.prev + (end_beat - beat.prev) / bpm * 60_000;
-                                var endinfo = new NoteInfo
-                                {
-                                    LeftLane = info.LeftLane,
-                                    RightLane = info.RightLane,
-                                    VisualTiming = (long)(speed * _timing + intercept),
-                                    AudioTiming = (long)_timing
-                                };
+                                info.VisualLength = (long)(speed * _timing + intercept) - info.VisualTiming;
+                                info.AudioLength = (long)_timing - info.AudioTiming;
 
                                 if (end_beat > beat.curr) break;
 
-                                init_info.DetailInfo.Notes.Add(new HoldNote(info, endinfo));
+                                init_info.DetailInfo.Notes.Add(info);
                                 ++hold_info_count;
                             }
 
@@ -151,13 +147,14 @@ namespace DiscoFreaks
                                 case "tap_note":
 
                                     // タップノートを追加する
-                                    init_info.DetailInfo.Notes.Add(new TapNote(new NoteInfo
+                                    init_info.DetailInfo.Notes.Add(new NoteInfo
                                     {
+                                        Type = NoteType.TapNote,
                                         LeftLane = int.Parse(matches[1].Value),
                                         RightLane = int.Parse(matches[1].Value) + int.Parse(matches[2].Value) - 1,
                                         VisualTiming = (long)(speed * timing.curr + intercept),
                                         AudioTiming = (long)timing.curr
-                                    }));
+                                    }); ;
 
                                     break;
 
@@ -166,6 +163,7 @@ namespace DiscoFreaks
                                     // ホールドノートを一旦保留する
                                     var info = new NoteInfo
                                     {
+                                        Type = NoteType.HoldNote,
                                         LeftLane = int.Parse(matches[2].Value),
                                         RightLane = int.Parse(matches[2].Value) + int.Parse(matches[3].Value) - 1,
                                         VisualTiming = (long)(speed * timing.curr + intercept),
@@ -179,13 +177,14 @@ namespace DiscoFreaks
                                 case "slide_note":
 
                                     // スライドノートを追加する
-                                    init_info.DetailInfo.Notes.Add(new SlideNote(new NoteInfo
+                                    init_info.DetailInfo.Notes.Add(new NoteInfo
                                     {
+                                        Type = NoteType.SlideNote,
                                         LeftLane = int.Parse(matches[1].Value),
                                         RightLane = int.Parse(matches[1].Value) + int.Parse(matches[2].Value) - 1,
                                         VisualTiming = (long)(speed * timing.curr + intercept),
                                         AudioTiming = (long)timing.curr
-                                    }));
+                                    });
 
                                     break;
 
@@ -194,7 +193,11 @@ namespace DiscoFreaks
                                     // ソフランを追加する
                                     intercept += (speed - double.Parse(matches[1].Value)) * timing.curr;
                                     speed = double.Parse(matches[1].Value);
-                                    var sof_lan = new Note.SofLan((long)timing.curr, speed);
+                                    var sof_lan = new SofLanInfo
+                                    {
+                                        Timing = (long)timing.curr,
+                                        AfterSpeed = speed
+                                    };
                                     init_info.DetailInfo.SofLans.Add(sof_lan);
 
                                     break;

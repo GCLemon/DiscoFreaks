@@ -133,9 +133,9 @@ namespace DiscoFreaks
         {
             just = cool = good = near = miss = note_point = 0;
             max_note_point =
-                    detail.Notes.Count(x => x is TapNote) * 50 +
-                    detail.Notes.Count(x => x is HoldNote) * 80 +
-                    detail.Notes.Count(x => x is SlideNote) * 10;
+                    detail.Notes.Count(x => x.Type == NoteType.TapNote) * 50 +
+                    detail.Notes.Count(x => x.Type == NoteType.HoldNote) * 80 +
+                    detail.Notes.Count(x => x.Type == NoteType.SlideNote) * 10;
 
             combo = best_combo = 0;
             max_combo = detail.Notes.Count();

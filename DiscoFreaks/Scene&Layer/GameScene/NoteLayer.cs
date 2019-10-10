@@ -10,14 +10,19 @@ namespace DiscoFreaks
 
         public NoteLayer(Detail detail)
         {
-            Notes = new Queue<Note>(detail.Notes);
-            SofLans = new Queue<Note.SofLan>(detail.SofLans);
+            Notes = new Queue<Note>();
+            foreach (var note_info in detail.Notes)
+                Notes.Enqueue(note_info.Instanciate());
+
+            SofLans = new Queue<Note.SofLan>();
+            foreach (var note_info in detail.SofLans)
+                SofLans.Enqueue(note_info.Instanciate());
         }
 
         protected override void OnAdded()
         {
             // ノートを追加
-            while (Notes.Peek().NoteInfo.VisualTiming < 10000)
+            while (Notes.Peek().VisualTiming < 10000)
                 AddObject(Notes.Dequeue());
 
             // ソフランオブジェクトを追加
@@ -31,7 +36,7 @@ namespace DiscoFreaks
             {
                 // 必要以上の追加を行わないように
                 // 追加を制限する
-                var timing = Notes.Peek().NoteInfo.VisualTiming;
+                var timing = Notes.Peek().VisualTiming;
                 var border = Note.NoteTimer.VisualTime + 10000;
                 if (timing > border) break;
 

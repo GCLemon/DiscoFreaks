@@ -7,10 +7,11 @@ namespace DiscoFreaks
     /// </summary>
     public class SlideNote : Note
     {
-        public SlideNote(NoteInfo note_info)　: base(note_info)
+        public SlideNote(int left_lane, int right_lane, long visual_timing, long audio_timing)
+            : base(left_lane, right_lane, visual_timing, audio_timing)
         {
             AddComponent(
-                new SlideNoteComponent("Image/SlideNote.png", note_info.RightLane, note_info.LeftLane),
+                new SlideNoteComponent("Image/SlideNote.png", RightLane, LeftLane),
                 "SlideNote"
             );
             AddComponent(new EffectEmitComponent(), "Effect");
@@ -44,7 +45,7 @@ namespace DiscoFreaks
                 bool is_judgable = judgement != Judgement.None;
                 if (is_pressed && is_judgable)
                 {
-                    var error = NoteTimer.VisualTime - NoteInfo.VisualTiming;
+                    var error = NoteTimer.VisualTime - VisualTiming;
                     Scene.Result.ChangePointBySlideNote(error > 0 ? judgement : Judgement.Just);
                     if(judgement == Judgement.Near) RemoveComponent("Effect");
                     Dispose();
