@@ -39,7 +39,7 @@ namespace DiscoFreaks
             var IsFirstResult = false;
             if(IsFirstResult)
             {
-                var score = Score.CreateList()[7];
+                var score = Score.CreateList()[5];
                 var diff = Difficulty.Casual;
                 var result = new Result(score[diff]);
                 foreach(var n in score[diff].Notes)

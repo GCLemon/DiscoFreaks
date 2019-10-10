@@ -7,23 +7,11 @@ namespace DiscoFreaks
     /// </summary>
     public class TitleScene : Scene
     {
-        // タイトルシーンでのメニューの項目
-        private enum MenuItem
-        {
-            StartGame,
-            Tutorial,
-            Credits,
-            QuitGame
-        }
-
-        // 現在選択している項目
-        private MenuItem SelectingItem;
-
         // レイヤー
-        private readonly Layer2D TextLayer;
+        private readonly MenuLayer MenuLayer;
+        private readonly CreditLayer CreditLayer;
 
-        // メニューアイテム
-        private readonly GridGazer[] MenuItems;
+        private bool IsShowingCredits;
 
         public TitleScene()
         {
@@ -32,82 +20,53 @@ namespace DiscoFreaks
             AddComponent(new InputManageComponent(), "Input");
 
             // インスタンスを代入
-            TextLayer = new Layer2D { DrawingPriority = 1 };
-            MenuItems = new GridGazer[]
-            {
-                new GridGazer(48, 4, new Vector2DF(0.5f, 0.5f))
-                {
-                    Text = "Start Game",
-                    Position = new Vector2DF(480, 500)
-                },
-                new GridGazer(48, 4, new Vector2DF(0.5f, 0.5f))
-                {
-                    Text = "Tutorial",
-                    Position = new Vector2DF(480, 560)
-                },
-                new GridGazer(48, 4, new Vector2DF(0.5f, 0.5f))
-                {
-                    Text = "Credits",
-                    Position = new Vector2DF(480, 620)
-                },
-                new GridGazer(48, 4, new Vector2DF(0.5f, 0.5f))
-                {
-                    Text = "Quit Game",
-                    Position = new Vector2DF(480, 680)
-                }
-            };
+            MenuLayer = new MenuLayer { DrawingPriority = 1 };
+            CreditLayer = new CreditLayer { DrawingPriority = 2 };
         }
 
         protected override void OnRegistered()
         {
-            // 中心座標
-            Vector2DF center = new Vector2DF(0.5f, 0.5f);
-
-            // シーンのタイトル
-            ScoreDozer title = new ScoreDozer(96, 0, center)
-            {
-                Text = "Disco Freaks",
-                Position = new Vector2DF(480, 120)
-            };
-            TextLayer.AddObject(title);
-
-            // メニューアイテム
-            foreach (var item in MenuItems)
-                TextLayer.AddObject(item);
-
             // レイヤーの追加
-            AddLayer(TextLayer);
+            AddLayer(MenuLayer);
+            AddLayer(CreditLayer);
         }
 
         protected override void OnUpdated()
         {
-            // メニュー項目の色を設定する
-            for(int i = 0; i < 4; ++i)
-            {
-                var alpha = (SelectingItem == (MenuItem)i) ? 255 : 63;
-                MenuItems[i].Color = new Color(255, 255, 255, alpha);
-            }
-
             // ユーザー操作を受付
-            if (Input.KeyPush(Keys.Up)) --SelectingItem;
-            if (Input.KeyPush(Keys.Down)) ++SelectingItem;
-            var id = Math.Mod((int)SelectingItem, 4);
-            SelectingItem = (MenuItem)id;
+            if (Input.KeyPush(Keys.Up)) --MenuLayer.SelectingItem;
+            if (Input.KeyPush(Keys.Down)) ++MenuLayer.SelectingItem;
+            var id = Math.Mod((int)MenuLayer.SelectingItem, 4);
+            MenuLayer.SelectingItem = (MenuLayer.MenuItem)id;
 
             if (Input.KeyPush(Keys.Enter))
-                switch (SelectingItem)
+            {
+                if(IsShowingCredits)
                 {
-                    case MenuItem.StartGame:
-                        Engine.ChangeSceneWithTransition(new SelectScene(), new TransitionFade(1, 1));
-                        break;
-                    case MenuItem.Tutorial:
-                        break;
-                    case MenuItem.Credits:
-                        break;
-                    case MenuItem.QuitGame:
-                        Engine.Close();
-                        break;
+                    IsShowingCredits = false;
+                    MenuLayer.UIComponent.MoveRight();
+                    CreditLayer.UIComponent.MoveRight();
                 }
+                else
+                {
+                    switch (MenuLayer.SelectingItem)
+                    {
+                        case MenuLayer.MenuItem.StartGame:
+                            Engine.ChangeSceneWithTransition(new SelectScene(), new TransitionFade(1, 1));
+                            break;
+                        case MenuLayer.MenuItem.Tutorial:
+                            break;
+                        case MenuLayer.MenuItem.Credits:
+                            IsShowingCredits = true;
+                            MenuLayer.UIComponent.MoveLeft();
+                            CreditLayer.UIComponent.MoveLeft();
+                            break;
+                        case MenuLayer.MenuItem.QuitGame:
+                            Engine.Close();
+                            break;
+                    }
+                }
+            }
         }
     }
 }

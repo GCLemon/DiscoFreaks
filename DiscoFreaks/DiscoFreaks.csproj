@@ -99,6 +99,8 @@
     <Compile Include="Scene&amp;Layer\ResultScene\TweetLayer.cs" />
     <Compile Include="Scene&amp;Layer\ResultScene\PINObject.cs" />
     <Compile Include="Scene&amp;Layer\GameScene\PauseLayer.cs" />
+    <Compile Include="Scene&amp;Layer\TitleScene\MenuLayer.cs" />
+    <Compile Include="Scene&amp;Layer\TitleScene\CreditLayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scene&amp;Layer\" />

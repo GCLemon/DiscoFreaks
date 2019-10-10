@@ -152,6 +152,7 @@ namespace DiscoFreaks
                     LevelInfos[difficulty].Label.Text = "";
                     LevelInfos[difficulty].Value.Text = "";
                     LevelInfos[difficulty].Score.Text = "";
+                    LevelInfos[difficulty].Rank.Text = "";
                     LevelInfos[difficulty].Judge.Text = "";
                 }
             }
