@@ -21,18 +21,30 @@ namespace DiscoFreaks
         {
             base.OnUpdate();
 
-            // キーの押下によって判定
-            if (!Layer.Objects.Where(x => x is Note).Any(x => IsOverlapped((Note)x)))
+            if (IsAutoPlaying)
             {
                 var judgement = Judge();
-
-                bool is_pressed = JudgeKeys.Any(x => Input.KeyPush(x));
-                bool is_judgable = judgement != Judgement.None;
-                if (is_pressed && is_judgable)
+                if (judgement == Judgement.Just || NoteTimer.AudioTime - AudioTiming > 0)
                 {
                     Scene.Result.ChangePointByTapNote(judgement);
-                    if(judgement == Judgement.Near) RemoveComponent("Effect");
+                    if (judgement == Judgement.Near) RemoveComponent("Effect");
                     Dispose();
+                }
+            }
+            else
+            {
+                // キーの押下によって判定
+                if (!Layer.Objects.Where(x => x is Note).Any(x => IsOverlapped((Note)x)))
+                {
+                    var judgement = Judge();
+                    bool is_pressed = JudgeKeys.Any(x => Input.KeyPush(x));
+                    bool is_judgable = judgement != Judgement.None;
+                    if (is_pressed && is_judgable)
+                    {
+                        Scene.Result.ChangePointByTapNote(judgement);
+                        if (judgement == Judgement.Near) RemoveComponent("Effect");
+                        Dispose();
+                    }
                 }
             }
 

@@ -14,14 +14,16 @@ namespace DiscoFreaks
         // 現在のモード
         public Mode CurrentMode { get; private set; }
 
+        private bool AllowTweet;
         private Score SelectedScore;
 
         // レイヤー
         private readonly ResultLayer ResultLayer;
         private readonly TweetLayer TweetLayer;
 
-        public ResultScene(Score score, Difficulty difficulty, Result result)
+        public ResultScene(Score score, Difficulty difficulty, Result result, bool allow_tweet)
         {
+            AllowTweet = allow_tweet;
             SelectedScore = score;
 
             // 自己ベストのロード・変更・セーブ
@@ -64,17 +66,27 @@ namespace DiscoFreaks
                     if (Input.KeyPush(Keys.Enter))
                         Engine.ChangeSceneWithTransition(new SelectScene(SelectedScore), new TransitionFade(1, 1));
 
-                    // 左シフトでツイートへ
-                    if (Input.KeyPush(Keys.RightShift))
+                    if (AllowTweet)
                     {
-                        Engine.TakeScreenshot("Result.png");
+                        // 左シフトでツイートへ
+                        if (Input.KeyPush(Keys.RightShift))
+                        {
+                            Engine.TakeScreenshot("Result.png");
 
-                        ((UIComponent)ResultLayer.GetComponent("UI")).MoveLeft();
-                        ((UIComponent)TweetLayer.GetComponent("UI")).MoveLeft();
-                        CurrentMode = Mode.Tweet;
+                            ((UIComponent)ResultLayer.GetComponent("UI")).MoveLeft();
+                            ((UIComponent)TweetLayer.GetComponent("UI")).MoveLeft();
+                            CurrentMode = Mode.Tweet;
+                        }
                     }
                 }
             }
+        }
+
+        protected override void OnTransitionBegin()
+        {
+            var config = Configuration.Load();
+            config.AutoMode = false;
+            Configuration.Save(config);
         }
     }
 }

@@ -82,7 +82,7 @@
     <Compile Include="Scene&amp;Layer\GameScene\GroundLayer.cs" />
     <Compile Include="Scene&amp;Layer\GameScene\InfoLayer.cs" />
     <Compile Include="Information\Result.cs" />
-    <Compile Include="Component\ObjectComponent.cs" />
+    <Compile Include="Component\TextComponent.cs" />
     <Compile Include="NoteObject\EndNote.cs" />
     <Compile Include="Component\NoteComponent.cs" />
     <Compile Include="EmptyObject.cs" />
@@ -104,6 +104,7 @@
     <Compile Include="Scene&amp;Layer\TitleScene\MenuLayer.cs" />
     <Compile Include="Scene&amp;Layer\TitleScene\CreditLayer.cs" />
     <Compile Include="NoteObject\NoteInfo.cs" />
+    <Compile Include="Scene&amp;Layer\TutorialScene\TutorialScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scene&amp;Layer\" />

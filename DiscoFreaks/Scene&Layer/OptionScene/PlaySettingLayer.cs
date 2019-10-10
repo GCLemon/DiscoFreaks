@@ -23,7 +23,8 @@ namespace DiscoFreaks
         private readonly GridGazer PlaySetting;
         private readonly GridGazer HighSpeed;
         private readonly GridGazer Ofset;
-        
+        private readonly GridGazer AutoMode;
+
         public PlaySettingLayer()
         {
             // コンポーネントを作成・追加
@@ -38,6 +39,7 @@ namespace DiscoFreaks
             };
             HighSpeed = new GridGazer(36, 4, center) { Position = new Vector2DF(480, 250) };
             Ofset = new GridGazer(36, 4, center) { Position = new Vector2DF(480, 300) };
+            AutoMode = new GridGazer(36, 4, center) { Position = new Vector2DF(480, 350) };
         }
 
         protected override void OnAdded()
@@ -45,6 +47,7 @@ namespace DiscoFreaks
             AddObject(PlaySetting);
             AddObject(HighSpeed);
             AddObject(Ofset);
+            AddObject(AutoMode);
         }
 
         protected override void OnUpdated()
@@ -56,9 +59,11 @@ namespace DiscoFreaks
 
             HighSpeed.Text = string.Format("High Speed : x{0}", config.HighSpeed.ToString("0.0"));
             Ofset.Text = string.Format("Ofset : {0}ms", config.Ofset.ToString("+0;-0;±0"));
+            AutoMode.Text = string.Format("Auto Play : " + (config.AutoMode ? "ON" : "OFF"));
 
             HighSpeed.Color =
-                Ofset.Color = new Color(255, 255, 255, 63);
+                Ofset.Color =
+             AutoMode.Color = new Color(255, 255, 255, 63);
             switch (Scene.SettingItem)
             {
                 case OptionScene.MenuItem.HighSpeed:
@@ -68,6 +73,10 @@ namespace DiscoFreaks
                 case OptionScene.MenuItem.Ofset:
                     Ofset.Color = new Color(255, 255, Scene.SettingSwitch ? 0 : 255, 255);
                     Scene.ItemDescription.Text = "判定のタイミングを設定することができます。\nタイミングが早いと思った場合はプラス、\n遅いと思った場合はマイナスに設定してください。";
+                    break;
+                case OptionScene.MenuItem.AutoMode:
+                    AutoMode.Color = new Color(255, 255, Scene.SettingSwitch ? 0 : 255, 255);
+                    Scene.ItemDescription.Text = "自動演奏を有効にするかを設定することが\nできます。";
                     break;
             }
             //--------------------------------------------------
@@ -81,10 +90,10 @@ namespace DiscoFreaks
                 if (!Scene.SettingSwitch)
                 {
                     if (Input.KeyPush(Keys.Up))
-                        Scene.SettingItem = (OptionScene.MenuItem)Math.Mod((int)Scene.SettingItem - 1, 2);
+                        Scene.SettingItem = (OptionScene.MenuItem)Math.Mod((int)Scene.SettingItem - 1, 3);
 
                     if (Input.KeyPush(Keys.Down))
-                        Scene.SettingItem = (OptionScene.MenuItem)Math.Mod((int)Scene.SettingItem + 1, 2);
+                        Scene.SettingItem = (OptionScene.MenuItem)Math.Mod((int)Scene.SettingItem + 1, 3);
                 }
 
                 else if (Scene.SettingItem == OptionScene.MenuItem.HighSpeed)
@@ -102,6 +111,12 @@ namespace DiscoFreaks
                     config.Ofset +=
                         Input.KeyPush(Keys.Right) ? 10 :
                         Input.KeyPush(Keys.Left) ? -10 : 0;
+                }
+
+                else if (Scene.SettingItem == OptionScene.MenuItem.AutoMode)
+                {
+                    if(Input.KeyPush(Keys.Right) || Input.KeyPush(Keys.Left))
+                        config.AutoMode = !config.AutoMode;
                 }
             }
             //--------------------------------------------------

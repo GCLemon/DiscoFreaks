@@ -21,34 +21,47 @@ namespace DiscoFreaks
         {
             base.OnUpdate();
 
-            // キーがホールドされているかを判定
-            bool is_holding = false;
-            foreach (var key in JudgeKeys)
-                is_holding |= Input.KeyHold(key);
-
-            // ホールドされていた場合
-            if (is_holding)
-            {
-                if (Judge() == Judgement.Just)
-                {
-                    Scene.Result.ChangePointBySlideNote(Judgement.Just);
-                    Dispose();
-                }
-            }
-
-            // ホールドされていない場合
-            else
+            if (IsAutoPlaying)
             {
                 var judgement = Judge();
-
-                bool is_pressed = JudgeKeys.Any(x => Input.KeyPush(x));
-                bool is_judgable = judgement != Judgement.None;
-                if (is_pressed && is_judgable)
+                if (Judge() != Judgement.None)
                 {
                     var error = NoteTimer.VisualTime - VisualTiming;
                     Scene.Result.ChangePointBySlideNote(error > 0 ? judgement : Judgement.Just);
-                    if(judgement == Judgement.Near) RemoveComponent("Effect");
                     Dispose();
+                }
+            }
+            else
+            {
+                // キーがホールドされているかを判定
+                bool is_holding = false;
+                foreach (var key in JudgeKeys)
+                    is_holding |= Input.KeyHold(key);
+
+                // ホールドされていた場合
+                if (is_holding)
+                {
+                    if (Judge() == Judgement.Just)
+                    {
+                        Scene.Result.ChangePointBySlideNote(Judgement.Just);
+                        Dispose();
+                    }
+                }
+
+                // ホールドされていない場合
+                else
+                {
+                    var judgement = Judge();
+
+                    bool is_pressed = JudgeKeys.Any(x => Input.KeyPush(x));
+                    bool is_judgable = judgement != Judgement.None;
+                    if (is_pressed && is_judgable)
+                    {
+                        var error = NoteTimer.VisualTime - VisualTiming;
+                        Scene.Result.ChangePointBySlideNote(error > 0 ? judgement : Judgement.Just);
+                        if (judgement == Judgement.Near) RemoveComponent("Effect");
+                        Dispose();
+                    }
                 }
             }
 

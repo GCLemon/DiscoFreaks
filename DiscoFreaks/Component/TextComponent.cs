@@ -1,4 +1,5 @@
-﻿using asd;
+﻿using System.Collections.Generic;
+using asd;
 
 namespace DiscoFreaks
 {
@@ -179,6 +180,37 @@ namespace DiscoFreaks
         {
             Color = color;
             Phase = MaxPhase;
+        }
+    }
+
+    /// <summary>
+    /// 文字を1文字ずつ表示するコンポーネント
+    /// </summary>
+    public class TypingComponent : Object2DComponent, ITextComponent
+    {
+        private IEnumerator<object> Coroutine;
+
+        private string Text;
+
+        protected override void OnUpdate()
+        {
+            Coroutine?.MoveNext();
+        }
+
+        public void Trigger()
+        {
+            Text = ((TextObject2D)Owner).Text;
+            Coroutine = GetCoroutine();
+        }
+
+        private IEnumerator<object> GetCoroutine()
+        {
+            ((TextObject2D)Owner).Text = "";
+            foreach (char c in Text)
+            {
+                ((TextObject2D)Owner).Text += c;
+                for (int i = 0; i < 5; ++i) yield return null;
+            }
         }
     }
 }

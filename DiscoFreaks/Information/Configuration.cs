@@ -21,6 +21,7 @@ namespace DiscoFreaks
         //--------------------------------------------------
         public double HighSpeed;
         public int Ofset;
+        public bool AutoMode;
         //--------------------------------------------------
 
         // Visual Configuration
@@ -56,6 +57,7 @@ namespace DiscoFreaks
                         //--------------------------------------------------
                         HighSpeed = reader.ReadDouble(),
                         Ofset = reader.ReadInt32(),
+                        AutoMode = reader.ReadBoolean(),
                         //--------------------------------------------------
 
                         // Visual Configuration
@@ -89,6 +91,7 @@ namespace DiscoFreaks
                     //--------------------------------------------------
                     HighSpeed = 1,
                     Ofset = 0,
+                    AutoMode = false,
                     //--------------------------------------------------
 
                     // Visual Configuration
@@ -132,6 +135,7 @@ namespace DiscoFreaks
                 //--------------------------------------------------
                 writer.Write(config.HighSpeed);
                 writer.Write(config.Ofset);
+                writer.Write(config.AutoMode);
                 //--------------------------------------------------
 
                 // Visual Configuration

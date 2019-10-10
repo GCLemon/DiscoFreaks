@@ -110,10 +110,10 @@ namespace DiscoFreaks
                 if (!Scene.SettingSwitch)
                 {
                     if (Input.KeyPush(Keys.Up))
-                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 3, 3) + 2);
+                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 4, 3) + 3);
 
                     if (Input.KeyPush(Keys.Down))
-                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 1, 3) + 2);
+                        Scene.SettingItem = (OptionScene.MenuItem)(Math.Mod((int)Scene.SettingItem - 2, 3) + 3);
                 }
 
                 else if (Scene.SettingItem == OptionScene.MenuItem.EffectType)

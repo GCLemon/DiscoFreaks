@@ -45,10 +45,12 @@ namespace DiscoFreaks
         // ゲーム開始時に再生するエフェクト
         private readonly ReadyGoEffect ReadyGo;
 
-        public GameScene(Score score, Difficulty difficulty, Configuration configuration)
+        public GameScene(Score score, Difficulty difficulty)
         {
+            // ユーザー設定の読み込み
+            Configuration = Configuration.Load();
+
             // 入力情報の受け取り
-            Configuration = configuration;
             Difficulty = difficulty;
             Score = score;
 
@@ -107,6 +109,7 @@ namespace DiscoFreaks
 
             Note.HighSpeed = Configuration.HighSpeed;
             Note.Ofset = Configuration.Ofset;
+            Note.IsAutoPlaying = Configuration.AutoMode;
             Note.NoteTimer.Ofset = Score[Difficulty].Ofset;
 
             // ノートタイマーの初期化
@@ -123,7 +126,6 @@ namespace DiscoFreaks
                 case GameState.Pausing: OnPausing(); break;
                 case GameState.Finished: OnFinished(); break;
             }
-
         }
 
         // ゲームが始まっていない場合の処理
@@ -200,11 +202,11 @@ namespace DiscoFreaks
                         CurrentState = GameState.Playing;
                         break;
                     case PauseLayer.Item.Retry:
-                        var new_scene = new GameScene(Score, Difficulty, Configuration);
+                        var new_scene = new GameScene(Score, Difficulty);
                         Engine.ChangeSceneWithTransition(new_scene, new TransitionFade(1, 1));
                         break;
                     case PauseLayer.Item.Return:
-                        Engine.ChangeSceneWithTransition(new SelectScene(), new TransitionFade(1, 1));
+                        Engine.ChangeSceneWithTransition(new SelectScene(Score), new TransitionFade(1, 1));
                         break;
                 }
             }
@@ -215,7 +217,8 @@ namespace DiscoFreaks
         {
             if(!IsGameFinished)
             {
-                Engine.ChangeSceneWithTransition(new ResultScene(Score, Difficulty, Result), new TransitionFade(1, 1));
+                var new_scene = new ResultScene(Score, Difficulty, Result, !Note.IsAutoPlaying);
+                Engine.ChangeSceneWithTransition(new_scene, new TransitionFade(1, 1));
                 IsGameFinished = true;
             }
         }

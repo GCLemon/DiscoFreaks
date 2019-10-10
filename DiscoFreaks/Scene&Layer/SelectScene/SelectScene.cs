@@ -105,7 +105,7 @@ namespace DiscoFreaks
                         break;
                     case Mode.Difficulty:
                         StopBGM();
-                        Engine.ChangeSceneWithTransition(new GameScene(Score, Difficulty, Configuration.Load()), new TransitionFade(1, 1));
+                        Engine.ChangeSceneWithTransition(new GameScene(Score, Difficulty), new TransitionFade(1, 1));
                         break;
                 }
             }

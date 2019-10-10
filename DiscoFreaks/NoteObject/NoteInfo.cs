@@ -29,8 +29,8 @@
             return Type switch
             {
                 NoteType.TapNote => new TapNote(LeftLane, RightLane, VisualTiming, AudioTiming),
-                NoteType.HoldNote => new TapNote(LeftLane, RightLane, VisualTiming, AudioTiming),
-                NoteType.SlideNote => new TapNote(LeftLane, RightLane, VisualTiming, AudioTiming),
+                NoteType.HoldNote => new HoldNote(LeftLane, RightLane, VisualTiming, AudioTiming, VisualLength, AudioLength),
+                NoteType.SlideNote => new SlideNote(LeftLane, RightLane, VisualTiming, AudioTiming),
                 _ => null
             };
         }

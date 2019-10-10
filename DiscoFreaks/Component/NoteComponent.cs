@@ -156,7 +156,7 @@ namespace DiscoFreaks
         protected override void OnObjectDisposed()
         {
             var size = Owner.RightLane - Owner.LeftLane + 1;
-            Owner.Scene.AddEffect(Owner.Position + new Vector2DF(size * 15, 0));
+            Owner.Scene.AddEffect(new Vector2DF(Owner.Position.X + size * 15, 600));
         }
     }
 }

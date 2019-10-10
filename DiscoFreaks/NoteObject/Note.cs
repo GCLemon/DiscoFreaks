@@ -59,6 +59,9 @@ namespace DiscoFreaks
         // 判定調整
         public static long Ofset;
 
+        // 自動演奏が有効か
+        public static bool IsAutoPlaying;
+
         // ノーツの位置を計算するためのタイマー
         public static readonly NoteTimer NoteTimer = new NoteTimer();
 

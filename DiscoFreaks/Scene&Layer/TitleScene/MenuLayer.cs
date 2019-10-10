@@ -60,6 +60,7 @@ namespace DiscoFreaks
                 Text = "Disco Freaks",
                 Position = new Vector2DF(480, 120)
             };
+            title.AddComponent(new TypingComponent(), "Typing");
             AddObject(title);
 
             // コンポーネントを作成・追加

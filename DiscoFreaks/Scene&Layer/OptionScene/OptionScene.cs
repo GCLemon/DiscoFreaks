@@ -17,6 +17,7 @@ namespace DiscoFreaks
         {
             HighSpeed,
             Ofset,
+            AutoMode,
             EffectType,
             EffectSize,
             Luminance,

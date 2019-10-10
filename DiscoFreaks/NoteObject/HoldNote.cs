@@ -65,20 +65,36 @@ namespace DiscoFreaks
             // 先頭のノートが未反応の状態における動作
             if (IsMoving)
             {
-                if (!Layer.Objects
-                    .Where(x => x is Note)
-                    .Any(x => IsOverlapped((Note)x))
-                )
+
+                if (IsAutoPlaying)
                 {
-                    bool is_pressed = JudgeKeys.Any(x => Input.KeyPush(x));
-                    bool is_judgable = Judge() != Judgement.None;
-                    if (is_pressed && is_judgable)
+                    var judgement = Judge();
+                    if (judgement == Judgement.Just || NoteTimer.AudioTime - AudioTiming > 0)
                     {
                         Position = new Vector2DF(Position.X, 600);
                         IsMoving = false;
                         TempJudge = (int)Judge();
                         HoldTimer.Start();
                         TotalTimer.Start();
+                    }
+                }
+                else
+                {
+                    if (!Layer.Objects
+                        .Where(x => x is Note)
+                        .Any(x => IsOverlapped((Note)x))
+                    )
+                    {
+                        bool is_pressed = JudgeKeys.Any(x => Input.KeyPush(x));
+                        bool is_judgable = Judge() != Judgement.None;
+                        if (is_pressed && is_judgable)
+                        {
+                            Position = new Vector2DF(Position.X, 600);
+                            IsMoving = false;
+                            TempJudge = (int)Judge();
+                            HoldTimer.Start();
+                            TotalTimer.Start();
+                        }
                     }
                 }
 
@@ -94,7 +110,7 @@ namespace DiscoFreaks
             // 先頭のノートが反応済の状態における動作
             else
             {
-                bool is_holding = false;
+                bool is_holding = IsAutoPlaying;
 
                 // ホールドされているかを判定
                 foreach (var key in JudgeKeys)
