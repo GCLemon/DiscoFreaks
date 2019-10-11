@@ -106,7 +106,6 @@ namespace DiscoFreaks
                 Judgement.Text = "NEAR";
                 ComboValue.Text = Scene.Result.Combo.ToString();
                 ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
-                ((ITextComponent)ComboValue.GetComponent("Shrink")).Trigger();
             }
 
             if (Scene.Result.Miss > Result.Miss)
@@ -115,7 +114,6 @@ namespace DiscoFreaks
                 Judgement.Text = "MISS";
                 ComboValue.Text = Scene.Result.Combo.ToString();
                 ((ITextComponent)Judgement.GetComponent("Color")).Trigger();
-                ((ITextComponent)ComboValue.GetComponent("Shrink")).Trigger();
             }
 
             Result = Scene.Result;

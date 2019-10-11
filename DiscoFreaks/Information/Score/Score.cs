@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace DiscoFreaks
@@ -20,25 +21,48 @@ namespace DiscoFreaks
     /// </summary>
     public class Score
     {
+        /// <summary>
+        /// 難易度ごとに設ける譜面の詳細部分
+        /// </summary>
+        public class Detail
+        {
+            public int Level { get; }
+            public int Ofset { get; }
+            public double InitialBPM { get; }
+
+            public List<NoteInfo> Notes { get; }
+            public List<SofLanInfo> SofLans { get; }
+
+            internal Detail(InitInfo.Detail info)
+            {
+                info.Notes.Sort((x, y) => (int)(x.AudioTiming - y.AudioTiming));
+                Level = info.Level;
+                Ofset = info.Ofset;
+                InitialBPM = info.InitialBPM;
+                Notes = new List<NoteInfo>(info.Notes);
+                SofLans = new List<SofLanInfo>(info.SofLans);
+            }
+        }
+
+        private Dictionary<Difficulty, Detail> Details;
+
         public string Title { get; }
         public string Subtitle { get; }
         public string SoundPath { get; }
         public string JacketPath { get; }
 
-        private Dictionary<Difficulty, Detail> Detail;
-
         public Detail this[Difficulty difficulty]
         {
             get
             {
-                return Detail.ContainsKey(difficulty) ? Detail[difficulty] : null;
+                return Details.ContainsKey(difficulty) ? Details[difficulty] : null;
             }
 
             set
             {
-                if (Detail.ContainsKey(difficulty))
-                    Detail.Remove(difficulty);
-                Detail.Add(difficulty, value);
+                if (Details.ContainsKey(difficulty))
+                    Details.Remove(difficulty);
+                Details.Add(difficulty, value);
             }
         }
 
@@ -51,8 +75,8 @@ namespace DiscoFreaks
             JacketPath = info.JacketPath;
 
             // 詳細情報の設定
-            Detail = new Dictionary<Difficulty, Detail>();
-            Detail[info.Difficulty] = new Detail(info.DetailInfo);
+            Details = new Dictionary<Difficulty, Detail>();
+            Details[info.Difficulty] = new Detail(info.DetailInfo);
         }
 
         public static List<Score> CreateList()
@@ -61,7 +85,9 @@ namespace DiscoFreaks
             List<Score> list = new List<Score>();
 
             // Score 配下の譜面ファイル全てに対して処理
-            foreach (string path in Directory.GetFiles("./Score", "*.frk", SearchOption.AllDirectories))
+            foreach (string path in Directory
+                .GetFiles("./Score", "*.frk", SearchOption.AllDirectories)
+                .Where(x => !Regex.IsMatch(x, ".*/Tutorial.frk$")))
             {
                 InitInfo init_info = InitInfo.Create(path);
 

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using asd;
 
 namespace DiscoFreaks
@@ -42,18 +42,10 @@ namespace DiscoFreaks
 
             switch (difficulty)
             {
-                case Difficulty.Casual:
-                    DiffColor = new Color(166, 226, 46);
-                    break;
-                case Difficulty.Stylish:
-                    DiffColor = new Color(253, 151, 31);
-                    break;
-                case Difficulty.Freeky:
-                    DiffColor = new Color(249, 38, 114);
-                    break;
-                case Difficulty.Psychic:
-                    DiffColor = new Color(174, 129, 255);
-                    break;
+                case Difficulty.Casual: DiffColor = new Color(166, 226, 46); break;
+                case Difficulty.Stylish: DiffColor = new Color(253, 151, 31); break;
+                case Difficulty.Freeky: DiffColor = new Color(249, 38, 114); break;
+                case Difficulty.Psychic: DiffColor = new Color(174, 129, 255); break;
             }
 
             // 曲名・サブタイトル・ジャケット・難易度
@@ -65,7 +57,7 @@ namespace DiscoFreaks
                 Scale = new Vector2DF(0.5f, 0.5f),
                 Position = new Vector2DF(50, 270)
             };
-            Title = new  Makinas(48, 4, center)
+            Title = new Makinas(48, 4, center)
             {
                 Text = score.Title,
                 Position = new Vector2DF(480, 130)
@@ -197,6 +189,7 @@ namespace DiscoFreaks
                 {
                     ((ITextComponent)text.GetComponent("Slide")).Trigger();
                     ((ITextComponent)text.GetComponent("FadeIn")).Trigger();
+                    text.IsDrawn = true;
                 }
 
                 if (Frame == 100)

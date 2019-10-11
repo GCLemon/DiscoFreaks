@@ -36,6 +36,27 @@ namespace DiscoFreaks
 
             // シーンチェンジ
 #if DEBUG
+            /*
+            var info = InitInfo.Create("Score/Rosetta_Reflection/Casual.frk");
+            var score = new Score(info);
+            var result = new Result(score[Difficulty.Casual]);
+            foreach(var i in info.DetailInfo.Notes)
+            {
+                switch (i.Type)
+                {
+                    case NoteType.TapNote:
+                        result.ChangePointByTapNote(Judgement.Just);
+                        break;
+                    case NoteType.HoldNote:
+                        result.ChangePointByHoldNote(Judgement.Just);
+                        break;
+                    case NoteType.SlideNote:
+                        result.ChangePointBySlideNote(Judgement.Just);
+                        break;
+                }
+            }
+            Engine.ChangeScene(new ResultScene(score, Difficulty.Casual, result, true));
+            */
             Engine.ChangeSceneWithTransition(new TitleScene(), new TransitionFade(0, 1));
 #else
             Engine.ChangeSceneWithTransition(new TitleScene(), new TransitionFade(0, 1));

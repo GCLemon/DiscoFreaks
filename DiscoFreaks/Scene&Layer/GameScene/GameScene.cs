@@ -1,19 +1,10 @@
-﻿using asd;
+﻿using System.Collections.Generic;
+using asd;
 
 namespace DiscoFreaks
 {
-    public class GameScene : Scene
+    public abstract class GameScene : Scene
     {
-        // 現在のゲームの状態
-        private enum GameState
-        {
-            Ready,
-            Playing,
-            Pausing,
-            Finished,
-        }
-        private GameState CurrentState;
-
         // ゲームの設定
         public readonly Score Score;
         public readonly Difficulty Difficulty;
@@ -22,28 +13,19 @@ namespace DiscoFreaks
         // ゲームの結果
         public Result Result;
 
-        // フレームカウンタ
-        private int FrameCount;
-
         // 再生されている音源のID
-        private int SoundID;
-
-        // 音が再生されたか
-        private bool IsSoundStarted;
-
-        // ゲームが終わったか
-        private bool IsGameFinished;
+        protected int SoundID;
 
         // レイヤー
         private readonly Layer2D MaskLayer;
         private readonly GroundLayer GroundLayer;
         private readonly NoteLayer NoteLayer;
         private readonly InfoLayer InfoLayer;
-        private readonly Layer2D EffectLayer;
-        private readonly PauseLayer PauseLayer;
+        protected readonly Layer2D EffectLayer;
+        protected readonly PauseLayer PauseLayer;
 
-        // ゲーム開始時に再生するエフェクト
-        private readonly ReadyGoEffect ReadyGo;
+        // ゲームの状態遷移に用いるコルーチン
+        IEnumerator<object> Coroutine;
 
         public GameScene(Score score, Difficulty difficulty)
         {
@@ -59,14 +41,12 @@ namespace DiscoFreaks
             AddComponent(new InputManageComponent(), "Input");
 
             // インスタンスを代入
-            MaskLayer = new Layer2D { DrawingPriority = 1 };
-            GroundLayer = new GroundLayer { DrawingPriority = 2 };
-            NoteLayer = new NoteLayer(score[difficulty]) { DrawingPriority = 3 };
-            EffectLayer = new Layer2D { DrawingPriority = 4 };
-            InfoLayer = new InfoLayer(score, difficulty) { DrawingPriority = 5 };
+            GroundLayer = new GroundLayer { DrawingPriority = 1 };
+            NoteLayer = new NoteLayer(score[difficulty]) { DrawingPriority = 2 };
+            EffectLayer = new Layer2D { DrawingPriority = 3 };
+            InfoLayer = new InfoLayer(score, difficulty) { DrawingPriority = 4 };
+            MaskLayer = new Layer2D { DrawingPriority = 5 };
             PauseLayer = new PauseLayer { DrawingPriority = 6 };
-
-            ReadyGo = new ReadyGoEffect();
         }
 
         protected override void OnRegistered()
@@ -81,21 +61,12 @@ namespace DiscoFreaks
             {
                 Keys[] keys =
                 {
-                    Keys.Q, Keys.A, Keys.W, Keys.S, Keys.E,
-                    Keys.D, Keys.R, Keys.F, Keys.T, Keys.G,
-                    Keys.Y, Keys.H, Keys.U, Keys.J, Keys.I,
-                    Keys.K, Keys.O, Keys.L, Keys.P,
-                    Keys.Semicolon, Keys.LeftBracket,
-                    Keys.Apostrophe, Keys.RightBracket,
-                    Keys.Backslash
+                    Keys.Q, Keys.A, Keys.W, Keys.S, Keys.E, Keys.D, Keys.R, Keys.F, Keys.T, Keys.G,
+                    Keys.Y, Keys.H, Keys.U, Keys.J, Keys.I, Keys.K, Keys.O, Keys.L, Keys.P,
+                    Keys.Semicolon, Keys.LeftBracket, Keys.Apostrophe, Keys.RightBracket, Keys.Backslash
                 };
 
-                EffectLayer.AddObject(
-                    new PressEffect(keys[i])
-                    {
-                        Position = new Vector2DF(135 + 30 * i, 600)
-                    }
-                );
+                EffectLayer.AddObject(new PressEffect(keys[i]) { Position = new Vector2DF(135 + 30 * i, 600) } );
             }
 
             AddLayer(MaskLayer);
@@ -115,139 +86,31 @@ namespace DiscoFreaks
             // ノートタイマーの初期化
             Note.NoteTimer.Stop();
             Note.NoteTimer.Reset();
+
+            //コルーチンを用意
+            Coroutine = GetCoroutine();
         }
 
-        protected override void OnUpdated()
-        {
-            switch (CurrentState)
-            {
-                case GameState.Ready: OnReady(); break;
-                case GameState.Playing: OnPlaying(); break;
-                case GameState.Pausing: OnPausing(); break;
-                case GameState.Finished: OnFinished(); break;
-            }
-        }
+        // 更新処理
+        protected override void OnUpdated() => Coroutine?.MoveNext();
 
-        // ゲームが始まっていない場合の処理
-        private void OnReady()
-        {
-            // エフェクトを再生する
-            if (FrameCount == 180)
-                EffectLayer.AddObject(ReadyGo);
+        // コルーチン 
+        protected abstract IEnumerator<object> GetCoroutine();
 
-            // エフェクトの再生が終わったらゲームを開始する
-            if (!ReadyGo.IsAlive)
-            {
-                Note.NoteTimer.Start();
-                CurrentState = GameState.Playing;
-            }
-
-            ++FrameCount;
-        }
-
-        // ゲーム中の処理
-        private void OnPlaying()
-        {
-            // 音を再生する
-            if (!IsSoundStarted && Note.NoteTimer.ElapsedMilliseconds >= 2000)
-            {
-                var source = Sound.CreateBGM(Score.SoundPath);
-                source.IsLoopingMode = false;
-                SoundID = Sound.Play(source);
-                Sound.SetVolume(SoundID, Configuration.BGMVolume);
-                IsSoundStarted = true;
-            }
-
-            // バックスペースが押されたらポーズ画面へ
-            if (Input.KeyPush(Keys.Backspace))
-            {
-                Sound.Pause(SoundID);
-                Note.NoteTimer.Stop();
-                PauseLayer.IsDrawn = true;
-                PauseLayer.IsUpdated = true;
-                CurrentState = GameState.Pausing;
-            }
-
-            // 音の再生が終わったらゲームを終了する
-            if (IsSoundStarted && !Sound.GetIsPlaying(SoundID))
-            {
-                CurrentState = GameState.Finished;
-            }
-        }
-
-        // ポーズ中の処理
-        private void OnPausing()
-        {
-            if (Input.KeyPush(Keys.Up))
-            {
-                int x = Math.Mod((int)PauseLayer.SelectingItem - 1, 3);
-                PauseLayer.SelectingItem = (PauseLayer.Item)x;
-            }
-
-            if (Input.KeyPush(Keys.Down))
-            {
-                int x = Math.Mod((int)PauseLayer.SelectingItem + 1, 3);
-                PauseLayer.SelectingItem = (PauseLayer.Item)x;
-            }
-
-            if (Input.KeyPush(Keys.Enter))
-            {
-                switch (PauseLayer.SelectingItem)
-                {
-                    case PauseLayer.Item.Resume:
-                        Sound.Resume(SoundID);
-                        Note.NoteTimer.Start();
-                        PauseLayer.IsDrawn = false;
-                        PauseLayer.IsUpdated = false;
-                        CurrentState = GameState.Playing;
-                        break;
-                    case PauseLayer.Item.Retry:
-                        var new_scene = new GameScene(Score, Difficulty);
-                        Engine.ChangeSceneWithTransition(new_scene, new TransitionFade(1, 1));
-                        break;
-                    case PauseLayer.Item.Return:
-                        Engine.ChangeSceneWithTransition(new SelectScene(Score), new TransitionFade(1, 1));
-                        break;
-                }
-            }
-        }
-
-        // ゲーム終了後の処理
-        private void OnFinished()
-        {
-            if(!IsGameFinished)
-            {
-                var new_scene = new ResultScene(Score, Difficulty, Result, !Note.IsAutoPlaying);
-                Engine.ChangeSceneWithTransition(new_scene, new TransitionFade(1, 1));
-                IsGameFinished = true;
-            }
-        }
-
+        // エフェクトの追加
         public void AddEffect(Vector2DF position)
         {
-            HitEffect effect = null;
             float scale = Configuration.EffectSize * 2;
-            switch (Configuration.EffectType)
+            HitEffect effect = Configuration.EffectType switch
             {
-                case EffectType.Simple:
-                    effect = new Simple(scale);
-                    break;
-                case EffectType.Explosion:
-                    effect = new Explosion(scale);
-                    break;
-                case EffectType.BlueInk:
-                    effect = new BlueInk(scale);
-                    break;
-                case EffectType.Gust:
-                    effect = new Gust(scale);
-                    break;
-                case EffectType.MagicCircle:
-                    effect = new MagicCircle(scale);
-                    break;
-                case EffectType.Stardust:
-                    effect = new StarDust(scale);
-                    break;
-            }
+                EffectType.Simple      => new Simple(scale),
+                EffectType.Explosion   => new Explosion(scale),
+                EffectType.BlueInk     => new BlueInk(scale),
+                EffectType.Gust        => new Gust(scale),
+                EffectType.MagicCircle => new MagicCircle(scale),
+                EffectType.Stardust    => new StarDust(scale),
+                _ => null
+            };
             effect.Position = position;
             EffectLayer.AddObject(effect);
         }

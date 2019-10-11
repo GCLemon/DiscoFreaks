@@ -55,6 +55,10 @@ namespace DiscoFreaks
                             Engine.ChangeSceneWithTransition(new SelectScene(), new TransitionFade(1, 1));
                             break;
                         case MenuLayer.MenuItem.Tutorial:
+                            /*
+                            var score = new Score(InitInfo.Create("Score/Tutorial.frk"));
+                            Engine.ChangeSceneWithTransition(new TutorialScene(score), new TransitionFade(1, 1));
+                            */
                             break;
                         case MenuLayer.MenuItem.Credits:
                             IsShowingCredits = true;

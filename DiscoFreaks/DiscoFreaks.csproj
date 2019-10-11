@@ -87,7 +87,6 @@
     <Compile Include="Component\NoteComponent.cs" />
     <Compile Include="EmptyObject.cs" />
     <Compile Include="Information\Score\Score.cs" />
-    <Compile Include="Information\Score\Detail.cs" />
     <Compile Include="Information\Score\InitialInfo.cs" />
     <Compile Include="Component\SceneComponent.cs" />
     <Compile Include="Scene&amp;Layer\ResultScene\ResultScene.cs" />
@@ -104,7 +103,8 @@
     <Compile Include="Scene&amp;Layer\TitleScene\MenuLayer.cs" />
     <Compile Include="Scene&amp;Layer\TitleScene\CreditLayer.cs" />
     <Compile Include="NoteObject\NoteInfo.cs" />
-    <Compile Include="Scene&amp;Layer\TutorialScene\TutorialScene.cs" />
+    <Compile Include="Scene&amp;Layer\GameScene\GamePlayScene.cs" />
+    <Compile Include="Scene&amp;Layer\GameScene\TutorialScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scene&amp;Layer\" />
@@ -118,7 +118,6 @@
     <Folder Include="Information\Score\" />
     <Folder Include="Scene&amp;Layer\ResultScene\" />
     <Folder Include="SpriteEffect\" />
-    <Folder Include="Scene&amp;Layer\TutorialScene\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

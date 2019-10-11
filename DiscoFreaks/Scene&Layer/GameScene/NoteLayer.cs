@@ -8,7 +8,7 @@ namespace DiscoFreaks
         private readonly Queue<Note> Notes;
         private readonly Queue<Note.SofLan> SofLans;
 
-        public NoteLayer(Detail detail)
+        public NoteLayer(Score.Detail detail)
         {
             Notes = new Queue<Note>();
             foreach (var note_info in detail.Notes)

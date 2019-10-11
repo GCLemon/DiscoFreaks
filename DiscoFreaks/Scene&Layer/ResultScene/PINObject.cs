@@ -9,8 +9,8 @@ namespace DiscoFreaks
             get => (TweetLayer)base.Layer;
         }
 
-        public string PINCode { get; private set; }
-        private int SettingDigit;
+        public string PINCode;
+        public int SettingDigit;
         private bool IsErrorShown;
 
         private Makinas[] PINValue;
@@ -60,46 +60,6 @@ namespace DiscoFreaks
                 PINValue[i].Text = PINCode[i].ToString();
                 var alpha = i == SettingDigit ? 255 : 63;
                 PINValue[i].Color = new Color(255, 255, 255, alpha);
-            }
-
-            if (Layer.Scene.CurrentMode == ResultScene.Mode.Tweet
-                && Layer.CurrentMode == TweetLayer.Mode.Authorize)
-            {
-                foreach (var k in Enum.GetValues<Keys>())
-                {
-                    Keys key = (Keys)k;
-
-                    if (Input.KeyPush(key))
-                    {
-                        int value = (int)key;
-
-                        // 入力されたものが数字だった場合
-                        if (7 <= value && value <= 16)
-                        {
-                            var pin_code = PINCode.ToCharArray();
-                            pin_code[SettingDigit] = (value - 7).ToString()[0];
-                            PINCode = new string(pin_code);
-                            SettingDigit = Math.Mod(++SettingDigit, 7);
-                        }
-
-                        // 入力されたものが上下だった場合
-                        if (59 <= value && value <= 60)
-                        {
-                            var pin_code = PINCode.ToCharArray();
-                            var digit = int.Parse(pin_code[SettingDigit].ToString());
-                            digit = Math.Mod(digit + (value == 60 ? 1 : -1), 10);
-                            pin_code[SettingDigit] = digit.ToString()[0];
-                            PINCode = new string(pin_code);
-                        }
-
-                        // 入力されたものが左右だった場合
-                        if (57 <= value && value <= 58)
-                        {
-                            SettingDigit += value == 57 ? 1 : -1;
-                            SettingDigit = Math.Mod(SettingDigit, 7);
-                        }
-                    }
-                }
             }
         }
 

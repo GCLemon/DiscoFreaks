@@ -32,7 +32,7 @@ namespace DiscoFreaks
             {
                 { Item.Resume,  new ScanLine(60, 4, center) { Text = "RESUME", Position = new Vector2DF(480, 300) } },
                 { Item.Retry,  new ScanLine(60, 4, center) { Text = "RETRY", Position = new Vector2DF(480, 400) } },
-                { Item.Return,  new ScanLine(60, 4, center) { Text = "TUNE SELECT", Position = new Vector2DF(480, 500) } },
+                { Item.Return,  new ScanLine(60, 4, center) { Text = "QUIT PLAY", Position = new Vector2DF(480, 500) } },
             };
             Mask = new GeometryObject2D
             {

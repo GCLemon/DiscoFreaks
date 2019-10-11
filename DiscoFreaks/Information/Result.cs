@@ -129,7 +129,7 @@ namespace DiscoFreaks
         private int max_combo;
         private int score;
 
-        public Result(Detail detail)
+        public Result(Score.Detail detail)
         {
             just = cool = good = near = miss = note_point = 0;
             max_note_point =
