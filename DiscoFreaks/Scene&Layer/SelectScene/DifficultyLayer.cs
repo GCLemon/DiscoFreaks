@@ -135,7 +135,7 @@ namespace DiscoFreaks
                     DifficultyDescription.Text =
                         "音ゲーにある程度慣れた人向けの難易度です。\n一人で盛り上がりたいときにおすすめ。";
                     break;
-                case Difficulty.Freeky:
+                case Difficulty.Freaky:
                     DifficultyDescription.Text =
                         "音ゲーを極めた人向けの難易度です。\nお子様の手の届かないところで遊びましょう。";
                     break;

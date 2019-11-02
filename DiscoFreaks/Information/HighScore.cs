@@ -35,7 +35,7 @@ namespace DiscoFreaks
                         {
                             { Difficulty.Casual, (reader.ReadInt32(), (ClearJudgement)reader.ReadInt32()) },
                             { Difficulty.Stylish, (reader.ReadInt32(), (ClearJudgement)reader.ReadInt32()) },
-                            { Difficulty.Freeky, (reader.ReadInt32(), (ClearJudgement)reader.ReadInt32()) },
+                            { Difficulty.Freaky, (reader.ReadInt32(), (ClearJudgement)reader.ReadInt32()) },
                             { Difficulty.Psychic, (reader.ReadInt32(), (ClearJudgement)reader.ReadInt32()) }
                         }
                     };
@@ -53,7 +53,7 @@ namespace DiscoFreaks
                     {
                         { Difficulty.Casual, (0, ClearJudgement.Failure) },
                         { Difficulty.Stylish, (0, ClearJudgement.Failure) },
-                        { Difficulty.Freeky, (0, ClearJudgement.Failure) },
+                        { Difficulty.Freaky, (0, ClearJudgement.Failure) },
                         { Difficulty.Psychic, (0, ClearJudgement.Failure) }
                     }
                 };

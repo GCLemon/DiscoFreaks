@@ -15,8 +15,8 @@ namespace DiscoFreaks
             EngineOption option = new EngineOption
             {
                 ColorSpace = ColorSpaceType.LinearSpace,
-#if DEBUG
                 GraphicsDevice = GraphicsDeviceType.OpenGL,
+#if DEBUG
                 WindowPosition = WindowPositionType.Centering
 #else
                 IsFullScreen = true

@@ -41,11 +41,11 @@ namespace DiscoFreaks
             AddComponent(new InputManageComponent(), "Input");
 
             // インスタンスを代入
-            GroundLayer = new GroundLayer { DrawingPriority = 1 };
-            NoteLayer = new NoteLayer(score[difficulty]) { DrawingPriority = 2 };
-            EffectLayer = new Layer2D { DrawingPriority = 3 };
-            InfoLayer = new InfoLayer(score, difficulty) { DrawingPriority = 4 };
-            MaskLayer = new Layer2D { DrawingPriority = 5 };
+            MaskLayer = new Layer2D { DrawingPriority = 1 };
+            GroundLayer = new GroundLayer { DrawingPriority = 2 };
+            NoteLayer = new NoteLayer(score[difficulty]) { DrawingPriority = 3 };
+            EffectLayer = new Layer2D { DrawingPriority = 4 };
+            InfoLayer = new InfoLayer(score, difficulty) { DrawingPriority = 5 };
             PauseLayer = new PauseLayer { DrawingPriority = 6 };
         }
 

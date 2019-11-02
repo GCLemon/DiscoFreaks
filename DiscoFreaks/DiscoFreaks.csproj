@@ -34,7 +34,7 @@
         </Command>
         <Command>
           <type>BeforeBuild</type>
-          <command>cp -r ../Debug/Score ../Debug/PlayData .</command>
+          <command>cp -r ../Debug/Score .</command>
           <workingdir>${TargetDir}</workingdir>
           <externalConsole>True</externalConsole>
           <pauseExternalConsole>True</pauseExternalConsole>

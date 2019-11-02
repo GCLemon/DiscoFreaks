@@ -44,7 +44,7 @@ namespace DiscoFreaks
             {
                 case Difficulty.Casual: DiffColor = new Color(166, 226, 46); break;
                 case Difficulty.Stylish: DiffColor = new Color(253, 151, 31); break;
-                case Difficulty.Freeky: DiffColor = new Color(249, 38, 114); break;
+                case Difficulty.Freaky: DiffColor = new Color(249, 38, 114); break;
                 case Difficulty.Psychic: DiffColor = new Color(174, 129, 255); break;
             }
 

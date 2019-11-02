@@ -33,9 +33,9 @@ namespace DiscoFreaks
                     break;
                 case Difficulty.Stylish:
                     level_text = "STYLISH    " + level_text;
-                    level_color = new Color(230, 219, 116);
+                    level_color = new Color(253, 151, 31);
                     break;
-                case Difficulty.Freeky:
+                case Difficulty.Freaky:
                     level_text = "FREEKY     " + level_text;
                     level_color = new Color(249, 38, 114);
                     break;

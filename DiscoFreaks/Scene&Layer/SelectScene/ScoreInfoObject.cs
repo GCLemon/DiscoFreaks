@@ -57,7 +57,7 @@ namespace DiscoFreaks
             {
                 { Difficulty.Casual, CreateSet(new Color(166, 226, 46), new Vector2DF(150, 0)) },
                 { Difficulty.Stylish, CreateSet(new Color(253, 151, 31), new Vector2DF(150, 30)) },
-                { Difficulty.Freeky, CreateSet(new Color(249, 38, 114), new Vector2DF(150, 60)) },
+                { Difficulty.Freaky, CreateSet(new Color(249, 38, 114), new Vector2DF(150, 60)) },
                 { Difficulty.Psychic, CreateSet(new Color(174, 129, 255), new Vector2DF(150, 90)) }
             };
         }

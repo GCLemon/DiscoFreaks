@@ -12,7 +12,7 @@ namespace DiscoFreaks
     {
         Casual,
         Stylish,
-        Freeky,
+        Freaky,
         Psychic
     }
 
